@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#090d16" />
   <title>Sambung Kata Nusantara LDR</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
@@ -92,6 +92,7 @@
 
     .tap-btn {
       transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease;
+      cursor: pointer;
     }
     .tap-btn:active:not(:disabled) {
       transform: scale(0.95);
@@ -160,11 +161,11 @@
           </svg>
         </div>
         <span class="font-display font-extrabold text-base tracking-tight text-white">Sambung Kata</span>
-        <span id="conn-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" title="Siap"></span>
+        <span id="conn-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" title="Menghubungkan"></span>
       </div>
 
       <div class="flex items-center gap-2">
-        <button id="btn-open-punishments" aria-label="Hukuman"
+        <button id="btn-open-punishments" type="button" aria-label="Hukuman"
           class="tap-btn h-9 px-3 rounded-full glass-surface flex items-center gap-1.5 text-xs font-bold text-rose-300">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>
@@ -172,7 +173,7 @@
           <span id="punishment-count-badge">10</span>
         </button>
 
-        <button id="btn-toggle-sound" aria-label="Suara"
+        <button id="btn-toggle-sound" type="button" aria-label="Suara"
           class="tap-btn w-9 h-9 rounded-full glass-surface flex items-center justify-center text-slate-200">
           <svg id="icon-sound-on" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
@@ -192,7 +193,6 @@
     <!-- =================================================================== -->
     <section id="view-lobby" class="flex-1 flex flex-col justify-between px-5 py-3 overflow-y-auto no-scrollbar spring-in">
       <div class="my-auto space-y-4">
-        <!-- Language Pills -->
         <div class="flex items-center justify-center gap-1.5">
           <span class="px-2.5 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-[11px] font-bold text-rose-300">ID</span>
           <span class="px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-[11px] font-bold text-amber-300">JAWA</span>
@@ -200,7 +200,6 @@
           <span class="px-2.5 py-1 rounded-full bg-sky-500/15 border border-sky-500/30 text-[11px] font-bold text-sky-300">LOKAL</span>
         </div>
 
-        <!-- Main Card -->
         <div class="glass-surface rounded-3xl p-5 space-y-4">
           <input id="player-name-input" type="text" maxlength="14" placeholder="Nama kamu..."
             class="ios-input w-full px-4 py-3.5 rounded-2xl text-white placeholder-slate-500 font-bold text-base text-center" />
@@ -224,7 +223,6 @@
         </div>
       </div>
 
-      <!-- Bottom Quick Mode Switch -->
       <div class="safe-bottom pt-2">
         <button id="btn-local-mode" type="button"
           class="tap-btn w-full py-3 px-4 rounded-2xl glass-surface text-slate-300 font-bold text-xs flex items-center justify-center gap-2">
@@ -241,7 +239,6 @@
     <!-- =================================================================== -->
     <section id="view-waiting" class="hidden flex-1 flex flex-col justify-between px-5 py-3 overflow-y-auto no-scrollbar spring-in">
       <div class="space-y-4 my-auto">
-        <!-- Room Code Display -->
         <div class="glass-surface rounded-3xl p-5 text-center space-y-3">
           <div class="flex items-center justify-center gap-2">
             <div id="display-room-code"
@@ -256,7 +253,6 @@
             </button>
           </div>
 
-          <!-- 2 Players Slots -->
           <div class="grid grid-cols-2 gap-2.5 pt-1">
             <div class="bg-slate-950/70 border border-rose-500/30 rounded-2xl p-3 text-center">
               <span class="text-[10px] font-extrabold uppercase text-rose-400 block">P1</span>
@@ -270,23 +266,22 @@
           <div id="wait-status-pill" class="text-[11px] font-bold text-emerald-400">Bagikan kode ke pasangan</div>
         </div>
 
-        <!-- Compact Pill Settings -->
         <div class="glass-surface rounded-3xl p-4 space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-slate-400">Waktu</span>
             <div id="timer-pills" class="flex gap-1.5">
-              <button type="button" data-val="10" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">10d</button>
-              <button type="button" data-val="15" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white">15d</button>
-              <button type="button" data-val="20" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">20d</button>
-              <button type="button" data-val="30" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">30d</button>
+              <button type="button" data-val="10" class="pill-timer tap-btn px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">10d</button>
+              <button type="button" data-val="15" class="pill-timer tap-btn px-2.5 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white">15d</button>
+              <button type="button" data-val="20" class="pill-timer tap-btn px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">20d</button>
+              <button type="button" data-val="30" class="pill-timer tap-btn px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">30d</button>
             </div>
           </div>
 
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-slate-400">Nyawa</span>
             <div id="lives-pills" class="flex gap-1.5">
-              <button type="button" data-val="3" class="pill-lives px-3 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white">3 ❤️</button>
-              <button type="button" data-val="5" class="pill-lives px-3 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">5 ❤️</button>
+              <button type="button" data-val="3" class="pill-lives tap-btn px-3 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white">3 ❤️</button>
+              <button type="button" data-val="5" class="pill-lives tap-btn px-3 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">5 ❤️</button>
             </div>
           </div>
 
@@ -295,7 +290,6 @@
         </div>
       </div>
 
-      <!-- Bottom Action Buttons -->
       <div class="safe-bottom flex gap-2.5 pt-2">
         <button id="btn-leave-waiting" type="button"
           class="tap-btn px-4 py-3.5 rounded-2xl bg-slate-800 text-slate-300 font-bold text-sm">
@@ -312,8 +306,6 @@
     <!-- VIEW 3: IN-GAME ARENA                                               -->
     <!-- =================================================================== -->
     <section id="view-game" class="hidden flex-1 flex flex-col justify-between px-4 pt-1 overflow-hidden spring-in">
-
-      <!-- Top Players & Lives Bar -->
       <div class="grid grid-cols-2 gap-2.5 shrink-0">
         <div id="card-p1" class="glass-surface rounded-2xl p-2.5 border transition-all">
           <div class="flex items-center justify-between">
@@ -332,7 +324,6 @@
         </div>
       </div>
 
-      <!-- Center Stage: Timer + Current Word + History -->
       <div class="flex-1 flex flex-col justify-center gap-3 my-2 min-h-0">
         <div class="glass-surface rounded-3xl p-4 text-center relative overflow-hidden">
           <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mb-3">
@@ -356,7 +347,6 @@
         <div id="word-history-list" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 shrink-0"></div>
       </div>
 
-      <!-- Bottom Docked Controls -->
       <div class="safe-bottom space-y-2 shrink-0">
         <div class="flex items-center justify-between px-1">
           <div class="flex gap-1.5">
@@ -461,26 +451,26 @@
 
   <script>
     // =========================================================================
-    // 1. PUNISHMENTS DATA & STORAGE
+    // 1. DEFAULT LDR PUNISHMENTS & LOCAL STORAGE
     // =========================================================================
     const DEFAULT_PUNISHMENTS = [
-      'Kirim voice note bilang "Aku kangen banget sama kamu" dengan nada manja 10 detik 🎙️',
-      'Kirim foto selfie muka jelek / melet sekarang juga ke chat! 🤪',
-      'Ganti foto profil WA pakai foto aib pilihan pasangan selama 24 jam 📸',
-      'Video call 1 menit sambil nyanyi lagu romantis favorit pasangan 🎤',
-      'Kirim 3 alasan kenapa kamu bersyukur punya pasangan kayak dia ❤️',
-      'Tulis status/story inisial pasangan + emotikon hati sekarang 💌',
-      'Traktir kopi / jajanan lewat ojek online minggu ini ☕',
-      'Rekam video bilang "I love you" dalam 3 bahasa daerah berbeda 🇮🇩',
-      'Turutin 1 permintaan random pasangan hari ini tanpa boleh nolak 🫡',
-      'Kirim pap outfit / kegiatan kamu detik ini juga tanpa filter 📷'
+      'Kirim voice note nyanyi lagu cinta 15 detik 🎤',
+      'Kirim foto selfie pose paling gemas sekarang juga 🤳',
+      'Bilang "Aku sayang kamu" pakai bahasa daerah 3 kali ❤️',
+      'Ganti foto profil WA/IG pakai foto pasangan selama 1 jam 🖼️',
+      'Video call 1 menit sambil tatap-tatapan tanpa ketawa 👀',
+      'Tulis 3 hal yang paling dikangenin dari pasangan 💬',
+      'Kirim voice note ketawa paling ngakak selama 10 detik 😂',
+      'Panggil pasangan dengan sebutan manja baru seharian 🥰',
+      'Kirim foto pemandangan atau benda di sekitar kamu sekarang 📸',
+      'Rekam video singkat bilang semangat buat pasangan 💌'
     ];
 
     let punishmentsList = [...DEFAULT_PUNISHMENTS];
     try {
-      const saved = localStorage.getItem('ldr_sambungkata_punishments_v1');
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      const savedPunishments = localStorage.getItem('ldr_sambungkata_punishments_v1');
+      if (savedPunishments) {
+        const parsed = JSON.parse(savedPunishments);
         if (Array.isArray(parsed) && parsed.length > 0) punishmentsList = parsed;
       }
     } catch (e) {}
@@ -492,40 +482,410 @@
     }
 
     // =========================================================================
-    // 2. INSTANT REAL-TIME MULTIPLAYER (GUN.JS DECENTRALIZED RELAY MESH)
+    // 2. SOUND EFFECTS ENGINE (WEB AUDIO API)
     // =========================================================================
-    const GUN_PEERS = [
-      'https://gun-manhattan.herokuapp.com/gun',
-      'https://peer.wallie.io/gun',
-      'https://gundb-relay-mlqc.onrender.com/gun',
-      'https://relay.peer.ooo/gun'
-    ];
-    const ROOM_NS = 'ldr_sambung_kata_nusantara_v4_';
+    let soundEnabled = true;
+    let audioCtx = null;
 
-    let gunInstance = null;
-    let activeRoomNode = null;
-    let clientSessionId = Math.random().toString(36).slice(2, 10);
-    let lastProcessedEventId = '';
-    let heartbeatTimer = null;
+    function playTone(freq, type = 'sine', duration = 0.12, volume = 0.12, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
 
-    function getGun() {
-      if (!gunInstance && typeof Gun !== 'undefined') {
-        gunInstance = Gun({ peers: GUN_PEERS, localStorage: false });
+    const sfx = {
+      pop: () => playTone(520, 'sine', 0.08, 0.1),
+      success: () => {
+        playTone(523.25, 'triangle', 0.11, 0.14, 0);
+        playTone(659.25, 'triangle', 0.11, 0.14, 0.07);
+        playTone(783.99, 'triangle', 0.16, 0.14, 0.14);
+      },
+      error: () => {
+        playTone(190, 'sawtooth', 0.14, 0.12, 0);
+        playTone(145, 'sawtooth', 0.18, 0.12, 0.1);
+      },
+      tick: () => playTone(880, 'sine', 0.04, 0.06),
+      gameover: () => {
+        playTone(392, 'triangle', 0.2, 0.15, 0);
+        playTone(349.23, 'triangle', 0.2, 0.15, 0.18);
+        playTone(329.63, 'triangle', 0.2, 0.15, 0.36);
+        playTone(261.63, 'triangle', 0.4, 0.18, 0.54);
       }
-      return gunInstance;
+    };
+
+    // =========================================================================
+    // 3. NUSANTARA SYLLABLE SPLITTER & DICTIONARY VALIDATOR
+    // =========================================================================
+    const VOWELS = new Set(['a', 'i', 'u', 'e', 'o']);
+    const DIGRAPHS = ['ng', 'ny', 'kh', 'sy'];
+
+    function splitIndonesianSyllables(rawWord) {
+      const word = rawWord.toLowerCase().replace(/[^a-z]/g, '');
+      if (word.length <= 2) return [word];
+
+      let tokens = [];
+      for (let i = 0; i < word.length; i++) {
+        const pair = word.slice(i, i + 2);
+        if (DIGRAPHS.includes(pair)) {
+          tokens.push(pair);
+          i++;
+        } else {
+          tokens.push(word[i]);
+        }
+      }
+
+      const vowelIndices = [];
+      tokens.forEach((t, idx) => {
+        if (VOWELS.has(t)) vowelIndices.push(idx);
+      });
+
+      if (vowelIndices.length <= 1) return [word];
+
+      const syllables = [];
+      let start = 0;
+
+      for (let v = 0; v < vowelIndices.length - 1; v++) {
+        const currV = vowelIndices[v];
+        const nextV = vowelIndices[v + 1];
+        const between = nextV - currV - 1;
+        let splitIdx;
+
+        if (between === 0) {
+          splitIdx = nextV;
+        } else if (between === 1) {
+          splitIdx = currV + 1;
+        } else if (between === 2) {
+          splitIdx = currV + 2;
+        } else {
+          splitIdx = nextV - 1;
+        }
+
+        syllables.push(tokens.slice(start, splitIdx).join(''));
+        start = splitIdx;
+      }
+
+      syllables.push(tokens.slice(start).join(''));
+      return syllables.filter(Boolean);
+    }
+
+    function getLastSyllable(word) {
+      const syls = splitIndonesianSyllables(word);
+      const last = syls[syls.length - 1] || word.slice(-2);
+      if (last.length === 1 && word.length >= 2) {
+        return word.slice(-2).toLowerCase();
+      }
+      return last.toLowerCase();
+    }
+
+    const BUILTIN_NUSANTARA_DICT = new Set([
+      // Indonesia
+      'angsa','sapi','pinggang','gangguan','kucing','cinta','sayang','kangen','rindu','malam','lampu','pukul','kulit','liter','terbang','bangku','kuda','dapur','purnama','mata','tangan','ganteng','tenggelam','lambat','batu','tulang','langit','gitar','tarik','ikan','kancil','cilok','lokasi','sinyal','nyala','lalu','lupa','pagi','gigi','gila','lapar','paru','rumah','mahal','halaman','manis','nisan','santai','taman','mandi','dingin','ingin','indah','dahaga','garam','rambut','butuh','tuhan','hantu','tutup','tupai','pantai','tikus','kusam','sampah','pahit','hitam','taman','mantan','tanda','danau','awan','wangi','angin','gincu','cuka','kaki','kiri','ribu','bulan','lantai','tahu','hujan','jantung','tunggal','gajah','jahat','hati','tiket','ketawa','wajah','jajan','janji','jiwa','warung','rungkad','kado','doa','anak','nakal','kalung','lunglai','lain','intan','tanah','nahkoda','dasi','siku','kuku','kunci','cincin','cinta','tali','lima','makan','kantor','topi','pisang','sangkar','kartu','tulis','listrik','tikar','karung','uang','anggrek','ekor','orang','rangka','kaca','cabai','baju','jujur','jurang','rangka','kasur','surat','ratu','tunggu','guru','rusa','sate','teman','manja','januari','ribu','bunga','ngantuk','tukang','kangkung','kuning','ingus','usaha','sahabat','batik','tikus','susah','sahur','huruf','rumah','makan','minum','numpang','panggung','gunung','nunggu','gula','lagu','gundul','dulu','lulus','lusuh','suhu','hutan','tante','teman','mandi','diri','rindu','duduk','dukun','kuning','ingat','gatal','tali','lidah','dahsyat','satu','tujuh','jujur','jurnal','nakal','kalem','lembut','buta','taman','manusia','siang','angklung','lumpur','pura','rasa','sabar','barat','ratus','tusuk','suka','kabar','baru','rumah','mahkota','tangan','ngopi','pikiran','rantai','taipan','panas','nasi','sisa','sakit','kitab','tabung','bunga','ngobrol','brokoli','libur','burung','rungkad','kadang','dangdut','duta','tahu','hujan','janda','dagu','gugup','gupita','tawa','waktu','tulang','langkah','gajah','jauh','ubah','bahagia','giat','aturan','rantau','taufan','fajar','jari','ribu','butir','tiram','ramai','mainan','nanas','nasib','sibuk','buku','kuda','dapur','pura','raja','jalan','lanjut','juta','taman','mantap','tapak','paku','kucing','cingcau','cawan','wanita','tahu','hubung','bungkus','kusut','sutra','traktor','toreh','rehat','hati','timun','mundur','duri','riang','angka','kapal','palsu','susu','surat','ratus','tutup','tupai','pakaian','ikan','kandang','dangkal','kalimat','matahari','rimba','bantal','tali','lingkar','karang','rangga','gading','dingin','ingkar','karet','retak','takut','kutu','tulis','lisan','santai','tawa','warga','gagal','galau','laut','utara','rasa','salah','lahir','hirup','rupiah','akhir','hiruk','rukun','kunci',
+      // Jawa
+      'mangan','turu','lunga','teka','adus','ngombe','sinau','dolan','mlaku','mlayu','tuku','adol','ngelih','wareg','ngantuk','kesel','loro','waras','seneng','susah','tresno','kangen','ati','mripat','irung','lambe','kuping','tangan','sikil','sirah','weteng','gulu','untu','rambut','getih','balung','kulit','banyu','geni','angin','lemah','watu','kayu','godhong','kembang','woh','wit','pari','beras','sego','lawuh','uyah','gulo','kopi','teh','wedang','omah','lawang','jendelo','kursi','mejo','kasur','bantal','kemul','klambi','kathok','sandal','sepatu','topi','payung','dalan','kreteg','sawah','kali','gunung','segoro','langit','lintang','rembulan','srengenge','udan','mendhung','panas','adhem','peteng','padhang','esuk','awan','sore','bengi','saiki','mengko','sesuk','wingi','biyen','suwe','sedhelo','cepet','alon','gedhe','cilik','dhuwur','cendhek','dowo','cendhak','ombo','ciut','abot','entheng','atos','empuk','legi','pait','asin','kecut','pedhes','enak','apik','elek','bagus','ayu','ganteng','sugih','mlarat','pinter','bodho','sregep','kesed','wani','wedi','isin','nesu','ngguyu','nangis','meneng','ngomong','takon','wangsulan','krungu','ndelok','nyekel','njupuk','nggawa','ngirim','njaluk','menehi','nyilih','mbayar','turu','tangi','lungguh','ngadeg','jongkok','mlumah','mengkurep','ngimpi','eling','lali','ngerti','paham','bingung','kaget','gumun','eman','sayang','getun','ikhlas','sabar','nrima','syukur','matur','nuwun','nyuwun','sepurane','monggo','ndherek','sugeng','enjang','sonten','dalu','pinarak','dhahar','unjuk','sare','tindak','rawuh','kondur','mirsani','mireng','ngendika','paring','mundhut','asta','mustaka','socane','grono','lathi','talingan','padharan','sampeyan','panjenengan','kula','dalem','aku','kowe','deweke','awake','bapak','ibu','simbah','eyang','kakung','putri','mas','mbak','adik','kakang','anak','putu','bojo','garwa','konco','tangga','tamu','wong','manungsa','kewan','pitik','bebek','menthok','wedhus','kebo','jaran','asu','kucing','tikus','ulo','kodhok','iwak','manuk','semut','nyamuk','laler','kupu','tawon','cacing','keong','yuyu','urang',
+      // Sunda
+      'dahar','tuang','neda','nginum','leueut','sare','kulem','mondok','hudang','gugah','mandi','ibak','indit','angkat','dongkap','mulih','mulang','ulin','ameng','leumpang','mapah','lumpat','diuk','calik','nangtung','ngagoler','suku','sampean','panangan','leungeun','mastaka','sirah','socana','panon','pangambung','irung','baham','sungut','biwir','cepil','ceuli','waos','huntu','rambut','buuk','beuteung','patuangan','hate','manah','getih','tulang','kulit','cai','seuneu','angin','taneuh','batu','kai','daun','kembang','buah','tangkal','pare','beas','sangu','deungeun','uyah','gula','ci','imah','bumi','panto','jandela','korsi','meja','kasur','bantal','simbut','baju','acuk','calana','lancingan','sendal','sapatu','topi','payung','jalan','sasak','sawah','walungan','gunung','laut','langit','bentang','bulan','panonpoe','hujan','ceudeum','panas','tiis','poek','caang','isuk','beurang','sore','peuting','ayeuna','engke','isukan','kamari','baheula','lila','sakedap','gancang','laun','gede','ageung','leutik','alit','luhur','handap','panjang','pondok','lega','heureut','beurat','hampang','teuas','hipu','amis','pait','asin','haseum','lada','ngeunah','raos','alus','sae','goreng','awon','kasep','geulis','beunghar','miskin','pinter','bodo','getol','kedul','wani','sieun','era','ambek','seuri','ceurik','cicing','nyarita','nyarios','naros','nanya','ngajawab','ngadenge','nguping','ningali','neuteup','nyekel','nyokot','mawa','ngirim','menta','nyuhunkeun','mere','maparin','nambut','nginjeum','mayar','bogoh','nyaah','kangen','sono','eling','hilap','poho','ngarti','kahartos','bingung','reuwas','heran','hanjakal','ikhlas','sabar','nampi','nuhun','hatur','punten','hampura','mangga','wilujeng','enjing','siang','sonten','wengi','abdi','kuring','anjeun','maneh','manehna','urang','bapa','ema','indung','aki','nini','aa','teteh','adi','lanceuk','budak','incu','salaki','pamajikan','garwa','babaturan','tatangga','semah','jalma','sato','hayam','meri','entog','domba','munding','kuda','anjing','ucing','beurit','oray','bangkong','lauk','manuk','sireum','reungit','laleur','kukupu','nyiruan','cacing','keong','keuyeup','hurang',
+      // Betawi, Minang, Bali, Batak, Bugis, Makassar populer
+      'gue','elu','bocah','nyokap','bokap','encang','encing','babe','enyak','ngelaba','ngider','demen','ogah','kagak','kaga','begah','ribet','rese','songong','cewek','cowok','nongkrong','ngemil','jajan','mager','baper','gabut','galau','santuy','kepo','julid','halu','bucin','gemoy','ambyar','goks','mantul','kece','keren','asik','seru','amboi','rancak','bana','ondeh','mande','lamak','taragak','pulang','kampung','minang','padang','rendang','sate','bujang','gadih','uni','uda','amak','abak','datuak','bli','mbok','gusti','nyoman','ketut','made','wayan','putu','komang','kadek','ngurah','agung','suksma','kenken','kabar','becik','jegeg','bagus','melali','ngajeng','medaar','sirep','matur','tiang','ragane','horas','ito','lae','edak','abang','kakak','inang','amang','tulang','nantulang','ompung','boru','marga','uli','malungun','holong','roha','sip','mantap','daeng','andi','karaeng','ewako','siri','pacce','bajik','salamak','lompo','gammara','tacce','balla','kanre','jepe','coto','konro','pisang','epe'
+    ]);
+
+    const apiDictCache = new Map();
+
+    async function checkOnlineNusantaraDict(word) {
+      if (apiDictCache.has(word)) return apiDictCache.get(word);
+
+      const endpoints = [
+        `https://id.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`,
+        `https://jv.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`,
+        `https://su.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`
+      ];
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1400);
+
+        const checks = endpoints.map(async (url, idx) => {
+          const res = await fetch(url, { signal: controller.signal });
+          if (!res.ok) return null;
+          const data = await res.json();
+          const pages = data?.query?.pages || {};
+          const pageIds = Object.keys(pages);
+          if (pageIds.length > 0 && pageIds[0] !== '-1') {
+            return idx === 0 ? 'ID' : idx === 1 ? 'JAWA' : 'SUNDA';
+          }
+          return null;
+        });
+
+        const results = await Promise.allSettled(checks);
+        clearTimeout(timeoutId);
+
+        for (const r of results) {
+          if (r.status === 'fulfilled' && r.value) {
+            apiDictCache.set(word, r.value);
+            return r.value;
+          }
+        }
+      } catch (e) {}
+
+      apiDictCache.set(word, false);
+      return false;
+    }
+
+    function looksLikeForeignOrGibberish(word) {
+      if (/[qwxz]/.test(word)) return true;
+      if (/(th|sh|ch|gh|ph|ck|oo|ee|ea|ou|tion|sion|ing|ght|wh|qu)/.test(word)) return true;
+      if (/[^aiueo]{4,}/.test(word)) return true;
+      if (/[aiueo]{4,}/.test(word)) return true;
+      if (!/[aiueo]/.test(word)) return true;
+      return false;
+    }
+
+    async function validateNusantaraWord(rawInput) {
+      const clean = rawInput.trim().toLowerCase().replace(/[^a-z]/g, '');
+      if (clean.length < 2) {
+        return { valid: false, reason: 'Minimal 2 huruf!' };
+      }
+
+      if (BUILTIN_NUSANTARA_DICT.has(clean)) {
+        return { valid: true, word: clean, lang: 'NUSANTARA' };
+      }
+
+      if (looksLikeForeignOrGibberish(clean)) {
+        return { valid: false, reason: `"${clean.toUpperCase()}" bukan kata Nusantara!` };
+      }
+
+      const wikiLang = await checkOnlineNusantaraDict(clean);
+      if (wikiLang) {
+        return { valid: true, word: clean, lang: wikiLang };
+      }
+
+      const affixes = /^(me|men|mem|meng|meny|ber|ter|di|ke|se|pe|pen|pem|peng|peny)[a-z]{3,}$/;
+      const suffixes = /^[a-z]{3,}(kan|an|i|nya|lah|kah|ku|mu)$/;
+      if ((affixes.test(clean) || suffixes.test(clean)) && clean.length >= 5) {
+        return { valid: true, word: clean, lang: 'ID' };
+      }
+
+      return { valid: false, reason: `"${clean.toUpperCase()}" tidak ada di kamus Nusantara!` };
+    }
+
+    // =========================================================================
+    // 4. APPLICATION STATE & HELPERS
+    // =========================================================================
+    const STARTER_POOL = [
+      'angsa', 'sapi', 'pinggang', 'cinta', 'sayang', 'kangen', 'rindu',
+      'mangan', 'turu', 'tresno', 'dahar', 'geulis', 'kasep', 'santuy',
+      'bunga', 'hujan', 'pelangi', 'bintang', 'kopi', 'senja'
+    ];
+
+    const state = {
+      mode: null, // 'online' | 'local'
+      roomCode: null,
+      playerRole: null, // 'p1' | 'p2'
+      selectedTimer: 15,
+      selectedLives: 3,
+      roomState: null,
+      timerInterval: null,
+      lastRenderedWord: null,
+      lastRenderedStatus: null,
+      isValidating: false
+    };
+
+    function generateRoomCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 4; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    }
+
+    function getRandomStarterWord() {
+      return STARTER_POOL[Math.floor(Math.random() * STARTER_POOL.length)];
+    }
+
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const pill = document.createElement('div');
+      const colors = {
+        info: 'bg-slate-900/95 border-slate-700 text-slate-100',
+        success: 'bg-emerald-950/95 border-emerald-500/50 text-emerald-200',
+        error: 'bg-rose-950/95 border-rose-500/60 text-rose-200'
+      };
+      pill.className = `px-4 py-2 rounded-full border text-xs font-extrabold shadow-xl backdrop-blur-md spring-in ${colors[type] || colors.info}`;
+      pill.textContent = msg;
+      container.innerHTML = '';
+      container.appendChild(pill);
+      setTimeout(() => {
+        if (pill.parentNode) pill.remove();
+      }, 2400);
+    }
+
+    function showView(viewName) {
+      ['lobby', 'waiting', 'game', 'gameover'].forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+      });
     }
 
     function setConnectionDot(status) {
       const dot = document.getElementById('conn-dot');
       if (!dot) return;
-      dot.className = 'w-2.5 h-2.5 rounded-full transition-colors ';
+      dot.className = 'w-2.5 h-2.5 rounded-full transition-colors';
       if (status === 'connected') {
-        dot.className += 'bg-emerald-400 shadow-[0_0_8px_#34d399]';
+        dot.classList.add('bg-emerald-400', 'shadow-[0_0_8px_#34d399]');
       } else if (status === 'connecting') {
-        dot.className += 'bg-amber-400 animate-ping';
+        dot.classList.add('bg-amber-400', 'animate-pulse');
       } else {
-        dot.className += 'bg-rose-500';
+        dot.classList.add('bg-rose-500');
       }
+    }
+
+    function spawnFloatingEmoji(emoji) {
+      const shell = document.querySelector('.mobile-shell');
+      if (!shell) return;
+      const el = document.createElement('div');
+      el.className = 'floating-emoji text-3xl';
+      el.textContent = emoji;
+      el.style.left = `${20 + Math.random() * 60}%`;
+      el.style.bottom = '110px';
+      shell.appendChild(el);
+      setTimeout(() => el.remove(), 1600);
+    }
+
+    // =========================================================================
+    // 5. INSTANT REAL-TIME MULTIPLAYER (MQTT OVER WSS + RETAINED ROOM STATE)
+    // =========================================================================
+    const MQTT_BROKERS = [
+      'wss://broker.emqx.io:8084/mqtt',
+      'wss://broker.hivemq.com:8884/mqtt',
+      'wss://test.mosquitto.org:8081/mqtt'
+    ];
+    const ROOM_TOPIC_PREFIX = 'ldr_sambungkata_nusantara/v7/room/';
+    const EVENTS_TOPIC_SUFFIX = '/events';
+
+    let mqttClient = null;
+    let mqttBrokerIndex = 0;
+    let mqttConnected = false;
+    let subscribedStateTopic = null;
+    let subscribedEventsTopic = null;
+    let clientSessionId = Math.random().toString(36).slice(2, 10);
+    let lastProcessedEventId = '';
+    let heartbeatTimer = null;
+    let pendingRoomAction = null;
+
+    function initMqttBroker() {
+      if (typeof mqtt === 'undefined') {
+        setConnectionDot('error');
+        return;
+      }
+      if (mqttClient) {
+        try { mqttClient.end(true); } catch (e) {}
+      }
+
+      const brokerUrl = MQTT_BROKERS[mqttBrokerIndex % MQTT_BROKERS.length];
+      setConnectionDot('connecting');
+
+      mqttClient = mqtt.connect(brokerUrl, {
+        clientId: 'ldr_sk_' + clientSessionId + '_' + Math.floor(Math.random() * 9999),
+        clean: true,
+        connectTimeout: 5000,
+        reconnectPeriod: 2500
+      });
+
+      mqttClient.on('connect', () => {
+        mqttConnected = true;
+        setConnectionDot('connected');
+
+        if (subscribedStateTopic) {
+          mqttClient.subscribe(subscribedStateTopic, { qos: 1 });
+        }
+        if (subscribedEventsTopic) {
+          mqttClient.subscribe(subscribedEventsTopic, { qos: 1 });
+        }
+        if (state.mode === 'online' && state.playerRole === 'p1' && state.roomState) {
+          broadcastRoomState();
+        }
+        if (typeof pendingRoomAction === 'function') {
+          const fn = pendingRoomAction;
+          pendingRoomAction = null;
+          fn();
+        }
+      });
+
+      mqttClient.on('error', () => {
+        mqttConnected = false;
+        mqttBrokerIndex++;
+        setConnectionDot('connecting');
+      });
+
+      mqttClient.on('close', () => {
+        mqttConnected = false;
+        setConnectionDot('connecting');
+      });
+
+      mqttClient.on('message', (topic, messageBuffer) => {
+        if (!subscribedStateTopic && !subscribedEventsTopic) return;
+        if (topic !== subscribedStateTopic && topic !== subscribedEventsTopic) return;
+        const rawStr = messageBuffer.toString();
+        if (!rawStr) return;
+
+        try {
+          const packet = JSON.parse(rawStr);
+          if (!packet || packet._sender === clientSessionId) return;
+
+          if (packet._kind === 'STATE' && packet.data) {
+            if (state.mode === 'online' && packet.data.roomCode === state.roomCode) {
+              syncUIWithRoomState(packet.data);
+            }
+          } else if (packet._kind === 'EVENT' && packet.evt) {
+            const evt = packet.evt;
+            if (!evt.id || evt.id === lastProcessedEventId) return;
+            lastProcessedEventId = evt.id;
+
+            if (evt.type === 'JOIN_REQUEST' && state.playerRole === 'p1' && state.roomState) {
+              const incomingName = evt.playerName || 'Pasangan';
+              const isNewJoin = !state.roomState.p2 || state.roomState.p2.name !== incomingName;
+              state.roomState = {
+                ...state.roomState,
+                p2: {
+                  name: incomingName,
+                  lives: state.selectedLives,
+                  score: 0
+                }
+              };
+              if (isNewJoin) {
+                sfx.success();
+                showToast(`${incomingName} bergabung!`, 'success');
+              }
+              broadcastRoomState();
+            } else if (evt.type === 'REACTION' && evt.emoji) {
+              spawnFloatingEmoji(evt.emoji);
+              sfx.pop();
+            } else if (evt.type === 'PLAYER_LEFT') {
+              showToast('Pasangan keluar dari room', 'error');
+              sfx.error();
+              if (state.playerRole === 'p1' && state.roomState) {
+                state.roomState = { ...state.roomState, status: 'waiting', p2: null };
+                broadcastRoomState();
+              } else {
+                resetToLobby(false);
+              }
+            }
+          }
+        } catch (e) {}
+      });
     }
 
     function cleanupMultiplayer() {
@@ -533,89 +893,63 @@
         clearInterval(heartbeatTimer);
         heartbeatTimer = null;
       }
-      if (activeRoomNode) {
-        try { activeRoomNode.off(); } catch (e) {}
-        activeRoomNode = null;
+      if (mqttClient && mqttConnected) {
+        try {
+          if (subscribedStateTopic) mqttClient.unsubscribe(subscribedStateTopic);
+          if (subscribedEventsTopic) mqttClient.unsubscribe(subscribedEventsTopic);
+        } catch (e) {}
       }
+      subscribedStateTopic = null;
+      subscribedEventsTopic = null;
       lastProcessedEventId = '';
-      setConnectionDot('connected');
+      pendingRoomAction = null;
+      setConnectionDot(mqttConnected ? 'connected' : 'connecting');
     }
 
     function subscribeToRoom(code) {
-      const gun = getGun();
-      if (!gun) return;
-      if (activeRoomNode) {
-        try { activeRoomNode.off(); } catch (e) {}
+      const stateTopic = ROOM_TOPIC_PREFIX + code;
+      const eventsTopic = stateTopic + EVENTS_TOPIC_SUFFIX;
+      if (mqttClient && mqttConnected) {
+        try {
+          if (subscribedStateTopic && subscribedStateTopic !== stateTopic) mqttClient.unsubscribe(subscribedStateTopic);
+          if (subscribedEventsTopic && subscribedEventsTopic !== eventsTopic) mqttClient.unsubscribe(subscribedEventsTopic);
+        } catch (e) {}
       }
-      activeRoomNode = gun.get(ROOM_NS + code);
-
-      activeRoomNode.get('state').on((rawStr) => {
-        if (!rawStr || typeof rawStr !== 'string') return;
-        try {
-          const incoming = JSON.parse(rawStr);
-          if (!incoming || !incoming.roomCode) return;
-          if (incoming._sender === clientSessionId) return;
-          syncUIWithRoomState(incoming);
-        } catch (e) {}
-      });
-
-      activeRoomNode.get('event').on((rawEvt) => {
-        if (!rawEvt || typeof rawEvt !== 'string') return;
-        try {
-          const evt = JSON.parse(rawEvt);
-          if (!evt || !evt.id || evt.id === lastProcessedEventId) return;
-          if (evt.sender === clientSessionId) return;
-          lastProcessedEventId = evt.id;
-
-          if (evt.type === 'JOIN_REQUEST' && state.playerRole === 'p1' && state.roomState) {
-            state.roomState = {
-              ...state.roomState,
-              p2: {
-                name: evt.playerName || 'Pasangan',
-                lives: state.selectedLives,
-                score: 0
-              }
-            };
-            sfx.success();
-            showToast(`${state.roomState.p2.name} bergabung!`, 'success');
-            broadcastRoomState();
-          } else if (evt.type === 'REACTION' && evt.emoji) {
-            spawnFloatingEmoji(evt.emoji);
-            sfx.pop();
-          } else if (evt.type === 'PLAYER_LEFT') {
-            showToast('Pasangan keluar dari room', 'error');
-            sfx.error();
-            if (state.playerRole === 'p1' && state.roomState) {
-              state.roomState = { ...state.roomState, status: 'waiting', p2: null };
-              broadcastRoomState();
-            } else {
-              resetToLobby(false);
-            }
-          }
-        } catch (e) {}
-      });
+      subscribedStateTopic = stateTopic;
+      subscribedEventsTopic = eventsTopic;
+      if (mqttClient && mqttConnected) {
+        mqttClient.subscribe(stateTopic, { qos: 1 });
+        mqttClient.subscribe(eventsTopic, { qos: 1 });
+      }
     }
 
     function sendRoomEvent(payload) {
-      if (!activeRoomNode) return;
+      if (!subscribedEventsTopic || !mqttClient || !mqttConnected) return;
       const evt = {
         ...payload,
-        id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        sender: clientSessionId
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
       };
-      activeRoomNode.get('event').put(JSON.stringify(evt));
+      mqttClient.publish(
+        subscribedEventsTopic,
+        JSON.stringify({ _kind: 'EVENT', _sender: clientSessionId, evt }),
+        { qos: 1, retain: false }
+      );
     }
 
     function broadcastRoomState() {
       if (!state.roomState) return;
       syncUIWithRoomState(state.roomState);
-      if (activeRoomNode) {
-        const packet = {
-          ...state.roomState,
-          _sender: clientSessionId,
-          _ts: Date.now()
-        };
-        activeRoomNode.get('state').put(JSON.stringify(packet));
+      if (subscribedStateTopic && mqttClient && mqttConnected) {
+        mqttClient.publish(
+          subscribedStateTopic,
+          JSON.stringify({
+            _kind: 'STATE',
+            _sender: clientSessionId,
+            _ts: Date.now(),
+            data: state.roomState
+          }),
+          { qos: 1, retain: true }
+        );
       }
     }
 
@@ -651,565 +985,106 @@
         punishmentsPool: punishmentsList
       };
 
-      setConnectionDot('connected');
       sfx.success();
       subscribeToRoom(code);
       broadcastRoomState();
 
       heartbeatTimer = setInterval(() => {
-        if (state.mode === 'online' && state.playerRole === 'p1' && state.roomState && activeRoomNode) {
-          const packet = {
-            ...state.roomState,
-            _sender: clientSessionId,
-            _ts: Date.now()
-          };
-          activeRoomNode.get('state').put(JSON.stringify(packet));
+        if (state.mode === 'online' && state.playerRole === 'p1' && state.roomState && subscribedStateTopic && mqttClient && mqttConnected) {
+          mqttClient.publish(
+            subscribedStateTopic,
+            JSON.stringify({
+              _kind: 'STATE',
+              _sender: clientSessionId,
+              _ts: Date.now(),
+              data: state.roomState
+            }),
+            { qos: 0, retain: true }
+          );
         }
       }, 2500);
     }
 
     function joinOnlineRoom() {
-      const codeInput = document.getElementById('room-code-input');
-      const code = codeInput.value.trim().toUpperCase();
-      if (code.length !== 4) {
-        codeInput.classList.add('shake-anim');
-        setTimeout(() => codeInput.classList.remove('shake-anim'), 320);
-        showToast('Masukkan 4 huruf kode room', 'error');
+      const rawCode = document.getElementById('room-code-input').value.trim().toUpperCase();
+      if (rawCode.length !== 4) {
+        showToast('Masukkan 4 huruf kode room!', 'error');
         sfx.error();
         return;
       }
 
-      const btn = document.getElementById('btn-join-room');
-      btn.disabled = true;
-      btn.textContent = 'Mencari...';
-      setConnectionDot('connecting');
+      const joinBtn = document.getElementById('btn-join-room');
+      joinBtn.disabled = true;
+      joinBtn.textContent = 'Mencari...';
 
-      cleanupMultiplayer();
-      const p2Name = document.getElementById('player-name-input').value.trim() || 'P2';
+      const executeJoin = () => {
+        cleanupMultiplayer();
+        const p2Name = document.getElementById('player-name-input').value.trim() || 'P2';
+        state.mode = 'online';
+        state.roomCode = rawCode;
+        state.playerRole = 'p2';
+        state.roomState = null;
 
-      state.mode = 'online';
-      state.roomCode = code;
-      state.playerRole = 'p2';
-      state.roomState = null;
+        subscribeToRoom(rawCode);
 
-      subscribeToRoom(code);
-      sendRoomEvent({ type: 'JOIN_REQUEST', playerName: p2Name });
-
-      const retryTimer = setInterval(() => {
-        if (state.roomState && state.roomState.roomCode === code) {
-          clearInterval(retryTimer);
-          btn.disabled = false;
-          btn.textContent = 'Masuk Room';
-          setConnectionDot('connected');
-        } else {
+        let attempts = 0;
+        const sendJoinPing = () => {
+          if (state.mode !== 'online' || state.playerRole !== 'p2') return;
+          if (state.roomState) return;
           sendRoomEvent({ type: 'JOIN_REQUEST', playerName: p2Name });
-        }
-      }, 1500);
+          attempts++;
+          if (attempts < 8) {
+            setTimeout(sendJoinPing, 750);
+          } else if (!state.roomState) {
+            joinBtn.disabled = false;
+            joinBtn.textContent = 'Masuk Room';
+            showToast('Room tidak ditemukan!', 'error');
+            sfx.error();
+            cleanupMultiplayer();
+            state.mode = null;
+            state.roomCode = null;
+            state.playerRole = null;
+          }
+        };
 
-      setTimeout(() => {
-        clearInterval(retryTimer);
-        btn.disabled = false;
-        btn.textContent = 'Masuk Room';
-        if (!state.roomState) {
-          cleanupMultiplayer();
-          state.mode = null;
-          state.roomCode = null;
-          state.playerRole = null;
-          showToast('Room tidak ditemukan / belum dibuat', 'error');
-          sfx.error();
-        }
-      }, 8000);
-    }
-
-    // =========================================================================
-    // 3. NUSANTARA LEXICON & SYLLABLE ENGINE
-    // =========================================================================
-    const NUSANTARA_LEXICON = new Set([
-      'angsa', 'sapi', 'pinggang', 'gajah', 'harimau', 'ular', 'rusa', 'ayam', 'kambing', 'kucing',
-      'anjing', 'burung', 'ikan', 'udang', 'kepiting', 'kerbau', 'kuda', 'monyet', 'buaya', 'cicak',
-      'makan', 'minum', 'tidur', 'jalan', 'lari', 'duduk', 'berdiri', 'lompat', 'terbang', 'renang',
-      'cinta', 'sayang', 'rindu', 'kangen', 'hati', 'jiwa', 'kasih', 'mesra', 'peluk', 'cium',
-      'rumah', 'pintu', 'jendela', 'atap', 'lantai', 'kamar', 'dapur', 'kursi', 'meja', 'kasur',
-      'bantal', 'guling', 'selimut', 'lemari', 'cermin', 'lampu', 'kipas', 'kunci', 'pagar', 'taman',
-      'bunga', 'mawar', 'melati', 'anggrek', 'pohon', 'daun', 'akar', 'batang', 'ranting', 'buah',
-      'mangga', 'pisang', 'jeruk', 'apel', 'anggur', 'semangka', 'melon', 'durian', 'rambutan', 'salak',
-      'nasi', 'roti', 'sate', 'bakso', 'soto', 'rendang', 'gudeg', 'rawon', 'pempek', 'seblak',
-      'kopi', 'teh', 'susu', 'air', 'es', 'gula', 'garam', 'madu', 'sambal', 'kerupuk',
-      'pagi', 'siang', 'sore', 'malam', 'subuh', 'senja', 'fajar', 'hari', 'minggu', 'bulan',
-      'tahun', 'waktu', 'jam', 'menit', 'detik', 'kemarin', 'besok', 'lusa', 'sekarang', 'nanti',
-      'langit', 'bumi', 'matahari', 'bintang', 'awan', 'hujan', 'angin', 'petir', 'pelangi', 'kabut',
-      'gunung', 'laut', 'pantai', 'sungai', 'danau', 'hutan', 'sawah', 'ladang', 'bukit', 'lembah',
-      'merah', 'putih', 'hitam', 'biru', 'hijau', 'kuning', 'ungu', 'jingga', 'cokelat', 'abu',
-      'besar', 'kecil', 'tinggi', 'pendek', 'panjang', 'lebar', 'luas', 'sempit', 'tebal', 'tipis',
-      'panas', 'dingin', 'hangat', 'sejuk', 'basah', 'kering', 'keras', 'lembut', 'halus', 'kasar',
-      'manis', 'pahit', 'asam', 'asin', 'pedas', 'gurih', 'enak', 'lezat', 'nikmat', 'segar',
-      'senang', 'sedih', 'marah', 'takut', 'malu', 'bangga', 'bahagia', 'kecewa', 'bosan', 'lelah',
-      'cantik', 'ganteng', 'manis', 'lucu', 'imut', 'keren', 'pintar', 'cerdas', 'rajin', 'baik',
-      'aku', 'kowe', 'sampeyan', 'panjenengan', 'dheweke', 'mangan', 'ngombe', 'turu', 'lunga', 'teka',
-      'mulih', 'tangi', 'adus', 'sinau', 'nyambut', 'gawe', 'dolan', 'mlaku', 'mlayu', 'lungguh',
-      'ngadeg', 'ngguyu', 'nangis', 'nesu', 'seneng', 'tresna', 'kangen', 'ati', 'awak', 'sirah',
-      'mripat', 'irung', 'cangkem', 'kuping', 'tangan', 'sikil', 'weteng', 'gulu', 'rambut', 'untu',
-      'omah', 'lawang', 'cendhela', 'jogan', 'pawon', 'sumur', 'banyu', 'geni', 'lemah', 'udan',
-      'srengenge', 'rembulan', 'lintang', 'segara', 'kali', 'gunung', 'alas', 'sawah', 'pari', 'beras',
-      'sega', 'jangan', 'lawuh', 'uyah', 'gula', 'wedang', 'kopi', 'teh', 'gedhang', 'pelem',
-      'kembang', 'godhong', 'wit', 'oyot', 'watu', 'pasir', 'kayu', 'wesi', 'emas', 'slaka',
-      'apik', 'elek', 'gedhe', 'cilik', 'dhuwur', 'cendhek', 'dawa', 'cendhak', 'amba', 'ciut',
-      'panas', 'adhem', 'anget', 'teles', 'garing', 'atos', 'empuk', 'alus', 'kasar', 'abot',
-      'entheng', 'cepet', 'alon', 'anyar', 'lawas', 'enom', 'tuwa', 'sugih', 'mlarat', 'waras',
-      'lara', 'luwe', 'ngelih', 'ngelak', 'wareg', 'ngantuk', 'kesel', 'mari', 'rampung', 'wiwit',
-      'esuk', 'awan', 'sore', 'bengi', 'saiki', 'sesuk', 'wingi', 'mbiyen', 'mengko', 'kapan',
-      'ngendi', 'sapa', 'apa', 'piye', 'kenapa', 'pira', 'akeh', 'sithik', 'kabeh', 'ora',
-      'iya', 'aja', 'kudu', 'bisa', 'gelem', 'emoh', 'weruh', 'ngerti', 'lali', 'eling',
-      'abdi', 'kuring', 'anjeun', 'maneh', 'urang', 'tuang', 'dahar', 'nginum', 'kulem', 'sare',
-      'angkat', 'indit', 'dongkap', 'datang', 'mulih', 'balik', 'gugah', 'hudang', 'ibak', 'mandi',
-      'diajar', 'damel', 'gawe', 'ulin', 'leumpang', 'lumpat', 'calik', 'diuk', 'nangtung', 'seuri',
-      'ceurik', 'ambek', 'bungah', 'nyaah', 'bogoh', 'sono', 'hate', 'awak', 'mastaka', 'sirah',
-      'soca', 'panon', 'pangambung', 'irung', 'baham', 'sungut', 'ceuli', 'panangan', 'leungeun', 'sampean',
-      'suku', 'patuangan', 'beuteung', 'tenggek', 'beuheung', 'buuk', 'waos', 'huntu', 'bumi', 'imah',
-      'panto', 'jandela', 'dapur', 'cai', 'seuneu', 'taneuh', 'hujan', 'panonpoe', 'bulan', 'bentang',
-      'laut', 'walungan', 'gunung', 'leuweung', 'sawah', 'pare', 'beas', 'sangu', 'angeun', 'deungeun',
-      'uyah', 'gula', 'ciopi', 'cau', 'mangga', 'kembang', 'daun', 'tangkal', 'akar', 'batu',
-      'keusik', 'kai', 'beusi', 'emas', 'sae', 'alus', 'goreng', 'ageung', 'gede', 'alit',
-      'leutik', 'luhur', 'handap', 'panjang', 'pondok', 'lega', 'heureut', 'panas', 'tiis', 'haneut',
-      'baseuh', 'garing', 'teuas', 'hipu', 'lemes', 'kasar', 'beurat', 'hampang', 'gancang', 'laun',
-      'anyar', 'heubeul', 'anom', 'ngora', 'sepuh', 'kolot', 'beunghar', 'miskin', 'damang', 'cageur',
-      'teu', 'damang', 'gering', 'lapar', 'hanaang', 'seubeuh', 'tunduh', 'cape', 'rengse', 'anggeus',
-      'enjing', 'isuk', 'beurang', 'sonten', 'wengi', 'peuting', 'ayeuna', 'enjing', 'kamari', 'kapungkur',
-      'engke', 'iraha', 'dimana', 'saha', 'naon', 'kumaha', 'naha', 'sabaraha', 'seueur', 'loba',
-      'sakedik', 'saeutik', 'sadayana', 'kabeh', 'henteu', 'teu', 'muhun', 'enya', 'ulah', 'kedah',
-      'kudu', 'tiasa', 'bisa', 'kersa', 'daek', 'embung', 'uninga', 'terang', 'nyaho', 'hilap',
-      'poho', 'emut', 'inget',
-      'gue', 'elu', 'lu', 'nyokap', 'bokap', 'ngapa', 'kagak', 'ogah', 'demen', 'kece',
-      'awak', 'ambo', 'uda', 'uni', 'rancak', 'bana', 'lamak', 'gadang', 'ketek', 'pai',
-      'tiang', 'ragane', 'bli', 'mbok', 'jegeg', 'bagus', 'kenken', 'suksema', 'ngajeng', 'sirep',
-      'au', 'ho', 'hamu', 'ise', 'aha', 'didia', 'andigan', 'boasa', 'piga', 'uli',
-      'iyya', 'iko', 'idi', 'maga', 'tega', 'uppanna', 'siaga', 'makessing', 'makanja', 'mappoji'
-    ]);
-
-    const FOREIGN_BLOCKLIST = new Set([
-      'apple', 'banana', 'orange', 'water', 'fire', 'earth', 'wind', 'love', 'hate', 'like',
-      'game', 'play', 'start', 'stop', 'good', 'bad', 'nice', 'cool', 'hot', 'cold',
-      'man', 'woman', 'boy', 'girl', 'cat', 'dog', 'bird', 'fish', 'house', 'home',
-      'car', 'bike', 'book', 'pen', 'table', 'chair', 'door', 'window', 'sun', 'moon',
-      'star', 'sky', 'sea', 'tree', 'flower', 'food', 'drink', 'eat', 'sleep', 'run',
-      'walk', 'talk', 'sing', 'dance', 'happy', 'sad', 'angry', 'sorry', 'please', 'thank',
-      'hello', 'bye', 'yes', 'no', 'okay', 'what', 'when', 'where', 'why', 'how'
-    ]);
-
-    const state = {
-      mode: null,
-      roomCode: null,
-      playerRole: null,
-      roomState: null,
-      selectedTimer: 15,
-      selectedLives: 3,
-      soundEnabled: true,
-      timerInterval: null,
-      isValidating: false
-    };
-
-    const sfx = {
-      ctx: null,
-      playTone(freq, type, duration, vol = 0.12) {
-        if (!state.soundEnabled) return;
-        try {
-          if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-          if (this.ctx.state === 'suspended') this.ctx.resume();
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + duration);
-        } catch (e) {}
-      },
-      pop() { this.playTone(540, 'sine', 0.09, 0.1); },
-      success() {
-        this.playTone(523.25, 'triangle', 0.12, 0.14);
-        setTimeout(() => this.playTone(659.25, 'triangle', 0.16, 0.14), 80);
-      },
-      error() {
-        this.playTone(190, 'sawtooth', 0.18, 0.12);
-        setTimeout(() => this.playTone(150, 'sawtooth', 0.22, 0.12), 110);
-      },
-      tick() { this.playTone(880, 'sine', 0.05, 0.06); },
-      gameover() {
-        this.playTone(392, 'triangle', 0.18, 0.15);
-        setTimeout(() => this.playTone(349.23, 'triangle', 0.18, 0.15), 160);
-        setTimeout(() => this.playTone(329.63, 'triangle', 0.18, 0.15), 320);
-        setTimeout(() => this.playTone(261.63, 'triangle', 0.4, 0.16), 480);
-      }
-    };
-
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const pill = document.createElement('div');
-      const colors = {
-        info: 'bg-slate-800/95 border-slate-600 text-white',
-        success: 'bg-emerald-950/95 border-emerald-500/60 text-emerald-200',
-        error: 'bg-rose-950/95 border-rose-500/60 text-rose-200'
+        setTimeout(sendJoinPing, 250);
       };
-      pill.className = `px-4 py-2 rounded-full border text-xs font-bold shadow-xl backdrop-blur-md spring-in ${colors[type] || colors.info}`;
-      pill.textContent = message;
-      container.appendChild(pill);
-      setTimeout(() => {
-        pill.style.opacity = '0';
-        pill.style.transition = 'opacity 0.2s ease';
-        setTimeout(() => pill.remove(), 220);
-      }, 2200);
-    }
 
-    function spawnFloatingEmoji(emoji) {
-      const shell = document.querySelector('.mobile-shell');
-      const el = document.createElement('div');
-      el.className = 'floating-emoji text-3xl';
-      el.textContent = emoji;
-      el.style.left = `${20 + Math.random() * 60}%`;
-      el.style.bottom = '110px';
-      shell.appendChild(el);
-      setTimeout(() => el.remove(), 1550);
-    }
-
-    function generateRoomCode() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let code = '';
-      for (let i = 0; i < 4; i++) {
-        code += chars[Math.floor(Math.random() * chars.length)];
-      }
-      return code;
-    }
-
-    function getRandomStarterWord() {
-      const starters = ['angsa', 'sapi', 'pinggang', 'cinta', 'sayang', 'rindu', 'kangen', 'makan', 'minum', 'bunga', 'mawar', 'melati', 'tresna', 'bogoh', 'sono', 'segara', 'gunung', 'pelangi'];
-      return starters[Math.floor(Math.random() * starters.length)];
-    }
-
-    function splitIndonesianSyllables(word) {
-      const clean = word.toLowerCase().replace(/[^a-z]/g, '');
-      if (!clean) return [];
-      const tokenized = clean
-        .replace(/ng/g, '1')
-        .replace(/ny/g, '2')
-        .replace(/kh/g, '3')
-        .replace(/sy/g, '4');
-
-      const vowels = new Set(['a', 'i', 'u', 'e', 'o']);
-      const syllables = [];
-      let current = '';
-
-      for (let i = 0; i < tokenized.length; i++) {
-        const ch = tokenized[i];
-        current += ch;
-        if (vowels.has(ch)) {
-          let consonantsAhead = 0;
-          let j = i + 1;
-          while (j < tokenized.length && !vowels.has(tokenized[j])) {
-            consonantsAhead++;
-            j++;
-          }
-          if (j === tokenized.length) {
-            current += tokenized.slice(i + 1);
-            syllables.push(current);
-            break;
-          } else if (consonantsAhead === 0) {
-            syllables.push(current);
-            current = '';
-          } else if (consonantsAhead === 1) {
-            syllables.push(current);
-            current = '';
-          } else {
-            current += tokenized[i + 1];
-            i++;
-            syllables.push(current);
-            current = '';
-          }
-        }
-      }
-
-      if (current && syllables.length === 0) syllables.push(current);
-      else if (current) syllables[syllables.length - 1] += current;
-
-      return syllables.map(s =>
-        s.replace(/1/g, 'ng')
-         .replace(/2/g, 'ny')
-         .replace(/3/g, 'kh')
-         .replace(/4/g, 'sy')
-      );
-    }
-
-    function getLastSyllable(word) {
-      const sylls = splitIndonesianSyllables(word);
-      if (sylls.length === 0) return word.slice(-2).toLowerCase();
-      return sylls[sylls.length - 1].toLowerCase();
-    }
-
-    async function validateNusantaraWord(rawWord) {
-      const word = rawWord.toLowerCase().replace(/[^a-z]/g, '');
-      if (word.length < 2) return { valid: false, reason: 'Terlalu pendek' };
-      if (FOREIGN_BLOCKLIST.has(word)) return { valid: false, reason: 'Kata bahasa asing!' };
-      if (/(.)\1\1/.test(word)) return { valid: false, reason: 'Kata tidak valid' };
-      if (!/[aiueo]/.test(word)) return { valid: false, reason: 'Harus mengandung vokal' };
-
-      if (NUSANTARA_LEXICON.has(word)) {
-        return { valid: true, label: 'NUSANTARA' };
-      }
-
-      const wikis = [
-        { url: `https://id.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`, label: 'INDONESIA' },
-        { url: `https://jv.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`, label: 'JAWA' },
-        { url: `https://su.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`, label: 'SUNDA' }
-      ];
-
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1400);
-
-        const results = await Promise.allSettled(
-          wikis.map(w =>
-            fetch(w.url, { signal: controller.signal })
-              .then(r => r.json())
-              .then(json => {
-                const pages = json?.query?.pages || {};
-                const pageId = Object.keys(pages)[0];
-                if (pageId && pageId !== '-1') return w.label;
-                return null;
-              })
-          )
-        );
-        clearTimeout(timeoutId);
-
-        for (const res of results) {
-          if (res.status === 'fulfilled' && res.value) {
-            NUSANTARA_LEXICON.add(word);
-            return { valid: true, label: res.value };
-          }
-        }
-      } catch (e) {}
-
-      const hasNusantaraPattern = /^(ng|ny|me|di|ke|se|te|pe|be|pa|pi|ka|sa|ta|ma|na|ba|da|ga|ja|la|ra|wa|ya)/.test(word) ||
-        /(an|in|ke|na|ne|ng|ny|ah|ih|uh|eh|oh|at|it|ut|ak|ik|uk)$/.test(word);
-      const noForeignClusters = !/(q|x|v|z|sh|th|wh|oo|ee|ck|ght|tion|ing$)/.test(word);
-
-      if (word.length >= 3 && hasNusantaraPattern && noForeignClusters) {
-        NUSANTARA_LEXICON.add(word);
-        return { valid: true, label: 'LOKAL' };
-      }
-
-      return { valid: false, reason: 'Bukan kata Nusantara!' };
-    }
-
-    function showView(viewName) {
-      ['lobby', 'waiting', 'game', 'gameover'].forEach(v => {
-        const el = document.getElementById(`view-${v}`);
-        if (el) el.classList.toggle('hidden', v !== viewName);
-      });
-    }
-
-    function syncUIWithRoomState(data) {
-      if (!data) return;
-      state.roomState = data;
-
-      if (data.status === 'waiting') {
-        stopTurnTimer();
-        showView('waiting');
-        document.getElementById('display-room-code').textContent = data.roomCode || '----';
-        document.getElementById('wait-p1-name').textContent = data.p1?.name || 'P1';
-        const p2El = document.getElementById('wait-p2-name');
-        const statusPill = document.getElementById('wait-status-pill');
-        const startBtn = document.getElementById('btn-start-game');
-
-        if (data.p2) {
-          p2El.textContent = data.p2.name;
-          p2El.classList.remove('animate-pulse', 'text-slate-400');
-          p2El.classList.add('text-white');
-          statusPill.textContent = 'Pasangan siap bermain ❤️';
-          if (state.playerRole === 'p1') {
-            startBtn.disabled = false;
-            startBtn.textContent = 'Mulai Main ❤️';
-          } else {
-            startBtn.disabled = true;
-            startBtn.textContent = 'Menunggu P1 mulai...';
-          }
-        } else {
-          p2El.textContent = '...';
-          p2El.classList.add('animate-pulse', 'text-slate-400');
-          p2El.classList.remove('text-white');
-          statusPill.textContent = 'Bagikan kode ke pasangan';
-          startBtn.disabled = true;
-          startBtn.textContent = 'Menunggu P2...';
-        }
-      } else if (data.status === 'playing') {
-        showView('game');
-        renderGameArena(data);
-      } else if (data.status === 'gameover') {
-        stopTurnTimer();
-        showView('gameover');
-        renderGameOver(data);
-      }
-    }
-
-    function renderLives(count) {
-      return '❤️'.repeat(Math.max(0, count)) || '💔';
-    }
-
-    function renderGameArena(data) {
-      document.getElementById('game-p1-name').textContent = data.p1.name;
-      document.getElementById('game-p1-score').textContent = data.p1.score;
-      document.getElementById('game-p1-lives').textContent = renderLives(data.p1.lives);
-
-      document.getElementById('game-p2-name').textContent = data.p2.name;
-      document.getElementById('game-p2-score').textContent = data.p2.score;
-      document.getElementById('game-p2-lives').textContent = renderLives(data.p2.lives);
-
-      const cardP1 = document.getElementById('card-p1');
-      const cardP2 = document.getElementById('card-p2');
-      cardP1.classList.toggle('turn-active', data.turn === 'p1');
-      cardP2.classList.toggle('turn-active', data.turn === 'p2');
-
-      const word = data.currentWord || 'angsa';
-      const target = data.requiredSyllable || getLastSyllable(word);
-      const prefix = word.slice(0, Math.max(0, word.length - target.length));
-      const suffix = word.slice(Math.max(0, word.length - target.length));
-
-      document.getElementById('current-word-display').innerHTML =
-        `<span class="text-slate-200">${prefix}</span><span class="text-rose-400 underline decoration-rose-500/70 decoration-4 underline-offset-4">${suffix}</span>`;
-      document.getElementById('required-syllable-badge').textContent = target.toUpperCase();
-      document.getElementById('last-word-lang-badge').textContent = data.lastWordLabel || 'NUSANTARA';
-
-      const historyEl = document.getElementById('word-history-list');
-      const recent = (data.usedWords || []).slice(-8);
-      historyEl.innerHTML = recent.map((w, idx) => {
-        const isLast = idx === recent.length - 1;
-        return `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0 ${isLast ? 'bg-rose-500/25 border border-rose-500/50 text-rose-200' : 'bg-slate-800/80 text-slate-400'}">${w}</span>`;
-      }).join('');
-      historyEl.scrollLeft = historyEl.scrollWidth;
-
-      const isMyTurn = state.mode === 'local' || data.turn === state.playerRole;
-      const inputEl = document.getElementById('word-input');
-      const submitBtn = document.getElementById('btn-submit-word');
-
-      inputEl.disabled = !isMyTurn;
-      submitBtn.disabled = !isMyTurn;
-
-      if (isMyTurn) {
-        const activeName = data.turn === 'p1' ? data.p1.name : data.p2.name;
-        inputEl.placeholder = state.mode === 'local'
-          ? `Giliran ${activeName}: awalan "${target.toUpperCase()}"...`
-          : `Awalan "${target.toUpperCase()}"...`;
-        inputEl.focus();
+      if (mqttConnected) {
+        executeJoin();
       } else {
-        const waitName = data.turn === 'p1' ? data.p1.name : data.p2.name;
-        inputEl.value = '';
-        inputEl.placeholder = `Giliran ${waitName}...`;
-      }
-
-      startTurnTimer(data);
-    }
-
-    function stopTurnTimer() {
-      if (state.timerInterval) {
-        clearInterval(state.timerInterval);
-        state.timerInterval = null;
-      }
-    }
-
-    function startTurnTimer(data) {
-      stopTurnTimer();
-      const duration = data.settings?.turnDuration || 15;
-      const timerText = document.getElementById('timer-text');
-      const timerBar = document.getElementById('timer-bar');
-      let lastWholeSec = duration;
-
-      state.timerInterval = setInterval(() => {
-        if (!state.roomState || state.roomState.status !== 'playing' || state.isValidating) return;
-
-        const elapsed = (Date.now() - state.roomState.turnStartedAt) / 1000;
-        const remaining = Math.max(0, duration - elapsed);
-        const wholeSec = Math.ceil(remaining);
-
-        timerText.textContent = wholeSec;
-        timerBar.style.width = `${(remaining / duration) * 100}%`;
-
-        if (wholeSec <= 5 && wholeSec > 0 && wholeSec !== lastWholeSec) {
-          sfx.tick();
-        }
-        lastWholeSec = wholeSec;
-
-        if (remaining <= 0) {
-          stopTurnTimer();
-          const isResponsible = state.mode === 'local' || state.roomState.turn === state.playerRole;
-          if (isResponsible) {
-            handleTurnTimeout();
+        pendingRoomAction = executeJoin;
+        initMqttBroker();
+        setTimeout(() => {
+          if (pendingRoomAction === executeJoin) {
+            pendingRoomAction = null;
+            joinBtn.disabled = false;
+            joinBtn.textContent = 'Masuk Room';
+            showToast('Koneksi lambat, coba lagi', 'error');
           }
-        }
-      }, 150);
-    }
-
-    function handleTurnTimeout() {
-      const data = state.roomState;
-      if (!data || data.status !== 'playing') return;
-
-      sfx.error();
-      const currentKey = data.turn;
-      const otherKey = currentKey === 'p1' ? 'p2' : 'p1';
-      const currentPlayer = data[currentKey];
-      const newLives = currentPlayer.lives - 1;
-
-      showToast(`Waktu habis! ${currentPlayer.name} -1 ❤️`, 'error');
-
-      const updatedPlayer = { ...currentPlayer, lives: newLives };
-
-      if (newLives <= 0) {
-        const pool = data.punishmentsPool && data.punishmentsPool.length > 0 ? data.punishmentsPool : punishmentsList;
-        const chosenPunishment = pool[Math.floor(Math.random() * pool.length)];
-        state.roomState = {
-          ...data,
-          [currentKey]: updatedPlayer,
-          status: 'gameover',
-          loser: currentPlayer.name,
-          winner: data[otherKey].name,
-          punishment: chosenPunishment
-        };
-
-        if (state.mode === 'local') {
-          showView('gameover');
-          renderGameOver(state.roomState);
-        } else {
-          broadcastRoomState();
-        }
-      } else {
-        state.roomState = {
-          ...data,
-          [currentKey]: updatedPlayer,
-          turn: otherKey,
-          round: data.round + 1,
-          turnStartedAt: Date.now()
-        };
-
-        if (state.mode === 'local') {
-          renderGameArena(state.roomState);
-        } else {
-          broadcastRoomState();
-        }
+        }, 5500);
       }
     }
 
+    // =========================================================================
+    // 6. LOCAL PASS & PLAY MODE (1 HP)
+    // =========================================================================
     function startLocalMode() {
       cleanupMultiplayer();
-      const p1Name = document.getElementById('player-name-input').value.trim() || 'P1';
+      const p1Name = document.getElementById('player-name-input').value.trim() || 'Aku';
       const starter = getRandomStarterWord();
 
       state.mode = 'local';
-      state.roomCode = 'LOCAL';
-      state.playerRole = 'p1';
+      state.roomCode = 'LOKAL';
+      state.playerRole = 'both';
       state.roomState = {
-        roomCode: 'LOCAL',
+        roomCode: 'LOKAL',
         status: 'playing',
-        settings: { turnDuration: state.selectedTimer, maxLives: state.selectedLives, customStarter: '' },
+        settings: {
+          turnDuration: state.selectedTimer,
+          maxLives: state.selectedLives,
+          customStarter: ''
+        },
         p1: { name: p1Name, lives: state.selectedLives, score: 0 },
         p2: { name: 'Pasangan', lives: state.selectedLives, score: 0 },
         turn: 'p1',
@@ -1226,127 +1101,484 @@
       };
 
       sfx.success();
-      showView('game');
-      renderGameArena(state.roomState);
+      syncUIWithRoomState(state.roomState);
     }
 
     // =========================================================================
-    // 4. EVENT LISTENERS & INITIALIZATION
+    // 7. GAMEPLAY SYNC, TIMER & TURN HANDLING
     // =========================================================================
-    document.getElementById('word-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const data = state.roomState;
-      if (!data || data.status !== 'playing' || state.isValidating) return;
+    function syncUIWithRoomState(rs) {
+      if (!rs) return;
+      state.roomState = rs;
 
-      const isMyTurn = state.mode === 'local' || data.turn === state.playerRole;
+      const joinBtn = document.getElementById('btn-join-room');
+      if (joinBtn && joinBtn.disabled) {
+        joinBtn.disabled = false;
+        joinBtn.textContent = 'Masuk Room';
+      }
+
+      if (rs.status === 'waiting') {
+        showView('waiting');
+        document.getElementById('display-room-code').textContent = rs.roomCode;
+        document.getElementById('wait-p1-name').textContent = rs.p1?.name || 'P1';
+
+        const p2El = document.getElementById('wait-p2-name');
+        const statusPill = document.getElementById('wait-status-pill');
+        const startBtn = document.getElementById('btn-start-game');
+
+        if (rs.p2) {
+          p2El.textContent = rs.p2.name;
+          p2El.classList.remove('animate-pulse', 'text-slate-400');
+          p2El.classList.add('text-amber-300');
+          statusPill.textContent = 'Pasangan siap bermain!';
+
+          if (state.playerRole === 'p1') {
+            startBtn.disabled = false;
+            startBtn.textContent = 'Mulai Main ❤️';
+          } else {
+            startBtn.disabled = true;
+            startBtn.textContent = 'Menunggu P1 memulai...';
+          }
+        } else {
+          p2El.textContent = '...';
+          p2El.classList.add('animate-pulse', 'text-slate-400');
+          p2El.classList.remove('text-amber-300');
+          statusPill.textContent = 'Bagikan kode ke pasangan';
+          startBtn.disabled = true;
+          startBtn.textContent = 'Menunggu P2...';
+        }
+        return;
+      }
+
+      if (rs.status === 'playing') {
+        showView('game');
+        renderArena(rs);
+        startTurnTimer(rs);
+        return;
+      }
+
+      if (rs.status === 'gameover') {
+        stopTurnTimer();
+        showView('gameover');
+        const loserName = rs.loser === 'p1' ? (rs.p1?.name || 'P1') : (rs.p2?.name || 'P2');
+        document.getElementById('loser-name-display').textContent = `${loserName} Kalah`;
+        document.getElementById('summary-total-words').textContent = `${(rs.usedWords?.length || 1) - 1} Kata`;
+        document.getElementById('punishment-result-text').textContent = rs.punishment || punishmentsList[0];
+
+        if (state.lastRenderedStatus !== 'gameover') {
+          sfx.gameover();
+        }
+        state.lastRenderedStatus = 'gameover';
+        return;
+      }
+
+      state.lastRenderedStatus = rs.status;
+    }
+
+    function renderArena(rs) {
+      document.getElementById('game-p1-name').textContent = rs.p1?.name || 'P1';
+      document.getElementById('game-p2-name').textContent = rs.p2?.name || 'P2';
+      document.getElementById('game-p1-score').textContent = rs.p1?.score || 0;
+      document.getElementById('game-p2-score').textContent = rs.p2?.score || 0;
+
+      const maxLives = rs.settings?.maxLives || 3;
+      const p1Lives = Math.max(0, rs.p1?.lives ?? maxLives);
+      const p2Lives = Math.max(0, rs.p2?.lives ?? maxLives);
+      document.getElementById('game-p1-lives').textContent = '❤️'.repeat(p1Lives) + '🖤'.repeat(Math.max(0, maxLives - p1Lives));
+      document.getElementById('game-p2-lives').textContent = '❤️'.repeat(p2Lives) + '🖤'.repeat(Math.max(0, maxLives - p2Lives));
+
+      const cardP1 = document.getElementById('card-p1');
+      const cardP2 = document.getElementById('card-p2');
+      cardP1.classList.toggle('turn-active', rs.turn === 'p1');
+      cardP2.classList.toggle('turn-active', rs.turn === 'p2');
+
+      const word = rs.currentWord || 'angsa';
+      const req = rs.requiredSyllable || getLastSyllable(word);
+      const prefixPart = word.slice(0, Math.max(0, word.length - req.length));
+      const suffixPart = word.slice(Math.max(0, word.length - req.length));
+
+      document.getElementById('current-word-display').innerHTML =
+        `<span class="text-slate-200">${prefixPart}</span><span class="text-rose-400 underline decoration-rose-500/70 decoration-4 underline-offset-4">${suffixPart}</span>`;
+      document.getElementById('required-syllable-badge').textContent = req.toUpperCase();
+      document.getElementById('last-word-lang-badge').textContent = rs.lastWordLabel || 'NUSANTARA';
+
+      const historyEl = document.getElementById('word-history-list');
+      const recent = (rs.usedWords || []).slice(-6);
+      historyEl.innerHTML = recent.map((w, idx) => {
+        const isLast = idx === recent.length - 1;
+        return `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0 ${isLast ? 'bg-rose-500/25 border border-rose-500/50 text-rose-200' : 'bg-slate-900/80 text-slate-400 border border-slate-800'}">${w}</span>`;
+      }).join('');
+      historyEl.scrollLeft = historyEl.scrollWidth;
+
+      const isMyTurn = state.mode === 'local' || state.playerRole === rs.turn;
+      const inputEl = document.getElementById('word-input');
+      const submitBtn = document.getElementById('btn-submit-word');
+
+      if (!state.isValidating) {
+        inputEl.disabled = !isMyTurn;
+        submitBtn.disabled = !isMyTurn;
+      }
+
+      if (isMyTurn) {
+        const activeName = rs.turn === 'p1' ? (rs.p1?.name || 'P1') : (rs.p2?.name || 'P2');
+        inputEl.placeholder = state.mode === 'local'
+          ? `Giliran ${activeName} (${req.toUpperCase()}...)`
+          : `Awali dengan "${req.toUpperCase()}"...`;
+        if (state.lastRenderedWord !== word || state.lastRenderedStatus !== 'playing') {
+          inputEl.value = '';
+          setTimeout(() => inputEl.focus(), 60);
+        }
+      } else {
+        const waitingName = rs.turn === 'p1' ? (rs.p1?.name || 'P1') : (rs.p2?.name || 'P2');
+        inputEl.placeholder = `Menunggu ${waitingName}...`;
+      }
+
+      state.lastRenderedWord = word;
+      state.lastRenderedStatus = 'playing';
+    }
+
+    function stopTurnTimer() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+    }
+
+    function startTurnTimer(rs) {
+      stopTurnTimer();
+      const duration = rs.settings?.turnDuration || 15;
+      let lastSecondBeep = -1;
+
+      const tick = () => {
+        if (!state.roomState || state.roomState.status !== 'playing') {
+          stopTurnTimer();
+          return;
+        }
+        if (state.isValidating) return;
+
+        const elapsed = (Date.now() - (state.roomState.turnStartedAt || Date.now())) / 1000;
+        const remaining = Math.max(0, duration - elapsed);
+        const ceilRem = Math.ceil(remaining);
+
+        document.getElementById('timer-text').textContent = ceilRem;
+        document.getElementById('timer-bar').style.width = `${Math.max(0, (remaining / duration) * 100)}%`;
+
+        if (ceilRem <= 4 && ceilRem > 0 && ceilRem !== lastSecondBeep) {
+          lastSecondBeep = ceilRem;
+          sfx.tick();
+        }
+
+        if (remaining <= 0) {
+          stopTurnTimer();
+          const canHandleTimeout = state.mode === 'local' || state.playerRole === state.roomState.turn;
+          if (canHandleTimeout) {
+            handleTurnTimeout();
+          }
+        }
+      };
+
+      tick();
+      state.timerInterval = setInterval(tick, 150);
+    }
+
+    function handleTurnTimeout() {
+      const rs = state.roomState;
+      if (!rs || rs.status !== 'playing') return;
+
+      const timedOutRole = rs.turn;
+      const nextRole = timedOutRole === 'p1' ? 'p2' : 'p1';
+      const updatedPlayer = {
+        ...rs[timedOutRole],
+        lives: Math.max(0, (rs[timedOutRole]?.lives || 1) - 1)
+      };
+
+      sfx.error();
+      showToast(`Waktu ${updatedPlayer.name} habis! -1 ❤️`, 'error');
+
+      if (updatedPlayer.lives <= 0) {
+        const pool = rs.punishmentsPool && rs.punishmentsPool.length > 0 ? rs.punishmentsPool : punishmentsList;
+        const randomPunishment = pool[Math.floor(Math.random() * pool.length)];
+        state.roomState = {
+          ...rs,
+          [timedOutRole]: updatedPlayer,
+          status: 'gameover',
+          loser: timedOutRole,
+          winner: nextRole,
+          punishment: randomPunishment
+        };
+      } else {
+        state.roomState = {
+          ...rs,
+          [timedOutRole]: updatedPlayer,
+          turn: nextRole,
+          turnStartedAt: Date.now()
+        };
+      }
+
+      broadcastRoomState();
+    }
+
+    async function handleWordSubmit(e) {
+      e.preventDefault();
+      const rs = state.roomState;
+      if (!rs || rs.status !== 'playing' || state.isValidating) return;
+
+      const isMyTurn = state.mode === 'local' || state.playerRole === rs.turn;
       if (!isMyTurn) return;
 
       const inputEl = document.getElementById('word-input');
       const raw = inputEl.value.trim().toLowerCase().replace(/[^a-z]/g, '');
+      const req = (rs.requiredSyllable || '').toLowerCase();
+
       if (!raw) return;
 
-      const target = data.requiredSyllable.toLowerCase();
-      if (!raw.startsWith(target)) {
+      if (!raw.startsWith(req)) {
         sfx.error();
         inputEl.classList.add('shake-anim');
         setTimeout(() => inputEl.classList.remove('shake-anim'), 320);
-        showToast(`Harus diawali "${target.toUpperCase()}"!`, 'error');
+        showToast(`Harus diawali "${req.toUpperCase()}"!`, 'error');
         return;
       }
 
-      if (raw === target) {
-        sfx.error();
-        showToast('Kata harus lebih panjang dari suku kata!', 'error');
-        return;
-      }
-
-      if ((data.usedWords || []).includes(raw)) {
+      if ((rs.usedWords || []).includes(raw)) {
         sfx.error();
         inputEl.classList.add('shake-anim');
         setTimeout(() => inputEl.classList.remove('shake-anim'), 320);
-        showToast(`"${raw.toUpperCase()}" sudah dipakai!`, 'error');
+        showToast('Kata sudah dipakai!', 'error');
         return;
       }
 
       state.isValidating = true;
       document.getElementById('submit-btn-icon').classList.add('hidden');
       document.getElementById('submit-btn-spinner').classList.remove('hidden');
+      document.getElementById('btn-submit-word').disabled = true;
 
-      const check = await validateNusantaraWord(raw);
+      const result = await validateNusantaraWord(raw);
 
       state.isValidating = false;
       document.getElementById('submit-btn-icon').classList.remove('hidden');
       document.getElementById('submit-btn-spinner').classList.add('hidden');
+      document.getElementById('btn-submit-word').disabled = false;
 
-      if (!check.valid) {
+      if (!result.valid) {
         sfx.error();
         inputEl.classList.add('shake-anim');
         setTimeout(() => inputEl.classList.remove('shake-anim'), 320);
-        showToast(check.reason || 'Kata tidak terdaftar!', 'error');
+        showToast(result.reason, 'error');
+        inputEl.focus();
         return;
       }
+
+      const currentRole = rs.turn;
+      const nextRole = currentRole === 'p1' ? 'p2' : 'p1';
+      const nextSyllable = getLastSyllable(result.word);
 
       sfx.success();
       inputEl.value = '';
 
-      const currentKey = data.turn;
-      const otherKey = currentKey === 'p1' ? 'p2' : 'p1';
-      const nextSyllable = getLastSyllable(raw);
-
       state.roomState = {
-        ...data,
-        [currentKey]: {
-          ...data[currentKey],
-          score: data[currentKey].score + 1
+        ...rs,
+        [currentRole]: {
+          ...rs[currentRole],
+          score: (rs[currentRole]?.score || 0) + 1
         },
-        turn: otherKey,
-        currentWord: raw,
-        lastWordLabel: check.label,
+        turn: nextRole,
+        currentWord: result.word,
+        lastWordLabel: result.lang,
         requiredSyllable: nextSyllable,
-        usedWords: [...(data.usedWords || []), raw],
-        round: data.round + 1,
+        usedWords: [...(rs.usedWords || []), result.word],
         turnStartedAt: Date.now()
       };
 
-      if (state.mode === 'local') {
-        renderGameArena(state.roomState);
-      } else {
-        broadcastRoomState();
-      }
-    });
+      broadcastRoomState();
+    }
 
+    function startOnlineMatch() {
+      const rs = state.roomState;
+      if (!rs || state.playerRole !== 'p1' || !rs.p2) return;
+
+      const customRaw = document.getElementById('setting-custom-starter').value.trim().toLowerCase().replace(/[^a-z]/g, '');
+      const starter = customRaw.length >= 2 ? customRaw : getRandomStarterWord();
+
+      state.roomState = {
+        ...rs,
+        status: 'playing',
+        settings: {
+          turnDuration: state.selectedTimer,
+          maxLives: state.selectedLives,
+          customStarter: customRaw
+        },
+        p1: { ...rs.p1, lives: state.selectedLives, score: 0 },
+        p2: { ...rs.p2, lives: state.selectedLives, score: 0 },
+        turn: 'p1',
+        currentWord: starter,
+        lastWordLabel: 'NUSANTARA',
+        requiredSyllable: getLastSyllable(starter),
+        usedWords: [starter],
+        turnStartedAt: Date.now(),
+        loser: null,
+        winner: null,
+        punishment: '',
+        punishmentsPool: punishmentsList
+      };
+
+      sfx.success();
+      broadcastRoomState();
+    }
+
+    function rerollPunishment() {
+      const rs = state.roomState;
+      if (!rs) return;
+      const pool = punishmentsList.length > 0 ? punishmentsList : DEFAULT_PUNISHMENTS;
+      let nextP = pool[Math.floor(Math.random() * pool.length)];
+      if (pool.length > 1 && nextP === rs.punishment) {
+        nextP = pool[(pool.indexOf(nextP) + 1) % pool.length];
+      }
+      sfx.pop();
+      state.roomState = { ...rs, punishment: nextP };
+      broadcastRoomState();
+    }
+
+    function playAgain() {
+      const rs = state.roomState;
+      if (!rs) return;
+
+      if (state.mode === 'local') {
+        startLocalMode();
+        return;
+      }
+
+      const maxLives = rs.settings?.maxLives || state.selectedLives;
+      const starter = getRandomStarterWord();
+      state.roomState = {
+        ...rs,
+        status: 'playing',
+        p1: { ...rs.p1, lives: maxLives, score: 0 },
+        p2: { ...rs.p2, lives: maxLives, score: 0 },
+        turn: rs.loser || 'p1',
+        currentWord: starter,
+        lastWordLabel: 'NUSANTARA',
+        requiredSyllable: getLastSyllable(starter),
+        usedWords: [starter],
+        round: (rs.round || 1) + 1,
+        turnStartedAt: Date.now(),
+        loser: null,
+        winner: null,
+        punishment: '',
+        punishmentsPool: punishmentsList
+      };
+
+      sfx.success();
+      broadcastRoomState();
+    }
+
+    function resetToLobby(notify = true) {
+      if (notify && state.mode === 'online') {
+        if (state.playerRole === 'p1' && subscribedStateTopic && mqttClient && mqttConnected) {
+          mqttClient.publish(subscribedStateTopic, '', { qos: 1, retain: true });
+        }
+        sendRoomEvent({ type: 'PLAYER_LEFT' });
+      }
+      stopTurnTimer();
+      cleanupMultiplayer();
+      state.mode = null;
+      state.roomCode = null;
+      state.playerRole = null;
+      state.roomState = null;
+      state.lastRenderedWord = null;
+      state.lastRenderedStatus = null;
+
+      const joinBtn = document.getElementById('btn-join-room');
+      if (joinBtn) {
+        joinBtn.disabled = false;
+        joinBtn.textContent = 'Masuk Room';
+      }
+      showView('lobby');
+    }
+
+    // =========================================================================
+    // 8. PUNISHMENTS MODAL RENDERER
+    // =========================================================================
     function renderPunishmentModalList() {
-      document.getElementById('punishment-count-badge').textContent = punishmentsList.length;
+      const badge = document.getElementById('punishment-count-badge');
+      if (badge) badge.textContent = punishmentsList.length;
+
       const ul = document.getElementById('punishment-list-ul');
-      ul.innerHTML = punishmentsList.map((item, idx) => `
-        <li class="flex items-center justify-between gap-2 bg-slate-900/90 border border-slate-800 px-3 py-2.5 rounded-xl">
-          <span class="text-slate-200 leading-snug">${item}</span>
+      if (!ul) return;
+
+      ul.innerHTML = punishmentsList.map((item, index) => `
+        <li class="flex items-center justify-between gap-2 bg-slate-900/90 border border-slate-800 px-3.5 py-2.5 rounded-2xl">
+          <span class="text-slate-200 font-semibold leading-snug">${item}</span>
           ${punishmentsList.length > 1 ? `
-            <button type="button" data-idx="${idx}" class="btn-del-punishment shrink-0 w-6 h-6 rounded-lg bg-rose-500/20 text-rose-300 font-bold flex items-center justify-center">✕</button>
+            <button type="button" data-del-idx="${index}" class="btn-del-punishment tap-btn w-7 h-7 rounded-xl bg-rose-500/15 text-rose-400 font-bold shrink-0 flex items-center justify-center">✕</button>
           ` : ''}
         </li>
       `).join('');
 
       ul.querySelectorAll('.btn-del-punishment').forEach(btn => {
         btn.addEventListener('click', () => {
-          const i = Number(btn.dataset.idx);
-          punishmentsList.splice(i, 1);
-          savePunishmentsList();
-          renderPunishmentModalList();
-          sfx.pop();
+          const idx = parseInt(btn.getAttribute('data-del-idx'), 10);
+          if (!isNaN(idx) && punishmentsList.length > 1) {
+            punishmentsList.splice(idx, 1);
+            savePunishmentsList();
+            renderPunishmentModalList();
+            sfx.pop();
+          }
         });
       });
     }
 
-    document.getElementById('btn-open-punishments').addEventListener('click', () => {
+    // =========================================================================
+    // 9. BIND ALL EVENT LISTENERS & INITIALIZE
+    // =========================================================================
+    document.getElementById('btn-create-room').addEventListener('click', createOnlineRoom);
+    document.getElementById('btn-join-room').addEventListener('click', joinOnlineRoom);
+    document.getElementById('btn-local-mode').addEventListener('click', startLocalMode);
+    document.getElementById('btn-leave-waiting').addEventListener('click', () => resetToLobby(true));
+    document.getElementById('btn-start-game').addEventListener('click', startOnlineMatch);
+    document.getElementById('btn-quit-game').addEventListener('click', () => resetToLobby(true));
+    document.getElementById('btn-reroll-punishment').addEventListener('click', rerollPunishment);
+    document.getElementById('btn-back-lobby').addEventListener('click', () => resetToLobby(true));
+    document.getElementById('btn-play-again').addEventListener('click', playAgain);
+    document.getElementById('word-form').addEventListener('submit', handleWordSubmit);
+
+    document.getElementById('btn-copy-code').addEventListener('click', () => {
+      const code = state.roomCode || '';
+      if (!code) return;
+      try {
+        const temp = document.createElement('textarea');
+        temp.value = code;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      } catch (e) {}
       sfx.pop();
+      showToast(`Kode ${code} disalin!`, 'success');
+    });
+
+    document.getElementById('btn-toggle-sound').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('icon-sound-on').classList.toggle('hidden', !soundEnabled);
+      document.getElementById('icon-sound-off').classList.toggle('hidden', soundEnabled);
+      if (soundEnabled) sfx.pop();
+    });
+
+    document.getElementById('btn-open-punishments').addEventListener('click', () => {
       renderPunishmentModalList();
       document.getElementById('modal-punishments').classList.remove('hidden');
+      sfx.pop();
     });
 
     document.getElementById('btn-close-modal').addEventListener('click', () => {
-      sfx.pop();
       document.getElementById('modal-punishments').classList.add('hidden');
+      sfx.pop();
+    });
+
+    document.getElementById('modal-punishments').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-punishments') {
+        document.getElementById('btn-close-modal').click();
+      }
     });
 
     document.getElementById('btn-add-punishment').addEventListener('click', () => {
@@ -1360,136 +1592,60 @@
       sfx.success();
     });
 
+    document.getElementById('new-punishment-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btn-add-punishment').click();
+      }
+    });
+
+    document.getElementById('room-code-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        joinOnlineRoom();
+      }
+    });
+
     document.querySelectorAll('.pill-timer').forEach(btn => {
       btn.addEventListener('click', () => {
-        sfx.pop();
-        state.selectedTimer = Number(btn.dataset.val);
+        const val = parseInt(btn.getAttribute('data-val'), 10);
+        if (isNaN(val)) return;
+        state.selectedTimer = val;
         document.querySelectorAll('.pill-timer').forEach(b => {
-          const active = Number(b.dataset.val) === state.selectedTimer;
-          b.className = `pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold ${active ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300'}`;
+          const active = parseInt(b.getAttribute('data-val'), 10) === val;
+          b.className = `pill-timer tap-btn px-2.5 py-1 rounded-xl text-xs font-extrabold ${active ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300'}`;
         });
+        if (state.roomState && state.playerRole === 'p1') {
+          state.roomState.settings.turnDuration = val;
+          broadcastRoomState();
+        }
+        sfx.pop();
       });
     });
 
     document.querySelectorAll('.pill-lives').forEach(btn => {
       btn.addEventListener('click', () => {
-        sfx.pop();
-        state.selectedLives = Number(btn.dataset.val);
+        const val = parseInt(btn.getAttribute('data-val'), 10);
+        if (isNaN(val)) return;
+        state.selectedLives = val;
         document.querySelectorAll('.pill-lives').forEach(b => {
-          const active = Number(b.dataset.val) === state.selectedLives;
-          b.className = `pill-lives px-3 py-1 rounded-xl text-xs font-extrabold ${active ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300'}`;
+          const active = parseInt(b.getAttribute('data-val'), 10) === val;
+          b.className = `pill-lives tap-btn px-3 py-1 rounded-xl text-xs font-extrabold ${active ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300'}`;
         });
-      });
-    });
-
-    document.getElementById('btn-toggle-sound').addEventListener('click', () => {
-      state.soundEnabled = !state.soundEnabled;
-      document.getElementById('icon-sound-on').classList.toggle('hidden', !state.soundEnabled);
-      document.getElementById('icon-sound-off').classList.toggle('hidden', state.soundEnabled);
-      if (state.soundEnabled) sfx.pop();
-    });
-
-    function renderGameOver(data) {
-      sfx.gameover();
-      document.getElementById('loser-name-display').textContent = data.loser || 'Pemain';
-      document.getElementById('summary-total-words').textContent = `${data.usedWords?.length || 0} Kata`;
-      document.getElementById('punishment-result-text').textContent = data.punishment || punishmentsList[0];
-    }
-
-    document.getElementById('btn-reroll-punishment').addEventListener('click', () => {
-      sfx.pop();
-      const randomPunishment = punishmentsList[Math.floor(Math.random() * punishmentsList.length)];
-      if (!state.roomState) return;
-      state.roomState.punishment = randomPunishment;
-      document.getElementById('punishment-result-text').textContent = randomPunishment;
-      if (state.mode === 'online') {
-        broadcastRoomState();
-      }
-    });
-
-    document.getElementById('btn-play-again').addEventListener('click', () => {
-      sfx.success();
-      if (state.mode === 'local') {
-        startLocalMode();
-      } else if (state.mode === 'online' && state.roomState) {
-        const maxLives = state.roomState.settings?.maxLives || 3;
-        const starter = getRandomStarterWord();
-        state.roomState = {
-          ...state.roomState,
-          status: 'playing',
-          p1: { ...state.roomState.p1, lives: maxLives, score: 0 },
-          p2: { ...state.roomState.p2, lives: maxLives, score: 0 },
-          turn: 'p1',
-          currentWord: starter,
-          lastWordLabel: 'NUSANTARA',
-          requiredSyllable: getLastSyllable(starter),
-          usedWords: [starter],
-          round: 1,
-          turnStartedAt: Date.now(),
-          loser: null,
-          winner: null,
-          punishment: ''
-        };
-        broadcastRoomState();
-      }
-    });
-
-    document.getElementById('btn-create-room').addEventListener('click', createOnlineRoom);
-    document.getElementById('btn-join-room').addEventListener('click', joinOnlineRoom);
-    document.getElementById('btn-local-mode').addEventListener('click', startLocalMode);
-
-    document.getElementById('btn-copy-code').addEventListener('click', () => {
-      const code = document.getElementById('display-room-code').textContent.trim();
-      const temp = document.createElement('input');
-      temp.value = code;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand('copy');
-      document.body.removeChild(temp);
-      sfx.pop();
-      showToast(`Kode ${code} disalin`, 'success');
-    });
-
-    document.getElementById('btn-start-game').addEventListener('click', async () => {
-      if (state.mode === 'online' && state.roomState && state.playerRole === 'p1') {
-        const customInput = document.getElementById('setting-custom-starter').value.trim().toLowerCase().replace(/[^a-z]/g, '');
-        let starter = getRandomStarterWord();
-
-        if (customInput.length >= 3) {
-          const check = await validateNusantaraWord(customInput);
-          if (!check.valid) {
-            showToast('Kata awal tidak valid', 'error');
-            sfx.error();
-            return;
-          }
-          starter = customInput;
+        if (state.roomState && state.playerRole === 'p1') {
+          state.roomState.settings.maxLives = val;
+          state.roomState.p1.lives = val;
+          if (state.roomState.p2) state.roomState.p2.lives = val;
+          broadcastRoomState();
         }
-
-        sfx.success();
-        state.roomState = {
-          ...state.roomState,
-          status: 'playing',
-          settings: {
-            ...state.roomState.settings,
-            maxLives: state.selectedLives,
-            turnDuration: state.selectedTimer
-          },
-          p1: { ...state.roomState.p1, lives: state.selectedLives, score: 0 },
-          p2: { ...state.roomState.p2, lives: state.selectedLives, score: 0 },
-          currentWord: starter,
-          lastWordLabel: 'NUSANTARA',
-          requiredSyllable: getLastSyllable(starter),
-          usedWords: [starter],
-          turnStartedAt: Date.now(),
-          punishmentsPool: punishmentsList
-        };
-        broadcastRoomState();
-      }
+        sfx.pop();
+      });
     });
 
     document.querySelectorAll('.emoji-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const emoji = btn.dataset.emoji;
+        const emoji = btn.getAttribute('data-emoji');
+        if (!emoji) return;
         spawnFloatingEmoji(emoji);
         sfx.pop();
         if (state.mode === 'online') {
@@ -1498,25 +1654,9 @@
       });
     });
 
-    function resetToLobby(notify = true) {
-      if (notify && state.mode === 'online') {
-        sendRoomEvent({ type: 'PLAYER_LEFT' });
-      }
-      stopTurnTimer();
-      cleanupMultiplayer();
-      state.mode = null;
-      state.roomCode = null;
-      state.playerRole = null;
-      state.roomState = null;
-      showView('lobby');
-    }
-
-    getGun();
-    document.getElementById('btn-leave-waiting').addEventListener('click', () => resetToLobby(true));
-    document.getElementById('btn-quit-game').addEventListener('click', () => resetToLobby(true));
-    document.getElementById('btn-back-lobby').addEventListener('click', () => resetToLobby(true));
-
+    // Boot App
     renderPunishmentModalList();
+    initMqttBroker();
   </script>
 </body>
 </html>
