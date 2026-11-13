@@ -461,6 +461,37 @@
 
   <script>
     // =========================================================================
+    // 1. PUNISHMENTS DATA & STORAGE
+    // =========================================================================
+    const DEFAULT_PUNISHMENTS = [
+      'Kirim voice note bilang "Aku kangen banget sama kamu" dengan nada manja 10 detik 🎙️',
+      'Kirim foto selfie muka jelek / melet sekarang juga ke chat! 🤪',
+      'Ganti foto profil WA pakai foto aib pilihan pasangan selama 24 jam 📸',
+      'Video call 1 menit sambil nyanyi lagu romantis favorit pasangan 🎤',
+      'Kirim 3 alasan kenapa kamu bersyukur punya pasangan kayak dia ❤️',
+      'Tulis status/story inisial pasangan + emotikon hati sekarang 💌',
+      'Traktir kopi / jajanan lewat ojek online minggu ini ☕',
+      'Rekam video bilang "I love you" dalam 3 bahasa daerah berbeda 🇮🇩',
+      'Turutin 1 permintaan random pasangan hari ini tanpa boleh nolak 🫡',
+      'Kirim pap outfit / kegiatan kamu detik ini juga tanpa filter 📷'
+    ];
+
+    let punishmentsList = [...DEFAULT_PUNISHMENTS];
+    try {
+      const saved = localStorage.getItem('ldr_sambungkata_punishments_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) punishmentsList = parsed;
+      }
+    } catch (e) {}
+
+    function savePunishmentsList() {
+      try {
+        localStorage.setItem('ldr_sambungkata_punishments_v1', JSON.stringify(punishmentsList));
+      } catch (e) {}
+    }
+
+    // =========================================================================
     // 2. INSTANT REAL-TIME MULTIPLAYER (GUN.JS DECENTRALIZED RELAY MESH)
     // =========================================================================
     const GUN_PEERS = [
