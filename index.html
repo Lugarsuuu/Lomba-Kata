@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#090d16" />
+  <title>Sambung Kata Nusantara LDR</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, select {
+      user-select: text;
+    }
+
+    html, body {
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      background-color: #05080f;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #f8fafc;
+      overflow: hidden;
+    }
+
+    .font-display {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Native Mobile Frame Container */
+    .mobile-shell {
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: radial-gradient(circle at 50% 0%, #261033 0%, #0b1120 48%, #070b14 100%);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 450px) {
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 50% 50%, #151c2e 0%, #04060b 100%);
+      }
+      .mobile-shell {
+        height: min(92dvh, 860px);
+        border-radius: 44px;
+        border: 6px solid #1e293b;
+        box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    .safe-top {
+      padding-top: max(env(safe-area-inset-top), 14px);
+    }
+
+    .safe-bottom {
+      padding-bottom: max(env(safe-area-inset-bottom), 14px);
+    }
+
+    .glass-surface {
+      background: rgba(20, 28, 45, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .ios-input {
+      background: rgba(9, 14, 26, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.18s ease;
+    }
+
+    .ios-input:focus {
+      outline: none;
+      border-color: #fb7185;
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.2);
+    }
+
+    .tap-btn {
+      transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease;
+    }
+    .tap-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    @keyframes floatEmoji {
+      0% { transform: translateY(0) scale(0.75); opacity: 1; }
+      100% { transform: translateY(-160px) scale(1.4); opacity: 0; }
+    }
+
+    .floating-emoji {
+      position: absolute;
+      pointer-events: none;
+      z-index: 60;
+      animation: floatEmoji 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes pulseBorder {
+      0%, 100% { border-color: rgba(251, 113, 133, 0.45); box-shadow: 0 0 14px rgba(244, 63, 94, 0.25); }
+      50% { border-color: rgba(251, 113, 133, 0.95); box-shadow: 0 0 22px rgba(244, 63, 94, 0.55); }
+    }
+
+    .turn-active {
+      animation: pulseBorder 1.8s infinite;
+      background: rgba(244, 63, 94, 0.12);
+    }
+
+    @keyframes shakeX {
+      0%, 100% { transform: translateX(0); }
+      25%, 75% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+    }
+
+    .shake-anim {
+      animation: shakeX 0.3s ease-in-out;
+    }
+
+    @keyframes springIn {
+      0% { transform: scale(0.94); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .spring-in {
+      animation: springIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="mobile-shell">
+
+    <!-- iOS / Android Top Status & App Header -->
+    <header class="safe-top px-5 pb-2 flex items-center justify-between shrink-0 z-20">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center shadow-lg shadow-rose-500/30">
+          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <span class="font-display font-extrabold text-base tracking-tight text-white">Sambung Kata</span>
+        <span id="conn-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-open-punishments" aria-label="Hukuman"
+          class="tap-btn h-9 px-3 rounded-full glass-surface flex items-center gap-1.5 text-xs font-bold text-rose-300">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>
+          </svg>
+          <span id="punishment-count-badge">10</span>
+        </button>
+
+        <button id="btn-toggle-sound" aria-label="Suara"
+          class="tap-btn w-9 h-9 rounded-full glass-surface flex items-center justify-center text-slate-200">
+          <svg id="icon-sound-on" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+          <svg id="icon-sound-off" class="w-4 h-4 hidden text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Toast Pill Overlay -->
+    <div id="toast-container" class="absolute top-16 left-4 right-4 z-50 flex flex-col items-center gap-1.5 pointer-events-none"></div>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 1: LOBBY                                                       -->
+    <!-- =================================================================== -->
+    <section id="view-lobby" class="flex-1 flex flex-col justify-between px-5 py-3 overflow-y-auto no-scrollbar spring-in">
+      <div class="my-auto space-y-4">
+        <!-- Language Pills -->
+        <div class="flex items-center justify-center gap-1.5">
+          <span class="px-2.5 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-[11px] font-bold text-rose-300">ID</span>
+          <span class="px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-[11px] font-bold text-amber-300">JAWA</span>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[11px] font-bold text-emerald-300">SUNDA</span>
+          <span class="px-2.5 py-1 rounded-full bg-sky-500/15 border border-sky-500/30 text-[11px] font-bold text-sky-300">LOKAL</span>
+        </div>
+
+        <!-- Main Card -->
+        <div class="glass-surface rounded-3xl p-5 space-y-4">
+          <input id="player-name-input" type="text" maxlength="14" placeholder="Nama kamu..."
+            class="ios-input w-full px-4 py-3.5 rounded-2xl text-white placeholder-slate-500 font-bold text-base text-center" />
+
+          <button id="btn-create-room"
+            class="tap-btn w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-extrabold text-sm shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Buat Room
+          </button>
+
+          <div class="flex gap-2">
+            <input id="room-code-input" type="text" maxlength="4" placeholder="KODE"
+              class="ios-input w-28 px-3 py-3.5 rounded-2xl text-center text-white font-display font-extrabold text-base tracking-[0.2em] uppercase placeholder-slate-600" />
+            <button id="btn-join-room"
+              class="tap-btn flex-1 py-3.5 px-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-sm">
+              Masuk Room
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Quick Mode Switch -->
+      <div class="safe-bottom pt-2">
+        <button id="btn-local-mode"
+          class="tap-btn w-full py-3 px-4 rounded-2xl glass-surface text-slate-300 font-bold text-xs flex items-center justify-center gap-2">
+          <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          Pass & Play (1 HP)
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 2: WAITING ROOM                                                -->
+    <!-- =================================================================== -->
+    <section id="view-waiting" class="hidden flex-1 flex flex-col justify-between px-5 py-3 overflow-y-auto no-scrollbar spring-in">
+      <div class="space-y-4 my-auto">
+        <!-- Room Code Display -->
+        <div class="glass-surface rounded-3xl p-5 text-center space-y-3">
+          <div class="flex items-center justify-center gap-2">
+            <div id="display-room-code"
+              class="font-display text-4xl font-black tracking-[0.25em] bg-slate-950/90 border border-rose-500/40 px-5 py-2.5 rounded-2xl text-rose-300 select-all">
+              ----
+            </div>
+            <button id="btn-copy-code" aria-label="Salin"
+              class="tap-btn p-3.5 rounded-2xl bg-slate-800 border border-slate-700 text-slate-200">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- 2 Players Slots -->
+          <div class="grid grid-cols-2 gap-2.5 pt-1">
+            <div class="bg-slate-950/70 border border-rose-500/30 rounded-2xl p-3 text-center">
+              <span class="text-[10px] font-extrabold uppercase text-rose-400 block">P1</span>
+              <span id="wait-p1-name" class="font-bold text-sm text-white truncate block mt-0.5">-</span>
+            </div>
+            <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-3 text-center">
+              <span class="text-[10px] font-extrabold uppercase text-amber-400 block">P2</span>
+              <span id="wait-p2-name" class="font-bold text-sm text-slate-400 truncate block mt-0.5 animate-pulse">...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compact Pill Settings -->
+        <div class="glass-surface rounded-3xl p-4 space-y-3">
+          <!-- Timer Pills -->
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400">Waktu</span>
+            <div id="timer-pills" class="flex gap-1.5">
+              <button type="button" data-val="10" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">10d</button>
+              <button type="button" data-val="15" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white">15d</button>
+              <button type="button" data-val="20" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">20d</button>
+              <button type="button" data-val="30" class="pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">30d</button>
+            </div>
+          </div>
+
+          <!-- Lives Pills -->
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400">Nyawa</span>
+            <div id="lives-pills" class="flex gap-1.5">
+              <button type="button" data-val="3" class="pill-lives px-3 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white">3 ❤️</button>
+              <button type="button" data-val="5" class="pill-lives px-3 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300">5 ❤️</button>
+            </div>
+          </div>
+
+          <!-- Custom Starter Word -->
+          <input id="setting-custom-starter" type="text" maxlength="18" placeholder="Kata awal (opsional)"
+            class="ios-input w-full px-3.5 py-2.5 rounded-xl text-xs font-bold text-white placeholder-slate-500 text-center" />
+        </div>
+      </div>
+
+      <!-- Bottom Action Buttons -->
+      <div class="safe-bottom flex gap-2.5 pt-2">
+        <button id="btn-leave-waiting"
+          class="tap-btn px-4 py-3.5 rounded-2xl bg-slate-800 text-slate-300 font-bold text-sm">
+          Batal
+        </button>
+        <button id="btn-start-game" disabled
+          class="tap-btn flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 disabled:opacity-40 text-white font-extrabold text-sm shadow-lg shadow-rose-500/25">
+          Menunggu P2...
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 3: IN-GAME ARENA (KEYBOARD FRIENDLY)                           -->
+    <!-- =================================================================== -->
+    <section id="view-game" class="hidden flex-1 flex flex-col justify-between px-4 pt-1 overflow-hidden spring-in">
+
+      <!-- Top Players & Lives Bar -->
+      <div class="grid grid-cols-2 gap-2.5 shrink-0">
+        <div id="card-p1" class="glass-surface rounded-2xl p-2.5 border transition-all">
+          <div class="flex items-center justify-between">
+            <span id="game-p1-name" class="font-bold text-xs truncate text-rose-200 max-w-[90px]">P1</span>
+            <span class="font-display font-bold text-xs text-slate-400" id="game-p1-score">0</span>
+          </div>
+          <div id="game-p1-lives" class="text-xs mt-1 tracking-tighter">❤️❤️❤️</div>
+        </div>
+
+        <div id="card-p2" class="glass-surface rounded-2xl p-2.5 border transition-all">
+          <div class="flex items-center justify-between">
+            <span id="game-p2-name" class="font-bold text-xs truncate text-amber-200 max-w-[90px]">P2</span>
+            <span class="font-display font-bold text-xs text-slate-400" id="game-p2-score">0</span>
+          </div>
+          <div id="game-p2-lives" class="text-xs mt-1 tracking-tighter">❤️❤️❤️</div>
+        </div>
+      </div>
+
+      <!-- Center Stage: Timer + Current Word + History -->
+      <div class="flex-1 flex flex-col justify-center gap-3 my-2 min-h-0">
+        <div class="glass-surface rounded-3xl p-4 text-center relative overflow-hidden">
+          <!-- Countdown Progress Bar -->
+          <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mb-3">
+            <div id="timer-bar" class="h-full bg-gradient-to-r from-rose-500 to-amber-400 transition-all duration-150" style="width: 100%;"></div>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] font-bold">
+            <span id="last-word-lang-badge" class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">ID</span>
+            <span class="font-display text-sm text-rose-300"><span id="timer-text">15</span>d</span>
+          </div>
+
+          <!-- Active Word -->
+          <div id="current-word-display" class="font-display text-3xl sm:text-4xl font-extrabold tracking-wide my-2.5 break-words">
+            <span class="text-slate-200">ang</span><span class="text-rose-400 underline decoration-rose-500/70 decoration-4 underline-offset-4">sa</span>
+          </div>
+
+          <!-- Target Syllable Badge -->
+          <div class="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-rose-500/15 border border-rose-500/40">
+            <span id="required-syllable-badge" class="font-display font-black text-rose-300 text-base uppercase tracking-widest">SA</span>
+          </div>
+        </div>
+
+        <!-- Horizontal Scrollable Word Chain Pills -->
+        <div id="word-history-list" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 shrink-0">
+          <!-- Pills rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Bottom Docked Controls (Reactions + Input Bar) -->
+      <div class="safe-bottom space-y-2 shrink-0">
+        <!-- Quick Emoji Reactions & Quit -->
+        <div class="flex items-center justify-between px-1">
+          <div class="flex gap-1.5">
+            <button type="button" data-emoji="❤️" class="emoji-btn tap-btn w-8 h-8 rounded-full glass-surface text-sm flex items-center justify-center">❤️</button>
+            <button type="button" data-emoji="😘" class="emoji-btn tap-btn w-8 h-8 rounded-full glass-surface text-sm flex items-center justify-center">😘</button>
+            <button type="button" data-emoji="😂" class="emoji-btn tap-btn w-8 h-8 rounded-full glass-surface text-sm flex items-center justify-center">😂</button>
+            <button type="button" data-emoji="🔥" class="emoji-btn tap-btn w-8 h-8 rounded-full glass-surface text-sm flex items-center justify-center">🔥</button>
+            <button type="button" data-emoji="🥺" class="emoji-btn tap-btn w-8 h-8 rounded-full glass-surface text-sm flex items-center justify-center">🥺</button>
+          </div>
+          <button id="btn-quit-game" aria-label="Keluar"
+            class="tap-btn w-8 h-8 rounded-full glass-surface text-slate-400 hover:text-rose-400 flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Word Input Form -->
+        <form id="word-form" class="flex gap-2">
+          <input id="word-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+            placeholder="Ketik kata..."
+            class="ios-input flex-1 px-4 py-3.5 rounded-2xl text-white font-bold text-base placeholder-slate-500" />
+          <button id="btn-submit-word" type="submit" aria-label="Kirim"
+            class="tap-btn w-14 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 disabled:opacity-40 text-white font-extrabold shadow-lg shadow-rose-500/25 flex items-center justify-center shrink-0">
+            <svg id="submit-btn-icon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            <span id="submit-btn-spinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 4: GAME OVER & LDR PUNISHMENT CARD                             -->
+    <!-- =================================================================== -->
+    <section id="view-gameover" class="hidden flex-1 flex flex-col justify-between px-5 py-3 overflow-y-auto no-scrollbar spring-in">
+      <div class="my-auto space-y-4 text-center">
+        <!-- Loser Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-extrabold">
+          <span>💔</span>
+          <span id="loser-name-display">Pemain</span>
+          <span>•</span>
+          <span id="summary-total-words">0 Kata</span>
+        </div>
+
+        <!-- Punishment Card -->
+        <div class="bg-gradient-to-br from-rose-950/90 via-slate-900 to-amber-950/75 border border-rose-500/45 rounded-3xl p-6 shadow-2xl space-y-3">
+          <div class="w-11 h-11 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center mx-auto text-xl">
+            🎲
+          </div>
+          <p id="punishment-result-text" class="text-base font-extrabold text-white leading-snug min-h-[3.5rem] flex items-center justify-center">
+            -
+          </p>
+        </div>
+      </div>
+
+      <!-- Bottom Action Buttons -->
+      <div class="safe-bottom space-y-2.5 pt-2">
+        <div class="flex gap-2.5">
+          <button id="btn-reroll-punishment"
+            class="tap-btn flex-1 py-3.5 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-200 font-bold text-xs flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            Acak Lagi
+          </button>
+          <button id="btn-back-lobby"
+            class="tap-btn px-5 py-3.5 rounded-2xl bg-slate-800 text-slate-300 font-bold text-xs">
+            Lobi
+          </button>
+        </div>
+
+        <button id="btn-play-again"
+          class="tap-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-extrabold text-sm shadow-lg shadow-rose-500/25">
+          Main Lagi ❤️
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- BOTTOM SHEET MODAL: CUSTOM PUNISHMENTS                              -->
+    <!-- =================================================================== -->
+    <div id="modal-punishments" class="hidden absolute inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex flex-col justify-end">
+      <div class="glass-surface rounded-t-3xl p-5 space-y-3.5 max-h-[78%] flex flex-col border-t border-white/15 safe-bottom spring-in">
+        <div class="w-10 h-1 bg-slate-600 rounded-full mx-auto"></div>
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-sm text-white">Kartu Hukuman LDR 🎲</span>
+          <button id="btn-close-modal" class="tap-btn w-8 h-8 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center">✕</button>
+        </div>
+
+        <div class="flex gap-2">
+          <input id="new-punishment-input" type="text" placeholder="Tambah hukuman baru..."
+            class="ios-input flex-1 px-3.5 py-2.5 rounded-xl text-xs font-bold text-white placeholder-slate-500" />
+          <button id="btn-add-punishment"
+            class="tap-btn px-4 py-2.5 rounded-xl bg-rose-500 text-white font-extrabold text-xs">
+            +
+          </button>
+        </div>
+
+        <ul id="punishment-list-ul" class="space-y-2 overflow-y-auto no-scrollbar flex-1 text-xs">
+          <!-- Populated via JS -->
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // =========================================================================
+    // 1. WEB AUDIO SOUND EFFECTS
+    // =========================================================================
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function playTone(freq, type = 'sine', duration = 0.12, gainVal = 0.08, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    const sfx = {
+      success: () => { playTone(523.25, 'triangle', 0.11, 0.1, 0); playTone(659.25, 'triangle', 0.16, 0.1, 0.07); },
+      error: () => { playTone(210, 'sawtooth', 0.13, 0.08, 0); playTone(165, 'sawtooth', 0.18, 0.08, 0.09); },
+      tick: () => { playTone(880, 'sine', 0.04, 0.04, 0); },
+      gameover: () => { playTone(440, 'triangle', 0.18, 0.1, 0); playTone(392, 'triangle', 0.18, 0.1, 0.16); playTone(349.23, 'triangle', 0.3, 0.1, 0.32); },
+      pop: () => { playTone(740, 'sine', 0.07, 0.06, 0); }
+    };
+
+    // =========================================================================
+    // 2. INDONESIAN / NUSANTARA SYLLABLE SPLITTER
+    // =========================================================================
+    function splitIndonesianSyllables(word) {
+      const clean = word.toLowerCase().trim().replace(/[^a-z]/g, '');
+      if (!clean) return [];
+      if (clean.length <= 2) return [clean];
+
+      const tokenMap = [
+        { pair: 'ng', token: '1' },
+        { pair: 'ny', token: '2' },
+        { pair: 'kh', token: '3' },
+        { pair: 'sy', token: '4' }
+      ];
+
+      let tokenized = clean;
+      for (const { pair, token } of tokenMap) {
+        tokenized = tokenized.split(pair).join(token);
+      }
+
+      const isVowel = (ch) => 'aiueo'.includes(ch);
+      const syllables = [];
+      let current = '';
+
+      for (let i = 0; i < tokenized.length; i++) {
+        const ch = tokenized[i];
+        current += ch;
+
+        if (isVowel(ch)) {
+          const next1 = tokenized[i + 1];
+          const next2 = tokenized[i + 2];
+
+          if (!next1) {
+            syllables.push(current);
+            current = '';
+          } else if (isVowel(next1)) {
+            const pairVowel = ch + next1;
+            if (!next2 && (pairVowel === 'ai' || pairVowel === 'au' || pairVowel === 'oi')) {
+              current += next1;
+              syllables.push(current);
+              current = '';
+              i++;
+            } else {
+              syllables.push(current);
+              current = '';
+            }
+          } else if (!next2) {
+            current += next1;
+            syllables.push(current);
+            current = '';
+            i++;
+          } else if (isVowel(next2)) {
+            syllables.push(current);
+            current = '';
+          } else {
+            current += next1;
+            syllables.push(current);
+            current = '';
+            i++;
+          }
+        }
+      }
+
+      if (current.length > 0) {
+        if (syllables.length > 0 && !current.split('').some(isVowel)) {
+          syllables[syllables.length - 1] += current;
+        } else {
+          syllables.push(current);
+        }
+      }
+
+      return syllables.map(syl => {
+        let restored = syl;
+        for (const { pair, token } of tokenMap) {
+          restored = restored.split(token).join(pair);
+        }
+        return restored;
+      });
+    }
+
+    function getLastSyllable(word) {
+      const syls = splitIndonesianSyllables(word);
+      return syls.length > 0 ? syls[syls.length - 1] : word.toLowerCase();
+    }
+
+    // =========================================================================
+    // 3. STRICT NUSANTARA LEXICON & WIKTIONARY VERIFIER
+    // =========================================================================
+    const NUSANTARA_LEXICON = new Set([
+      // Bahasa Indonesia
+      "angsa","sapi","pinggang","gangguan","aku","kamu","kita","kami","mereka","cinta","rindu","sayang","kasih","peluk","cium","hati","jiwa","rasa","suka",
+      "duka","lara","bahagia","senang","sedih","marah","kesal","benci","manja","nakal","lucu","imut","cantik","ganteng","tampan","manis","pahit","asin","asam","pedas",
+      "makan","minum","tidur","bangun","mandi","cuci","masak","jalan","lari","lompat","duduk","berdiri","terbang","renang","menyelam","nyanyi","menari","tertawa","menangis","senyum",
+      "rumah","kamar","pintu","jendela","atap","lantai","dinding","kasur","bantal","guling","selimut","meja","kursi","lemari","lampu","kipas","cermin","sisir","sabun","handuk",
+      "nasi","lauk","sayur","buah","roti","kue","kopi","teh","susu","air","es","gula","garam","lada","cabai","bawang","kecap","sambal","kerupuk","tempe","tahu","ayam","bebek","ikan","udang","cumi","daging","telur",
+      "bunga","mawar","melati","anggrek","pohon","daun","akar","batang","ranting","rumput","hutan","gunung","bukit","lembah","sungai","danau","laut","pantai","ombak","pasir","batu","tanah","langit","awan","hujan","angin","badai","petir","kilat","pelangi","bintang","bulan","matahari","senja","fajar","pagi","siang","sore","malam",
+      "kucing","anjing","burung","kelinci","kuda","kambing","domba","kerbau","gajah","harimau","singa","monyet","kera","ular","buaya","katak","kodok","kura","penyu","hiu","paus","lumba","kupu","lebah","semut","nyamuk","lalat","kecoa","cicak","tokek",
+      "buku","pena","pensil","kertas","tas","sepatu","sandal","baju","celana","rok","jaket","topi","jam","cincin","kalung","gelang","anting","kacamata","payung","dompet","kunci","ponsel","layar","suara","pesan","telepon","foto","video","lagu","musik","nada","irama",
+      "merah","biru","kuning","hijau","hitam","putih","ungu","jingga","cokelat","kelabu","emas","perak","bening","gelap","terang","panas","dingin","hangat","sejuk","basah","kering","keras","lunak","lembut","kasar","halus","tajam","tumpul","berat","ringan","tinggi","rendah","panjang","pendek","lebar","sempit","besar","kecil","luas","jauh","dekat","cepat","lambat","lama","baru","tua","muda",
+      "satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","seratus","seribu","sejuta","pertama","kedua","terakhir","awal","akhir","tengah","samping","depan","belakang","atas","bawah","dalam","luar","kiri","kanan","utara","selatan","timur","barat",
+      "ayah","ibu","bapak","mama","papa","kakak","adik","abang","nenek","kakek","paman","bibi","tante","om","sepupu","keponakan","suami","istri","pacar","kekasih","teman","sahabat","tetangga","tamu","guru","murid","dokter","perawat","polisi","tentara","petani","nelayan","pedagang","penulis","pelukis","penyanyi",
+      "kota","desa","kampung","gang","jembatan","pasar","toko","warung","kedai","kantor","sekolah","kampus","masjid","gereja","pura","wihara","taman","lapangan","stasiun","bandara","pelabuhan","terminal","halte","kereta","mobil","motor","sepeda","kapal","pesawat","perahu",
+      "pikiran","ingatan","kenangan","impian","harapan","doa","janji","setia","jujur","bohong","rahasia","kejutan","hadiah","kado","surat","puisi","cerita","kisah","kabar","berita","waktu","detik","menit","hari","minggu","bulan","tahun","abad","zaman","masa",
+      "goblok","bodoh","tolol","bego","gila","sinting","edan","kampret","brengsek","sialan","bajingan","bangsat","babi","kunyuk","sompret","anjir","anjay","lebay","alay","baper","galau","gabut","mager","santuy","kepo","julid","pansos","receh","garing","gombal","bucin",
+
+      // Bahasa Jawa
+      "kowe","sampeyan","panjenengan","dewe","kene","kono","kana","iki","iku","kae","apa","sapa","ngendi","kapan","piye","kepiye","kenapa","geneo","piro","pira",
+      "mangan","ngombe","turu","tangi","adus","mlaku","mlayu","lungguh","ngadeg","ngguyu","nangis","nesu","seneng","susah","kangen","tresna","tresno","demen","eman",
+      "omah","lawang","pawon","kemul","mejo","senthir","banyu","geni","lemah","watu","kali","segara","segoro","alas","sawah","kebon","wit","godhong","kembang","woh",
+      "sego","sega","jangan","lawuh","uyah","gulo","lombok","brambang","sambel","krupuk","pitik","iwak","urang","endhog","wedang","jadah","jenang","gethuk","klepon","serabi","bakpia","gudeg","pecel","rawon","soto","bakso",
+      "sirah","rambut","mripat","irung","kuping","cangkem","lambe","untu","ilat","gulu","pundhak","tangan","driji","dada","weteng","bokong","sikil","dhengkul","ati","getih","balung","kulit",
+      "abang","ireng","ijo","klawu","coklat","apik","elek","ayu","bagus","lemu","kuru","dhuwur","cendhek","dawa","cendhak","gedhe","cilik","amba","ciut","adoh","cedhak","cepet","alon","suwe","sedhela","anyar","lawas","tuwa","enom","larang","murah","sugih","mlarat",
+      "esuk","awan","bengi","wengi","saiki","mengko","sesuk","wingi","biyen","mben","dinane","sasi","taun","wulan","lintang","srengenge","mendhung","udan","bledeg","kluwung",
+      "simbok","emak","rama","simbah","eyang","mbah","pakdhe","budhe","paklik","bulik","kakang","mas","mbak","adhi","dhik","bojo","garwa","anak","putu","konco","kanca","dulur","tonggo","tangga","wong","tiyang","bocah","lare",
+      "matur","nuwun","ngapunten","sepurane","monggo","sumangga","nderek","langkung","kabare","sae","waras","sehat","sakit","mumet","ngelu","ngantuk","luwe","ngelak","wareg","kesel","pegel","linu","adem","sumuk","atis",
+      "dolan","bali","mulih","lunga","teka","rawuh","mlebu","metu","munggah","mudhun","nyekel","njupuk","ngekei","wenehi","tuku","adol","bayar","utang","gawe","nyambut","sinau","maca","nulis","ngrungokake","delok","ndeleng","nyawang","ngomong","kandha","takon","wangsulan",
+      "asu","menthog","banyak","wedhus","kebo","jaran","macan","ulo","ula","baya","kodhok","manuk","tawon","lemud","laler","coro","cecek","tekek","jangkrik","walang",
+      "jancok","jancuk","cok","cuk","gendheng","gemblung","pekok","kenthir","ndlogok","goblog","ngapusi","mbujuk","cerewet","kemayu","kemaki","kemlinthi","nggaya","sombong","medhit","pelit","keset","malas",
+
+      // Bahasa Sunda
+      "abdi","kuring","aing","urang","maneh","anjeun","hidep","maraneh","aranjeun","saha","naon","dimana","kamana","timana","iraha","kumaha","kunaon","sabaraha",
+      "tuang","dahar","neda","leueut","nginum","kulem","sare","gugah","hudang","ibak","anggo","make","leumpang","lumpat","calik","diuk","seuri","ceurik","ambek","bendu","bungah","sono","nyaah","bogoh","deudeuh",
+      "bumi","imah","panto","dapur","guguling","simbut","korsi","lomari","cai","seuneu","taneuh","keusik","walungan","basisir","leuweung","tangkal",
+      "sangu","kejo","deungeun","cengek","kurupuk","hayam","meri","hurang","endog","cikopi","enteh","ciherang","peuyeum","colenak","surabi","batagor","siomay","cilok","cireng","cimol","seblak","lotek","karedok","combro","misro",
+      "mastaka","buuk","soca","panon","pangambung","cepil","ceuli","baham","sungut","biwir","waos","huntu","letah","beuheung","taktak","panangan","leungeun","ramo","patuangan","beuteung","bujur","sampean","suku","tuur","hate","tulang",
+      "beureum","hideung","bodas","koneng","hejo","bungur","kulawu","alus","goreng","geulis","kasep","lintuh","begang","jangkung","pendek","pondok","ageung","gede","alit","leutik","lega","heureut","tebih","caket","deukeut","enggal","gancang","lila","sakedap","heubeul","sepuh","kolot","anom","ngora","awis","mahal","mirah","beunghar","miskin",
+      "enjing","isuk","beurang","sonten","peuting","ayeuna","engke","kamari","baheula","poe","sasih","bentang","panonpoe","mega","guludug","katumbiri",
+      "bapa","ema","indung","aki","nini","emang","uwa","akang","aa","teteh","ceuceu","adi","rai","caroge","salaki","pamajikan","murangkalih","budak","incu","rerencangan","babaturan","baraya","tatangga","jalma","jelema",
+      "hatur","nuhun","punten","hampura","mangga","wilujeng","damang","cageur","teu","gering","rieut","tunduh","lapar","haus","seubeuh","cape","pegal","tiris","hareudang",
+      "ulin","balik","angkat","indit","dongkap","datang","lebet","asup","kaluar","naek","turun","nyepeng","nyandak","nyokot","masihan","mere","meser","meuli","ngical","ngajual","mayar","hutang","damel","diajar","ngadangu","ngadenge","ningali","nenjo","nyarios","naros","nanya","ngawaler","ngajawab",
+      "ucing","soang","embe","munding","maung","oray","buhaya","bangkong","kukupu","nyiruan","sireum","reungit","laleur","cucunguk","cakcak","toke","simeut",
+      "kehed","jurig","setan","gelok","gelo","boloho","bodo","belegug","riweuh","lieur","hoream","cicing","jempe","bawel","centil","balaga","koret","kedul","males",
+
+      // Daerah Lain (Betawi, Minang, Bali, Batak, Bugis)
+      "gue","lu","elu","ente","ane","ngapa","ngapain","kagak","ogah","bini","laki","nyak","babe","engkong","encang","encing","ondel","kerak","telor","bir","pletok","semur","jengkol","pete","pecak","gabus","pucung","toge","asinan","ketoprak","gado",
+      "awak","denai","ambo","uda","uni","amak","abak","inyiak","mamak","kamanakan","rancak","bana","lamo","bara","kama","manga","apo","sia","dimano","kini","bisuak","patang","padiah","sakik","sanang","suok","kida","ateh","gadang","ketek","singkek","randah","jauah","dakek","barek","paneh","lauik","gunuang","rimbo","nagari","rendang","sate","padang","dendeng","balado","gulai","tunjang","kapau","talua",
+      "tiang","titiang","ragane","beli","mbok","bli","gek","gus","ajik","biang","pekak","dadong","memen","bapan","kenken","becik","jegeg","kenyel","seduk","bedak","pules","manjus","ngajeng","majalan","malaib","negak","jongkok","kedek","ngeling","gedeg","liang","suksma","ampura","ngiring","banten","canang","carik","subak","lawar","betutu","lilit","komoh","urab","jaja","laklak",
+      "ho","hamu","hita","nasida","aha","ise","didia","andigan","boha","piga","modom","hehe","maridi","mardalan","marlojong","hundul","jongjong","mekkel","tangis","muruk","las","roha","lungun","holong","jabu","aek","alogo","tano","dolok","harangan","hauma","porlak","hau","bulung","parbue","indahan","dekke","lombu","horbo","hambing","biang","huting","mauliate","santabi","horas","boru","marga","tulang","nantulang","amang","inang","ompung","lae","ito","edak","pariban","sinamot","ulos","tortor","gondang",
+      "iyya","iko","idi","niga","aga","kega","uppanna","magai","siaga","manre","minung","matinro","moto","cemme","jokka","tudang","tettong","macawa","terri","macai","marennu","mapeddi","uddani","poji","bola","tange","tellongeng","uwai","anging","tana","tasi","bulu","ale","galung","koko","aju","daung","bua","nanre","bale","manu","tedong","bembeng","meong","kurru","sumanga","tarima","kasi","tabe","ewako","siri","pacce","pinisi","coto","konro","pallubasa","epe","barongko"
+    ]);
+
+    const verifiedOnlineCache = new Map();
+
+    function passesNusantaraPhonotactics(word) {
+      if (word.length < 2 || word.length > 24) return false;
+      if (!/[aiueo]/.test(word)) return false;
+      if (/(.)\1\1/.test(word)) return false;
+      if (/[qx]/.test(word)) return false;
+      if (/(tion|sion|ght|tch|dge|ough|eigh|shion|wh[aiueo]|wr[aiueo]|kn[aiueo])/.test(word)) return false;
+      if (/[^aiueo]{4,}/.test(word)) return false;
+      return true;
+    }
+
+    async function checkNusantaraWiktionary(word) {
+      if (verifiedOnlineCache.has(word)) return verifiedOnlineCache.get(word);
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        const url = `https://id.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&prop=categories|extracts&exintro=1&explaintext=1&cllimit=20&format=json&origin=*`;
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!res.ok) return { valid: false };
+        const data = await res.json();
+        const pages = data?.query?.pages;
+        if (!pages) return { valid: false };
+
+        const pageId = Object.keys(pages)[0];
+        if (pageId === '-1') {
+          const regionalValid = await checkRegionalWiktionaries(word);
+          verifiedOnlineCache.set(word, regionalValid);
+          return regionalValid;
+        }
+
+        const page = pages[pageId];
+        const categories = (page.categories || []).map(c => c.title.toLowerCase());
+        const extract = (page.extract || '').toLowerCase();
+
+        const nusantaraLangMarkers = [
+          'bahasa indonesia', 'bahasa jawa', 'bahasa sunda', 'bahasa betawi',
+          'bahasa minangkabau', 'bahasa bali', 'bahasa batak', 'bahasa bugis',
+          'bahasa makassar', 'bahasa madura', 'bahasa banjar', 'bahasa aceh',
+          'bahasa melayu', 'bahasa sasak', 'bahasa ambon', 'bahasa manado',
+          'bahasa papua', 'bahasa dayak', 'bahasa palembang', 'bahasa lampung'
+        ];
+
+        const hasNusantaraCategory = categories.some(cat => nusantaraLangMarkers.some(lang => cat.includes(lang)));
+        const hasNusantaraExtract = nusantaraLangMarkers.some(lang => extract.includes(lang));
+
+        if (hasNusantaraCategory || hasNusantaraExtract) {
+          const result = { valid: true, label: detectRegionTag(categories, extract) };
+          verifiedOnlineCache.set(word, result);
+          return result;
+        }
+
+        const regionalBackup = await checkRegionalWiktionaries(word);
+        verifiedOnlineCache.set(word, regionalBackup);
+        return regionalBackup;
+      } catch (err) {
+        return { valid: false };
+      }
+    }
+
+    async function checkRegionalWiktionaries(word) {
+      const endpoints = [
+        { url: `https://jv.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`, label: 'JAWA' },
+        { url: `https://su.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&format=json&origin=*`, label: 'SUNDA' }
+      ];
+
+      for (const ep of endpoints) {
+        try {
+          const controller = new AbortController();
+          const tid = setTimeout(() => controller.abort(), 2000);
+          const r = await fetch(ep.url, { signal: controller.signal });
+          clearTimeout(tid);
+          if (!r.ok) continue;
+          const d = await r.json();
+          const pages = d?.query?.pages;
+          if (pages && Object.keys(pages)[0] !== '-1') {
+            return { valid: true, label: ep.label };
+          }
+        } catch (e) {}
+      }
+      return { valid: false, label: null };
+    }
+
+    function detectRegionTag(categories, extract) {
+      const combined = categories.join(' ') + ' ' + extract;
+      if (combined.includes('bahasa jawa')) return 'JAWA';
+      if (combined.includes('bahasa sunda')) return 'SUNDA';
+      if (combined.includes('bahasa minangkabau')) return 'MINANG';
+      if (combined.includes('bahasa bali')) return 'BALI';
+      if (combined.includes('bahasa batak')) return 'BATAK';
+      if (combined.includes('bahasa betawi')) return 'BETAWI';
+      if (combined.includes('bahasa bugis') || combined.includes('bahasa makassar')) return 'BUGIS';
+      return 'ID';
+    }
+
+    function getPossibleRootWords(word) {
+      const roots = [];
+      const prefixes = ['me', 'mem', 'men', 'meng', 'meny', 'ber', 'be', 'ter', 'di', 'ke', 'se', 'pe', 'pem', 'pen', 'peng', 'peny', 'per', 'ng', 'ny', 'pa', 'pi', 'ka', 'ti', 'pang'];
+      const suffixes = ['kan', 'an', 'i', 'nya', 'ku', 'mu', 'lah', 'kah', 'tah', 'pun', 'ne', 'e', 'ke', 'ake', 'na', 'eun', 'ing'];
+      for (const suf of suffixes) {
+        if (word.endsWith(suf) && word.length - suf.length >= 3) roots.push(word.slice(0, -suf.length));
+      }
+      for (const pre of prefixes) {
+        if (word.startsWith(pre) && word.length - pre.length >= 3) roots.push(word.slice(pre.length));
+      }
+      return roots;
+    }
+
+    async function validateNusantaraWord(word) {
+      const clean = word.toLowerCase().trim();
+      if (NUSANTARA_LEXICON.has(clean)) return { valid: true, label: 'NUSANTARA' };
+
+      const strippedForms = getPossibleRootWords(clean);
+      for (const root of strippedForms) {
+        if (NUSANTARA_LEXICON.has(root)) return { valid: true, label: 'NUSANTARA' };
+      }
+
+      if (!passesNusantaraPhonotactics(clean)) {
+        return { valid: false, reason: 'Bukan kata Nusantara!' };
+      }
+
+      const wikiResult = await checkNusantaraWiktionary(clean);
+      if (wikiResult.valid) {
+        return { valid: true, label: wikiResult.label || 'NUSANTARA' };
+      }
+
+      return { valid: false, reason: `"${clean.toUpperCase()}" tidak ada di kamus Nusantara!` };
+    }
+
+    // =========================================================================
+    // 4. PUNISHMENTS & STARTERS
+    // =========================================================================
+    const DEFAULT_PUNISHMENTS = [
+      "VN nyanyi lagu favorit pasangan sekarang!",
+      "Selfie muka jelek kirim ke chat sekarang!",
+      "Video call 5 menit tiruin gaya pasangan!",
+      "Kirim foto galeri urutan ke-5 tanpa dipilih!",
+      "VN bilang kangen pakai suara manja!",
+      "Traktir kopi / cemilan lewat ojol hari ini!",
+      "Ganti foto profil pakai foto pasangan 24 jam!",
+      "Tulis 1 paragraf gombalan maut sekarang!",
+      "VN 'Aku sayang kamu' pakai 3 logat daerah!",
+      "Video call tatap-tatapan 1 menit tanpa kedip!"
+    ];
+
+    const STARTER_WORDS = [
+      "angsa", "cinta", "rindu", "peluk", "kasih", "sayang", "manja", "bunga",
+      "senja", "mimpi", "tresna", "kangen", "geulis", "bagus", "sangu", "sega",
+      "kopi", "sambal", "pantai", "gunung", "langit", "hujan", "bintang"
+    ];
+
+    let punishmentsList = [...DEFAULT_PUNISHMENTS];
+
+    // =========================================================================
+    // 5. FIREBASE INITIALIZATION
+    // =========================================================================
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'sambung-kata-nusantara-ldr';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+    let app = null;
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    let firebaseReady = false;
+
+    async function initFirebase() {
+      const dot = document.getElementById('conn-dot');
+      if (!firebaseConfig) {
+        dot.className = "w-2 h-2 rounded-full bg-amber-400";
+        return;
+      }
+      try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+        currentUser = auth.currentUser;
+        firebaseReady = true;
+        dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+      } catch (err) {
+        dot.className = "w-2 h-2 rounded-full bg-rose-500";
+      }
+    }
+
+    // =========================================================================
+    // 6. STATE & UI HELPERS
+    // =========================================================================
+    let state = {
+      mode: null,
+      roomCode: null,
+      playerRole: null,
+      selectedTimer: 15,
+      selectedLives: 3,
+      unsubscribeRoom: null,
+      timerInterval: null,
+      localGameData: null,
+      lastReactionId: null,
+      lastTickSecond: null,
+      isValidating: false
+    };
+
+    const views = {
+      lobby: document.getElementById('view-lobby'),
+      waiting: document.getElementById('view-waiting'),
+      game: document.getElementById('view-game'),
+      gameover: document.getElementById('view-gameover')
+    };
+
+    function showView(viewName) {
+      Object.values(views).forEach(el => el.classList.add('hidden'));
+      views[viewName].classList.remove('hidden');
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      container.innerHTML = '';
+      const toast = document.createElement('div');
+      const colors = {
+        info: 'bg-slate-800/95 border-slate-600 text-slate-100',
+        error: 'bg-rose-950/95 border-rose-500 text-rose-200',
+        success: 'bg-emerald-950/95 border-emerald-500 text-emerald-200'
+      };
+      toast.className = `px-4 py-2 rounded-full border shadow-xl text-xs font-extrabold text-center backdrop-blur-md transition-all duration-200 ${colors[type] || colors.info}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 220);
+      }, 2200);
+    }
+
+    function spawnFloatingEmoji(emoji) {
+      const shell = document.querySelector('.mobile-shell');
+      const el = document.createElement('div');
+      el.textContent = emoji;
+      el.className = 'floating-emoji text-3xl';
+      el.style.left = `${20 + Math.random() * 60}%`;
+      el.style.bottom = '110px';
+      shell.appendChild(el);
+      setTimeout(() => el.remove(), 1550);
+    }
+
+    function renderLives(count, maxLives) {
+      const safeCount = Math.max(0, count);
+      return '❤️'.repeat(safeCount) + '🖤'.repeat(Math.max(0, maxLives - safeCount));
+    }
+
+    function formatHighlightedWord(word) {
+      const syls = splitIndonesianSyllables(word);
+      if (syls.length <= 1) {
+        return `<span class="text-rose-400 underline decoration-rose-500/70 decoration-4 underline-offset-4">${word}</span>`;
+      }
+      const prefix = syls.slice(0, -1).join('');
+      const last = syls[syls.length - 1];
+      return `<span class="text-slate-100">${prefix}</span><span class="text-rose-400 underline decoration-rose-500/70 decoration-4 underline-offset-4">${last}</span>`;
+    }
+
+    function generateRoomCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+      let code = '';
+      for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+      return code;
+    }
+
+    function getRandomStarterWord() {
+      return STARTER_WORDS[Math.floor(Math.random() * STARTER_WORDS.length)];
+    }
+
+    function setSubmittingState(isLoading) {
+      state.isValidating = isLoading;
+      const icon = document.getElementById('submit-btn-icon');
+      const spinner = document.getElementById('submit-btn-spinner');
+      const btn = document.getElementById('btn-submit-word');
+
+      if (isLoading) {
+        icon.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        btn.disabled = true;
+      } else {
+        icon.classList.remove('hidden');
+        spinner.classList.add('hidden');
+        btn.disabled = false;
+      }
+    }
+
+    // =========================================================================
+    // 7. PUNISHMENT SHEET & PILL SELECTORS
+    // =========================================================================
+    function renderPunishmentModalList() {
+      const ul = document.getElementById('punishment-list-ul');
+      document.getElementById('punishment-count-badge').textContent = punishmentsList.length;
+      ul.innerHTML = '';
+
+      punishmentsList.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between gap-2 bg-slate-900/80 border border-slate-800 px-3.5 py-2.5 rounded-2xl text-slate-200';
+        li.innerHTML = `
+          <span class="flex-1 font-medium leading-snug">${item}</span>
+          ${punishmentsList.length > 1 ? `<button data-idx="${idx}" class="del-punish-btn text-slate-500 hover:text-rose-400 font-bold px-1.5">✕</button>` : ''}
+        `;
+        ul.appendChild(li);
+      });
+
+      document.querySelectorAll('.del-punish-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          punishmentsList.splice(parseInt(e.target.dataset.idx, 10), 1);
+          renderPunishmentModalList();
+          sfx.pop();
+        });
+      });
+    }
+
+    document.getElementById('btn-open-punishments').addEventListener('click', () => {
+      renderPunishmentModalList();
+      document.getElementById('modal-punishments').classList.remove('hidden');
+    });
+
+    document.getElementById('btn-close-modal').addEventListener('click', () => {
+      document.getElementById('modal-punishments').classList.add('hidden');
+    });
+
+    document.getElementById('btn-add-punishment').addEventListener('click', () => {
+      const input = document.getElementById('new-punishment-input');
+      const val = input.value.trim();
+      if (!val) return;
+      punishmentsList.unshift(val);
+      input.value = '';
+      renderPunishmentModalList();
+      sfx.success();
+    });
+
+    document.getElementById('btn-toggle-sound').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('icon-sound-on').classList.toggle('hidden', !soundEnabled);
+      document.getElementById('icon-sound-off').classList.toggle('hidden', soundEnabled);
+      if (soundEnabled) sfx.pop();
+    });
+
+    function updateSettingsPillsUI(timerVal, livesVal) {
+      state.selectedTimer = timerVal;
+      state.selectedLives = livesVal;
+      document.querySelectorAll('.pill-timer').forEach(btn => {
+        const active = parseInt(btn.dataset.val, 10) === timerVal;
+        btn.className = active
+          ? 'pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white'
+          : 'pill-timer px-2.5 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300';
+      });
+      document.querySelectorAll('.pill-lives').forEach(btn => {
+        const active = parseInt(btn.dataset.val, 10) === livesVal;
+        btn.className = active
+          ? 'pill-lives px-3 py-1 rounded-xl text-xs font-extrabold bg-rose-500 text-white'
+          : 'pill-lives px-3 py-1 rounded-xl text-xs font-extrabold bg-slate-800 text-slate-300';
+      });
+    }
+
+    document.querySelectorAll('.pill-timer').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (state.mode === 'online' && state.playerRole !== 'p1') return;
+        const val = parseInt(btn.dataset.val, 10);
+        updateSettingsPillsUI(val, state.selectedLives);
+        sfx.pop();
+        if (state.mode === 'online' && state.roomCode) {
+          await updateDoc(getRoomDocRef(state.roomCode), { 'settings.turnDuration': val });
+        }
+      });
+    });
+
+    document.querySelectorAll('.pill-lives').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (state.mode === 'online' && state.playerRole !== 'p1') return;
+        const val = parseInt(btn.dataset.val, 10);
+        updateSettingsPillsUI(state.selectedTimer, val);
+        sfx.pop();
+        if (state.mode === 'online' && state.roomCode) {
+          await updateDoc(getRoomDocRef(state.roomCode), {
+            'settings.maxLives': val,
+            'p1.lives': val,
+            ...(currentGameSnapshot?.p2 ? { 'p2.lives': val } : {})
+          });
+        }
+      });
+    });
+
+    // =========================================================================
+    // 8. ONLINE MULTIPLAYER (FIRESTORE)
+    // =========================================================================
+    function getRoomDocRef(code) {
+      return doc(db, 'artifacts', appId, 'public', 'data', 'rooms', code);
+    }
+
+    async function createOnlineRoom() {
+      if (!firebaseReady || !currentUser) {
+        showToast('Koneksi belum siap', 'error');
+        return;
+      }
+
+      const playerName = document.getElementById('player-name-input').value.trim() || 'P1';
+      const code = generateRoomCode();
+      const starter = getRandomStarterWord();
+
+      const initialData = {
+        roomCode: code,
+        status: 'waiting',
+        settings: { turnDuration: 15, maxLives: 3, customStarter: '' },
+        p1: { uid: currentUser.uid, name: playerName, lives: 3, score: 0 },
+        p2: null,
+        turn: 'p1',
+        currentWord: starter,
+        lastWordLabel: 'NUSANTARA',
+        requiredSyllable: getLastSyllable(starter),
+        usedWords: [starter],
+        round: 1,
+        turnStartedAt: Date.now(),
+        loser: null,
+        winner: null,
+        punishment: '',
+        punishmentsPool: punishmentsList,
+        reaction: null,
+        updatedAt: Date.now()
+      };
+
+      try {
+        await setDoc(getRoomDocRef(code), initialData);
+        state.mode = 'online';
+        state.roomCode = code;
+        state.playerRole = 'p1';
+        sfx.pop();
+        listenToOnlineRoom(code);
+        showView('waiting');
+      } catch (err) {
+        showToast('Gagal membuat room', 'error');
+      }
+    }
+
+    async function joinOnlineRoom() {
+      if (!firebaseReady || !currentUser) {
+        showToast('Koneksi belum siap', 'error');
+        return;
+      }
+
+      const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+      if (code.length !== 4) {
+        showToast('Kode harus 4 huruf', 'error');
+        sfx.error();
+        return;
+      }
+
+      const playerName = document.getElementById('player-name-input').value.trim() || 'P2';
+
+      try {
+        const roomRef = getRoomDocRef(code);
+        const snap = await getDoc(roomRef);
+
+        if (!snap.exists()) {
+          showToast('Room tidak ditemukan', 'error');
+          sfx.error();
+          return;
+        }
+
+        const data = snap.data();
+        if (data.p2 && data.p2.uid !== currentUser.uid) {
+          showToast('Room penuh', 'error');
+          sfx.error();
+          return;
+        }
+
+        state.mode = 'online';
+        state.roomCode = code;
+
+        if (data.p1.uid === currentUser.uid) {
+          state.playerRole = 'p1';
+        } else {
+          state.playerRole = 'p2';
+          const maxLives = data.settings?.maxLives || 3;
+          await updateDoc(roomRef, {
+            p2: { uid: currentUser.uid, name: playerName, lives: maxLives, score: 0 },
+            updatedAt: Date.now()
+          });
+        }
+
+        sfx.success();
+        listenToOnlineRoom(code);
+        showView(data.status === 'playing' ? 'game' : 'waiting');
+      } catch (err) {
+        showToast('Gagal masuk room', 'error');
+      }
+    }
+
+    let currentGameSnapshot = null;
+
+    function listenToOnlineRoom(code) {
+      if (state.unsubscribeRoom) state.unsubscribeRoom();
+
+      state.unsubscribeRoom = onSnapshot(getRoomDocRef(code), (snap) => {
+        if (!snap.exists()) {
+          resetToLobby();
+          return;
+        }
+
+        const data = snap.data();
+        currentGameSnapshot = data;
+
+        if (data.reaction && data.reaction.id !== state.lastReactionId) {
+          state.lastReactionId = data.reaction.id;
+          spawnFloatingEmoji(data.reaction.emoji);
+        }
+
+        if (data.status === 'waiting') {
+          showView('waiting');
+          document.getElementById('display-room-code').textContent = data.roomCode;
+          document.getElementById('wait-p1-name').textContent = data.p1?.name || 'P1';
+
+          const isHost = state.playerRole === 'p1';
+          updateSettingsPillsUI(data.settings?.turnDuration || 15, data.settings?.maxLives || 3);
+
+          const starterInp = document.getElementById('setting-custom-starter');
+          starterInp.disabled = !isHost;
+
+          const p2El = document.getElementById('wait-p2-name');
+          const startBtn = document.getElementById('btn-start-game');
+
+          if (data.p2) {
+            p2El.textContent = data.p2.name;
+            p2El.classList.remove('animate-pulse', 'text-slate-400');
+            p2El.classList.add('text-white');
+            if (isHost) {
+              startBtn.disabled = false;
+              startBtn.textContent = 'Mulai ❤️';
+            } else {
+              startBtn.disabled = true;
+              startBtn.textContent = 'Menunggu P1...';
+            }
+          } else {
+            p2El.textContent = '...';
+            p2El.classList.add('animate-pulse', 'text-slate-400');
+            p2El.classList.remove('text-white');
+            startBtn.disabled = true;
+            startBtn.textContent = 'Menunggu P2...';
+          }
+        } else if (data.status === 'playing') {
+          showView('game');
+          renderGameArena(data);
+        } else if (data.status === 'finished') {
+          stopTurnTimer();
+          showView('gameover');
+          renderGameOver(data);
+        }
+      }, () => {
+        showToast('Koneksi terputus', 'error');
+      });
+    }
+
+    // =========================================================================
+    // 9. LOCAL PASS & PLAY MODE
+    // =========================================================================
+    function startLocalMode() {
+      const p1Name = document.getElementById('player-name-input').value.trim() || 'Kamu';
+      const starter = getRandomStarterWord();
+
+      state.mode = 'local';
+      state.playerRole = 'both';
+      state.localGameData = {
+        status: 'playing',
+        settings: { turnDuration: 15, maxLives: 3 },
+        p1: { name: p1Name, lives: 3, score: 0 },
+        p2: { name: 'Pasangan', lives: 3, score: 0 },
+        turn: 'p1',
+        currentWord: starter,
+        lastWordLabel: 'NUSANTARA',
+        requiredSyllable: getLastSyllable(starter),
+        usedWords: [starter],
+        round: 1,
+        turnStartedAt: Date.now(),
+        loser: null,
+        winner: null,
+        punishment: ''
+      };
+
+      sfx.success();
+      showView('game');
+      renderGameArena(state.localGameData);
+    }
+
+    // =========================================================================
+    // 10. GAMEPLAY ARENA & VALIDATION
+    // =========================================================================
+    function renderGameArena(data) {
+      currentGameSnapshot = data;
+      const maxLives = data.settings?.maxLives || 3;
+
+      document.getElementById('game-p1-name').textContent = data.p1.name;
+      document.getElementById('game-p2-name').textContent = data.p2.name;
+      document.getElementById('game-p1-lives').textContent = renderLives(data.p1.lives, maxLives);
+      document.getElementById('game-p2-lives').textContent = renderLives(data.p2.lives, maxLives);
+      document.getElementById('game-p1-score').textContent = data.p1.score || 0;
+      document.getElementById('game-p2-score').textContent = data.p2.score || 0;
+
+      const cardP1 = document.getElementById('card-p1');
+      const cardP2 = document.getElementById('card-p2');
+      cardP1.classList.toggle('turn-active', data.turn === 'p1');
+      cardP2.classList.toggle('turn-active', data.turn === 'p2');
+
+      document.getElementById('last-word-lang-badge').textContent = data.lastWordLabel || 'NUSANTARA';
+      document.getElementById('current-word-display').innerHTML = formatHighlightedWord(data.currentWord);
+      document.getElementById('required-syllable-badge').textContent = data.requiredSyllable.toUpperCase();
+
+      const isMyTurn = state.mode === 'local' || state.playerRole === data.turn;
+      const wordInput = document.getElementById('word-input');
+      const submitBtn = document.getElementById('btn-submit-word');
+
+      wordInput.disabled = !isMyTurn;
+      if (!state.isValidating) submitBtn.disabled = !isMyTurn;
+
+      const activeName = data.turn === 'p1' ? data.p1.name : data.p2.name;
+      if (isMyTurn) {
+        wordInput.placeholder = `${data.requiredSyllable.toUpperCase()}...`;
+        wordInput.focus();
+      } else {
+        wordInput.value = '';
+        wordInput.placeholder = `Giliran ${activeName}...`;
+      }
+
+      // Render recent word pills
+      const historyList = document.getElementById('word-history-list');
+      historyList.innerHTML = '';
+      [...data.usedWords].reverse().slice(0, 12).forEach((w, idx) => {
+        const span = document.createElement('span');
+        span.className = idx === 0
+          ? 'px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-200 text-xs font-extrabold shrink-0'
+          : 'px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-400 text-xs font-semibold shrink-0';
+        span.textContent = w;
+        historyList.appendChild(span);
+      });
+
+      startTurnTimer(data);
+    }
+
+    function startTurnTimer(data) {
+      stopTurnTimer();
+      state.lastTickSecond = null;
+      const duration = data.settings?.turnDuration || 15;
+
+      const updateTimerUI = () => {
+        if (state.isValidating) return;
+        const elapsed = (Date.now() - data.turnStartedAt) / 1000;
+        const remaining = Math.max(0, duration - elapsed);
+        const ceilSec = Math.ceil(remaining);
+        const pct = (remaining / duration) * 100;
+
+        document.getElementById('timer-text').textContent = ceilSec;
+        document.getElementById('timer-bar').style.width = `${pct}%`;
+
+        if (ceilSec <= 5 && ceilSec > 0 && ceilSec !== state.lastTickSecond) {
+          state.lastTickSecond = ceilSec;
+          sfx.tick();
+        }
+
+        if (remaining <= 0) {
+          stopTurnTimer();
+          handleTurnPenalty(data);
+        }
+      };
+
+      updateTimerUI();
+      state.timerInterval = setInterval(updateTimerUI, 150);
+    }
+
+    function stopTurnTimer() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+    }
+
+    async function handleTurnPenalty(data) {
+      const shouldProcess = state.mode === 'local' || state.playerRole === data.turn;
+      if (!shouldProcess) return;
+
+      const currentKey = data.turn;
+      const otherKey = currentKey === 'p1' ? 'p2' : 'p1';
+      const updatedPlayer = { ...data[currentKey], lives: data[currentKey].lives - 1 };
+
+      sfx.error();
+      showToast(`${updatedPlayer.name} -1 ❤️`, 'error');
+
+      if (updatedPlayer.lives <= 0) {
+        const pool = (data.punishmentsPool && data.punishmentsPool.length > 0) ? data.punishmentsPool : punishmentsList;
+        const randomPunishment = pool[Math.floor(Math.random() * pool.length)];
+
+        const finishPayload = {
+          [currentKey]: updatedPlayer,
+          status: 'finished',
+          loser: updatedPlayer.name,
+          winner: data[otherKey].name,
+          punishment: randomPunishment,
+          updatedAt: Date.now()
+        };
+
+        if (state.mode === 'local') {
+          state.localGameData = { ...state.localGameData, ...finishPayload };
+          showView('gameover');
+          renderGameOver(state.localGameData);
+        } else {
+          await updateDoc(getRoomDocRef(state.roomCode), finishPayload);
+        }
+      } else {
+        const nextPayload = {
+          [currentKey]: updatedPlayer,
+          turn: otherKey,
+          round: data.round + 1,
+          turnStartedAt: Date.now(),
+          updatedAt: Date.now()
+        };
+
+        if (state.mode === 'local') {
+          state.localGameData = { ...state.localGameData, ...nextPayload };
+          renderGameArena(state.localGameData);
+        } else {
+          await updateDoc(getRoomDocRef(state.roomCode), nextPayload);
+        }
+      }
+    }
+
+    document.getElementById('word-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentGameSnapshot || currentGameSnapshot.status !== 'playing' || state.isValidating) return;
+
+      const isMyTurn = state.mode === 'local' || state.playerRole === currentGameSnapshot.turn;
+      if (!isMyTurn) return;
+
+      const inputEl = document.getElementById('word-input');
+      const rawWord = inputEl.value.trim().toLowerCase().replace(/[^a-z]/g, '');
+      const reqSyl = currentGameSnapshot.requiredSyllable.toLowerCase();
+
+      const reject = (msg) => {
+        sfx.error();
+        inputEl.classList.add('shake-anim');
+        setTimeout(() => inputEl.classList.remove('shake-anim'), 320);
+        showToast(msg, 'error');
+      };
+
+      if (!rawWord || rawWord.length <= reqSyl.length) {
+        reject(`Awali dengan ${reqSyl.toUpperCase()}`);
+        return;
+      }
+
+      if (!rawWord.startsWith(reqSyl)) {
+        reject(`Harus awalan ${reqSyl.toUpperCase()}`);
+        return;
+      }
+
+      if (currentGameSnapshot.usedWords.includes(rawWord)) {
+        reject('Sudah dipakai!');
+        return;
+      }
+
+      setSubmittingState(true);
+      const validation = await validateNusantaraWord(rawWord);
+      setSubmittingState(false);
+
+      if (!validation.valid) {
+        reject(validation.reason || 'Bukan kata Nusantara!');
+        return;
+      }
+
+      sfx.success();
+      const nextSyllable = getLastSyllable(rawWord);
+      const currentKey = currentGameSnapshot.turn;
+      const nextTurn = currentKey === 'p1' ? 'p2' : 'p1';
+      const updatedUsedWords = [...currentGameSnapshot.usedWords, rawWord];
+      const updatedScore = (currentGameSnapshot[currentKey].score || 0) + 1;
+
+      inputEl.value = '';
+
+      const nextState = {
+        [currentKey]: { ...currentGameSnapshot[currentKey], score: updatedScore },
+        currentWord: rawWord,
+        lastWordLabel: validation.label,
+        requiredSyllable: nextSyllable,
+        usedWords: updatedUsedWords,
+        turn: nextTurn,
+        round: currentGameSnapshot.round + 1,
+        turnStartedAt: Date.now(),
+        updatedAt: Date.now()
+      };
+
+      if (state.mode === 'local') {
+        state.localGameData = { ...state.localGameData, ...nextState };
+        renderGameArena(state.localGameData);
+      } else {
+        try {
+          await updateDoc(getRoomDocRef(state.roomCode), nextState);
+        } catch (err) {
+          showToast('Gagal kirim', 'error');
+        }
+      }
+    });
+
+    // =========================================================================
+    // 11. GAME OVER & NAVIGATION
+    // =========================================================================
+    function renderGameOver(data) {
+      sfx.gameover();
+      document.getElementById('loser-name-display').textContent = data.loser || 'Pemain';
+      document.getElementById('summary-total-words').textContent = `${data.usedWords?.length || 0} Kata`;
+      document.getElementById('punishment-result-text').textContent = data.punishment || punishmentsList[0];
+    }
+
+    document.getElementById('btn-reroll-punishment').addEventListener('click', async () => {
+      sfx.pop();
+      const randomPunishment = punishmentsList[Math.floor(Math.random() * punishmentsList.length)];
+      if (state.mode === 'local') {
+        state.localGameData.punishment = randomPunishment;
+        document.getElementById('punishment-result-text').textContent = randomPunishment;
+      } else if (state.roomCode) {
+        await updateDoc(getRoomDocRef(state.roomCode), {
+          punishment: randomPunishment,
+          updatedAt: Date.now()
+        });
+      }
+    });
+
+    document.getElementById('btn-play-again').addEventListener('click', async () => {
+      sfx.success();
+      if (state.mode === 'local') {
+        startLocalMode();
+      } else if (state.roomCode && currentGameSnapshot) {
+        const maxLives = currentGameSnapshot.settings?.maxLives || 3;
+        const starter = getRandomStarterWord();
+        await updateDoc(getRoomDocRef(state.roomCode), {
+          status: 'playing',
+          p1: { ...currentGameSnapshot.p1, lives: maxLives, score: 0 },
+          p2: { ...currentGameSnapshot.p2, lives: maxLives, score: 0 },
+          turn: 'p1',
+          currentWord: starter,
+          lastWordLabel: 'NUSANTARA',
+          requiredSyllable: getLastSyllable(starter),
+          usedWords: [starter],
+          round: 1,
+          turnStartedAt: Date.now(),
+          loser: null,
+          winner: null,
+          punishment: '',
+          updatedAt: Date.now()
+        });
+      }
+    });
+
+    document.getElementById('btn-create-room').addEventListener('click', createOnlineRoom);
+    document.getElementById('btn-join-room').addEventListener('click', joinOnlineRoom);
+    document.getElementById('btn-local-mode').addEventListener('click', startLocalMode);
+
+    document.getElementById('btn-copy-code').addEventListener('click', () => {
+      const code = document.getElementById('display-room-code').textContent.trim();
+      const temp = document.createElement('input');
+      temp.value = code;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      sfx.pop();
+      showToast(`Kode ${code} disalin`, 'success');
+    });
+
+    document.getElementById('btn-start-game').addEventListener('click', async () => {
+      if (state.mode === 'online' && state.roomCode && state.playerRole === 'p1') {
+        const customInput = document.getElementById('setting-custom-starter').value.trim().toLowerCase().replace(/[^a-z]/g, '');
+        let starter = getRandomStarterWord();
+
+        if (customInput.length >= 3) {
+          const check = await validateNusantaraWord(customInput);
+          if (!check.valid) {
+            showToast('Kata awal tidak valid', 'error');
+            sfx.error();
+            return;
+          }
+          starter = customInput;
+        }
+
+        sfx.success();
+        await updateDoc(getRoomDocRef(state.roomCode), {
+          status: 'playing',
+          'settings.maxLives': state.selectedLives,
+          'settings.turnDuration': state.selectedTimer,
+          'p1.lives': state.selectedLives,
+          'p1.score': 0,
+          'p2.lives': state.selectedLives,
+          'p2.score': 0,
+          currentWord: starter,
+          lastWordLabel: 'NUSANTARA',
+          requiredSyllable: getLastSyllable(starter),
+          usedWords: [starter],
+          turnStartedAt: Date.now(),
+          punishmentsPool: punishmentsList,
+          updatedAt: Date.now()
+        });
+      }
+    });
+
+    document.querySelectorAll('.emoji-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const emoji = btn.dataset.emoji;
+        spawnFloatingEmoji(emoji);
+        sfx.pop();
+        if (state.mode === 'online' && state.roomCode) {
+          await updateDoc(getRoomDocRef(state.roomCode), {
+            reaction: { id: Date.now() + '-' + Math.random(), emoji }
+          });
+        }
+      });
+    });
+
+    function resetToLobby() {
+      stopTurnTimer();
+      if (state.unsubscribeRoom) {
+        state.unsubscribeRoom();
+        state.unsubscribeRoom = null;
+      }
+      state.mode = null;
+      state.roomCode = null;
+      state.playerRole = null;
+      state.localGameData = null;
+      showView('lobby');
+    }
+
+    document.getElementById('btn-leave-waiting').addEventListener('click', resetToLobby);
+    document.getElementById('btn-quit-game').addEventListener('click', resetToLobby);
+    document.getElementById('btn-back-lobby').addEventListener('click', resetToLobby);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initFirebase();
+      renderPunishmentModalList();
+    });
+  </script>
+</body>
+</html>
