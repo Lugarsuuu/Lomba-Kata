@@ -123,29 +123,21 @@
   <!-- Header Utama -->
   <header class="w-full max-w-3xl mx-auto px-4 safe-top pb-2 flex items-center justify-between">
     <div class="flex items-center gap-2.5">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center shadow-lg shadow-rose-500/30 text-xl">
+      <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center shadow-lg shadow-rose-500/30 text-lg">
         💕
       </div>
-      <div>
-        <h1 class="font-display font-bold text-lg sm:text-xl tracking-tight text-white leading-none">
-          Sambung Cinta
-        </h1>
-        <p class="text-[11px] text-rose-300/80 mt-0.5">iOS • Android • WhatsApp LDR</p>
-      </div>
+      <h1 class="font-display font-bold text-lg sm:text-xl tracking-tight text-white">
+        Sambung Cinta
+      </h1>
     </div>
 
-    <!-- Indikator Status Koneksi, Install App & Suara -->
-    <div class="flex items-center gap-1.5 sm:gap-2">
-      <button id="installHeaderBtn" type="button" title="Install di iOS / Android"
-        class="px-2.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 transition text-xs font-semibold text-rose-200 active:scale-95 flex items-center gap-1">
-        <span>📲</span>
-        <span class="hidden sm:inline">App HP</span>
-      </button>
+    <!-- Indikator Status Koneksi & Suara -->
+    <div class="flex items-center gap-2">
       <button id="soundToggleBtn" type="button" title="Suara Efek"
-        class="p-2.5 rounded-xl glass-subtle hover:bg-white/10 transition text-sm text-rose-200 active:scale-95">
+        class="p-2 rounded-xl glass-subtle hover:bg-white/10 transition text-sm text-rose-200 active:scale-95">
         🔊
       </button>
-      <div id="connectionBadge" class="px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30">
+      <div id="connectionBadge" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30">
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
         <span>Menghubungkan...</span>
       </div>
@@ -158,201 +150,160 @@
     <!-- ========================================== -->
     <!-- VIEW 1: LOBBY (BUAT / GABUNG ROOM / BOT)   -->
     <!-- ========================================== -->
-    <section id="lobbyView" class="space-y-4 animate-pop-in">
-      <!-- Hero Card -->
-      <div class="glass-card rounded-3xl p-5 sm:p-7 text-center relative overflow-hidden">
-        <div class="absolute -top-12 -right-12 w-36 h-36 bg-rose-500/15 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-purple-500/15 rounded-full blur-2xl pointer-events-none"></div>
+    <section id="lobbyView" class="space-y-3.5 animate-pop-in">
+      <!-- Hero & Input Nama Ringkas -->
+      <div class="glass-card rounded-3xl p-5 sm:p-6 text-center relative overflow-hidden">
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-500/15 rounded-full blur-2xl pointer-events-none"></div>
 
-        <span class="inline-block px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs font-semibold mb-3 border border-rose-500/30">
-          ✨ Tanpa Sensor • Bebas Berekspresi
-        </span>
-        <h2 class="font-display font-bold text-2xl sm:text-3xl text-white mb-2">
-          Sambung 2 Huruf Terakhir!
+        <h2 class="font-display font-bold text-xl sm:text-2xl text-white">
+          Sambung 2 Huruf Terakhir
         </h2>
-        <p class="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
-          Contoh: <span class="text-white font-semibold">ang<span class="text-rose-400 underline">sa</span></span> ➔ 
+        <p class="text-xs sm:text-sm text-slate-300 mt-1.5">
+          <span class="text-white font-semibold">ang<span class="text-rose-400 underline">sa</span></span> ➔ 
           <span class="text-white font-semibold"><span class="text-rose-400">sa</span><span class="text-amber-300 underline">pi</span></span> ➔ 
-          <span class="text-white font-semibold"><span class="text-amber-300">pi</span>nggang</span>. 
-          Yang kehabisan waktu kena <span class="text-rose-300 font-semibold">Hukuman Random LDR</span>!
+          <span class="text-white font-semibold"><span class="text-amber-300">pi</span>nggang</span>
+          <span class="block text-[11px] text-rose-300/90 mt-1">Kamus Indonesia • Jawa • Sunda • Gaul</span>
         </p>
 
         <!-- Input Nama Panggilan -->
-        <div class="mt-5 max-w-sm mx-auto text-left">
-          <label for="playerNameInput" class="block text-xs font-medium text-rose-200 mb-1.5 ml-1">
-            Nama Panggilan Sayang Kamu
-          </label>
-          <div class="flex gap-2">
-            <input id="playerNameInput" type="text" maxlength="20" placeholder="Misal: Bubu / Sayang"
-              class="flex-1 px-4 py-3 rounded-2xl bg-slate-900/80 border border-rose-500/30 text-white placeholder-slate-400 focus:outline-none focus:border-rose-400 text-sm font-medium" />
-            <button id="randomNameBtn" type="button" title="Acak Nama Lucu"
-              class="px-3.5 py-3 rounded-2xl glass-subtle hover:bg-white/10 text-lg transition active:scale-95">
-              🎲
-            </button>
-          </div>
+        <div class="mt-4 max-w-sm mx-auto flex gap-2">
+          <input id="playerNameInput" type="text" maxlength="20" placeholder="Nama panggilan kamu..."
+            class="flex-1 px-4 py-2.5 rounded-2xl bg-slate-900/80 border border-rose-500/30 text-white placeholder-slate-400 focus:outline-none focus:border-rose-400 text-sm font-medium" />
+          <button id="randomNameBtn" type="button" title="Acak Nama Lucu"
+            class="px-3.5 py-2.5 rounded-2xl glass-subtle hover:bg-white/10 text-base transition active:scale-95">
+            🎲
+          </button>
         </div>
       </div>
 
       <!-- Grid Buat Room & Gabung Room -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         <!-- Buat Room Baru -->
-        <div class="glass-card rounded-3xl p-5 flex flex-col justify-between">
+        <div class="glass-card rounded-3xl p-5 flex flex-col justify-between gap-4">
           <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-xl">💌</span>
-              <h3 class="font-display font-bold text-lg text-white">Buat Room Pasangan</h3>
-            </div>
-            <p class="text-xs text-slate-300 mb-4">
-              Buat room privat lalu kirim link/kode ke WhatsApp pasanganmu untuk main bareng secara real-time.
-            </p>
-
-            <!-- Pilihan Durasi Timer -->
-            <label class="block text-xs font-medium text-rose-200 mb-1.5">Waktu Berpikir per Giliran:</label>
-            <div id="timerOptions" class="grid grid-cols-4 gap-1.5 mb-5">
-              <button type="button" data-sec="15" class="timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition">15d ⚡</button>
-              <button type="button" data-sec="20" class="timer-opt py-2 rounded-xl text-xs font-semibold bg-rose-500 text-white shadow-md shadow-rose-500/30 transition">20d 🔥</button>
-              <button type="button" data-sec="30" class="timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition">30d ☕</button>
-              <button type="button" data-sec="45" class="timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition">45d 🌙</button>
+            <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+              <span>💌</span><span>Buat Room Pasangan</span>
+            </h3>
+            <div id="timerOptions" class="grid grid-cols-4 gap-1.5 mt-3">
+              <button type="button" data-sec="15" class="timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition">15d</button>
+              <button type="button" data-sec="20" class="timer-opt py-2 rounded-xl text-xs font-semibold bg-rose-500 text-white shadow-md shadow-rose-500/30 transition">20d</button>
+              <button type="button" data-sec="30" class="timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition">30d</button>
+              <button type="button" data-sec="45" class="timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition">45d</button>
             </div>
           </div>
 
           <button id="createRoomBtn" type="button"
-            class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition active:scale-95 flex items-center justify-center gap-2">
-            <span>Buat Room Cinta</span>
-            <span>➔</span>
+            class="w-full py-3 px-5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition active:scale-95">
+            Buat Room Cinta ➔
           </button>
         </div>
 
         <!-- Gabung Room Pasangan -->
-        <div class="glass-card rounded-3xl p-5 flex flex-col justify-between">
+        <div class="glass-card rounded-3xl p-5 flex flex-col justify-between gap-4">
           <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-xl">🔗</span>
-              <h3 class="font-display font-bold text-lg text-white">Gabung Room Pasangan</h3>
-            </div>
-            <p class="text-xs text-slate-300 mb-4">
-              Sudah dikasih kode room sama si dia? Masukkan kodenya di bawah ini untuk langsung terhubung!
-            </p>
-
-            <label for="joinCodeInput" class="block text-xs font-medium text-rose-200 mb-1.5">Kode Room (6 Karakter):</label>
-            <input id="joinCodeInput" type="text" maxlength="6" placeholder="CONTOH: CINTA8"
-              class="w-full px-4 py-3 rounded-2xl bg-slate-900/80 border border-purple-500/30 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 text-center font-display font-bold text-lg tracking-widest uppercase mb-5" />
+            <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+              <span>🔗</span><span>Gabung Room</span>
+            </h3>
+            <input id="joinCodeInput" type="text" maxlength="6" placeholder="KODE 6 HURUF"
+              class="w-full mt-3 px-4 py-2.5 rounded-2xl bg-slate-900/80 border border-purple-500/30 text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 text-center font-display font-bold text-base tracking-widest uppercase" />
           </div>
 
           <button id="joinRoomBtn" type="button"
-            class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition active:scale-95 flex items-center justify-center gap-2">
-            <span>Gabung Sekarang</span>
-            <span>💕</span>
+            class="w-full py-3 px-5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition active:scale-95">
+            Gabung Sekarang 💕
           </button>
         </div>
       </div>
 
-      <!-- Mode Latihan Solo / Bot & Tombol Bantuan -->
-      <div class="glass-subtle rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Mode Latihan Solo / Bot -->
+      <div class="glass-subtle rounded-2xl px-4 py-3 flex items-center justify-between gap-3">
         <div class="flex items-center gap-2.5">
-          <span class="text-xl">🤖</span>
-          <div>
-            <p class="text-xs font-semibold text-white">Mau coba main dulu sebelum ngajak pasangan?</p>
-            <p class="text-[11px] text-slate-400">Tes kecepatan sambung kata & lihat hukuman random melawan Bot Bucin.</p>
-          </div>
+          <span class="text-lg">🤖</span>
+          <p class="text-xs font-medium text-slate-200">Latihan sendiri melawan Bot Bucin</p>
         </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button id="playBotBtn" type="button"
-            class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-rose-200 font-semibold text-xs transition active:scale-95">
-            Latihan vs Bot
-          </button>
-          <button id="openPunishmentListBtn" type="button"
-            class="px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-medium text-xs transition active:scale-95">
-            🎲 List Hukuman
-          </button>
-          <button id="openGithubGuideBtn" type="button"
-            class="px-3.5 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-200 font-semibold text-xs transition active:scale-95">
-            📲 iOS / Android
-          </button>
-        </div>
+        <button id="playBotBtn" type="button"
+          class="shrink-0 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-rose-200 font-semibold text-xs transition active:scale-95">
+          Mulai Latihan
+        </button>
       </div>
     </section>
 
     <!-- ========================================== -->
     <!-- VIEW 2: ARENA PERMAINAN MULTIPLAYER        -->
     <!-- ========================================== -->
-    <section id="gameView" class="hidden space-y-3.5 animate-pop-in">
-      <!-- Bar Atas Arena: Kode Room, Mode & Keluar -->
-      <div class="glass-card rounded-2xl px-4 py-3 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-slate-400">Room:</span>
-          <span id="displayRoomCode" class="font-display font-bold text-sm sm:text-base tracking-widest text-rose-300 bg-rose-500/15 px-2.5 py-1 rounded-lg border border-rose-500/30">
-            ------
-          </span>
-          <button id="copyRoomCodeBtn" type="button" title="Salin Kode Room"
-            class="p-2 rounded-lg glass-subtle hover:bg-white/10 text-xs text-slate-200 transition active:scale-95">
-            📋
+    <section id="gameView" class="hidden space-y-3 animate-pop-in">
+      <!-- Bar Atas Ringkas: Kode Room, Skor 2 Pemain & Keluar -->
+      <div class="glass-card rounded-2xl p-3 space-y-2.5">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5">
+            <span id="displayRoomCode" class="font-display font-bold text-xs sm:text-sm tracking-widest text-rose-300 bg-rose-500/15 px-2.5 py-1 rounded-lg border border-rose-500/30">
+              ------
+            </span>
+            <button id="copyRoomCodeBtn" type="button" title="Salin Kode Room"
+              class="p-1.5 rounded-lg glass-subtle hover:bg-white/10 text-xs text-slate-200 transition active:scale-95">
+              📋
+            </button>
+            <span id="modeBadge" class="hidden px-2 py-0.5 rounded-md bg-purple-500/20 border border-purple-400/30 text-[10px] font-bold text-purple-200">
+              🤖 BOT
+            </span>
+          </div>
+
+          <button id="leaveRoomBtn" type="button"
+            class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-rose-500/20 text-xs font-semibold text-slate-300 hover:text-rose-200 transition active:scale-95">
+            Keluar ✕
           </button>
-          <span id="modeBadge" class="hidden px-2 py-0.5 rounded-md bg-purple-500/20 border border-purple-400/30 text-[10px] font-bold text-purple-200">
-            🤖 BOT MODE
-          </span>
         </div>
 
-        <button id="leaveRoomBtn" type="button"
-          class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-xs font-semibold text-slate-300 hover:text-rose-200 transition active:scale-95">
-          Keluar ✕
-        </button>
-      </div>
-
-      <!-- Scoreboard 2 Pemain (Pasangan LDR) -->
-      <div class="grid grid-cols-2 gap-3">
-        <!-- Kartu Pemain 1 (Host) -->
-        <div id="player1Card" class="glass-card rounded-2xl p-3.5 border border-white/10 transition-all">
-          <div class="flex items-center justify-between gap-1 mb-1">
-            <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-400">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online
-            </span>
-            <span class="text-[10px] font-bold text-rose-300 bg-rose-500/15 px-2 py-0.5 rounded-full">
-              Skor: <span id="p1Score">0</span>
-            </span>
+        <!-- Scoreboard Ringkas 2 Pemain -->
+        <div class="grid grid-cols-2 gap-2">
+          <div id="player1Card" class="rounded-xl px-3 py-2 bg-white/5 border border-white/10 transition-all">
+            <div class="flex items-center justify-between gap-1">
+              <p id="p1Name" class="font-display font-bold text-xs sm:text-sm text-white truncate">Pemain 1</p>
+              <span class="text-[11px] font-bold text-rose-300 bg-rose-500/15 px-2 py-0.5 rounded-full">
+                <span id="p1Score">0</span>
+              </span>
+            </div>
+            <p id="p1TurnLabel" class="text-[10px] text-rose-300 font-medium h-3.5 mt-0.5"></p>
           </div>
-          <p id="p1Name" class="font-display font-bold text-sm text-white truncate">Pemain 1</p>
-          <p id="p1TurnLabel" class="text-[11px] text-rose-300 font-medium h-4 mt-0.5"></p>
-        </div>
 
-        <!-- Kartu Pemain 2 (Guest / Pasangan) -->
-        <div id="player2Card" class="glass-card rounded-2xl p-3.5 border border-white/10 transition-all">
-          <div class="flex items-center justify-between gap-1 mb-1">
-            <span id="p2StatusDot" class="inline-flex items-center gap-1 text-[10px] font-medium text-slate-400">
-              <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Menunggu...
-            </span>
-            <span class="text-[10px] font-bold text-purple-300 bg-purple-500/15 px-2 py-0.5 rounded-full">
-              Skor: <span id="p2Score">0</span>
-            </span>
+          <div id="player2Card" class="rounded-xl px-3 py-2 bg-white/5 border border-white/10 transition-all">
+            <div class="flex items-center justify-between gap-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span id="p2StatusDot" class="inline-flex items-center shrink-0">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                </span>
+                <p id="p2Name" class="font-display font-bold text-xs sm:text-sm text-slate-400 truncate">Menunggu...</p>
+              </div>
+              <span class="text-[11px] font-bold text-purple-300 bg-purple-500/15 px-2 py-0.5 rounded-full">
+                <span id="p2Score">0</span>
+              </span>
+            </div>
+            <p id="p2TurnLabel" class="text-[10px] text-purple-300 font-medium h-3.5 mt-0.5"></p>
           </div>
-          <p id="p2Name" class="font-display font-bold text-sm text-slate-400 truncate">Menunggu Pasangan...</p>
-          <p id="p2TurnLabel" class="text-[11px] text-purple-300 font-medium h-4 mt-0.5"></p>
         </div>
       </div>
 
       <!-- SUB-VIEW A: MENUNGGU PASANGAN BERGABUNG -->
       <div id="waitingPartnerBox" class="glass-card rounded-3xl p-6 text-center space-y-4">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-3xl animate-bounce">
-          💌
-        </div>
+        <div class="text-4xl animate-bounce">💌</div>
         <div>
-          <h3 class="font-display font-bold text-xl text-white">Menunggu Pasanganmu Masuk...</h3>
+          <h3 class="font-display font-bold text-lg text-white">Menunggu Pasangan Masuk...</h3>
           <p class="text-xs text-slate-300 mt-1">
-            Kirimkan link undangan di bawah ini ke WhatsApp si dia agar langsung terbuka di WhatsApp iOS/Android!
+            Bagikan kode atau link room ini ke WhatsApp si dia.
           </p>
         </div>
 
-        <div class="max-w-xs mx-auto p-4 rounded-2xl bg-slate-950/70 border border-rose-500/40 flex items-center justify-between gap-3">
+        <div class="max-w-xs mx-auto p-3.5 rounded-2xl bg-slate-950/70 border border-rose-500/40 flex items-center justify-between gap-3">
           <span id="waitingBigCode" class="font-display font-bold text-2xl tracking-[0.25em] text-rose-300 pl-2">
             ------
           </span>
           <button id="copyBigCodeBtn" type="button"
-            class="px-3.5 py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-bold text-xs shadow-md transition active:scale-95">
-            Salin Kode
+            class="px-3.5 py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-bold text-xs transition active:scale-95">
+            Salin
           </button>
         </div>
 
-        <div class="max-w-xs mx-auto flex flex-col sm:flex-row gap-2 pt-1">
+        <div class="max-w-xs mx-auto flex gap-2">
           <button id="shareWhatsAppBtn" type="button"
             class="flex-1 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/25 transition active:scale-95 flex items-center justify-center gap-1.5">
             <span>💬</span>
@@ -360,17 +311,17 @@
           </button>
           <button id="copyInviteLinkBtn" type="button"
             class="py-3 px-3.5 rounded-2xl glass-subtle hover:bg-white/10 text-rose-200 font-semibold text-xs transition active:scale-95">
-            🔗 Salin Link
+            🔗 Link
           </button>
         </div>
       </div>
 
       <!-- SUB-VIEW B: PAPAN PERMAINAN AKTIF -->
-      <div id="activePlayBox" class="hidden space-y-3.5">
-        <!-- Timer & Ronde -->
-        <div class="glass-card rounded-3xl p-5 space-y-4">
+      <div id="activePlayBox" class="hidden space-y-3">
+        <!-- Timer, Kata Utama & Input -->
+        <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3.5">
           <div class="flex items-center justify-between text-xs">
-            <span id="roundNumberBadge" class="px-2.5 py-1 rounded-full bg-white/10 text-slate-200 font-semibold">
+            <span id="roundNumberBadge" class="px-2.5 py-0.5 rounded-full bg-white/10 text-slate-200 font-semibold">
               Ronde #1
             </span>
             <span id="timerText" class="font-display font-bold text-base text-amber-300">
@@ -379,19 +330,19 @@
           </div>
 
           <!-- Progress Bar Timer -->
-          <div class="w-full h-2.5 rounded-full bg-slate-900/90 overflow-hidden border border-white/10">
+          <div class="w-full h-2 rounded-full bg-slate-900/90 overflow-hidden border border-white/10">
             <div id="timerProgressBar" class="w-full h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 rounded-full origin-left will-change-transform" style="transform: scaleX(1)"></div>
           </div>
 
           <!-- Kata Terakhir & Highlight 2 Huruf -->
-          <div id="currentWordCard" class="py-5 px-4 rounded-2xl bg-slate-950/60 border border-rose-500/25 text-center space-y-2">
+          <div id="currentWordCard" class="py-4 px-4 rounded-2xl bg-slate-950/60 border border-rose-500/25 text-center space-y-1.5">
             <p id="lastPlayerLabel" class="text-[11px] text-slate-400">Kata pembuka:</p>
             <div id="currentWordDisplay" class="font-display font-bold text-3xl sm:text-4xl tracking-wide text-white break-words">
               ang<span class="text-rose-400 underline decoration-rose-500/70 underline-offset-4">sa</span>
             </div>
             <div class="pt-1">
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-xs font-semibold text-rose-200">
-                <span>Wajib awalan:</span>
+                <span>Awalan:</span>
                 <strong id="requiredPrefixBadge" class="text-sm uppercase tracking-wider text-amber-300">SA</strong>
               </span>
             </div>
@@ -400,37 +351,37 @@
           <!-- Form Input Sambung Kata -->
           <div class="space-y-2">
             <p id="turnInstructionText" class="text-center text-xs font-semibold text-rose-300">
-              Giliran kamu! Ketik kata apa saja berawalan "SA"
+              Giliran kamu! Ketik kata berawalan "SA"
             </p>
             <form id="wordSubmitForm" class="flex gap-2">
               <input id="wordInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-                placeholder="Ketik sambungan kata bebas..."
-                class="flex-1 px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-rose-500/40 text-white placeholder-slate-400 focus:outline-none focus:border-rose-400 text-base font-semibold disabled:opacity-50" />
+                placeholder="Ketik kata Indo / Jawa / Sunda / Gaul..."
+                class="flex-1 px-4 py-3 rounded-2xl bg-slate-900/90 border border-rose-500/40 text-white placeholder-slate-400 focus:outline-none focus:border-rose-400 text-base font-semibold disabled:opacity-50" />
               <button id="submitWordBtn" type="submit"
-                class="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 disabled:opacity-40 text-white font-bold text-sm shadow-lg shadow-rose-600/25 transition active:scale-95">
-                Kirim 💌
+                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 disabled:opacity-40 text-white font-bold text-sm shadow-lg shadow-rose-600/25 transition active:scale-95">
+                Kirim
               </button>
             </form>
           </div>
         </div>
 
         <!-- Bar Reaksi Emoji LDR & Riwayat Kata -->
-        <div class="glass-card rounded-2xl p-3.5 space-y-3">
+        <div class="glass-card rounded-2xl p-3 space-y-2.5">
           <div class="flex items-center justify-between gap-1">
-            <span class="text-[11px] font-medium text-slate-300">Kirim Reaksi ke Pasangan:</span>
+            <span class="text-[11px] font-medium text-slate-400">Reaksi:</span>
             <div class="flex items-center gap-1.5">
-              <button type="button" data-emoji="❤️" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">❤️</button>
-              <button type="button" data-emoji="😘" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">😘</button>
-              <button type="button" data-emoji="🥺" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">🥺</button>
-              <button type="button" data-emoji="😂" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">😂</button>
-              <button type="button" data-emoji="🔥" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">🔥</button>
-              <button type="button" data-emoji="🙈" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">🙈</button>
+              <button type="button" data-emoji="❤️" class="reaction-btn w-8 h-8 rounded-xl glass-subtle hover:bg-rose-500/25 text-base transition active:scale-90">❤️</button>
+              <button type="button" data-emoji="😘" class="reaction-btn w-8 h-8 rounded-xl glass-subtle hover:bg-rose-500/25 text-base transition active:scale-90">😘</button>
+              <button type="button" data-emoji="🥺" class="reaction-btn w-8 h-8 rounded-xl glass-subtle hover:bg-rose-500/25 text-base transition active:scale-90">🥺</button>
+              <button type="button" data-emoji="😂" class="reaction-btn w-8 h-8 rounded-xl glass-subtle hover:bg-rose-500/25 text-base transition active:scale-90">😂</button>
+              <button type="button" data-emoji="🔥" class="reaction-btn w-8 h-8 rounded-xl glass-subtle hover:bg-rose-500/25 text-base transition active:scale-90">🔥</button>
+              <button type="button" data-emoji="🙈" class="reaction-btn w-8 h-8 rounded-xl glass-subtle hover:bg-rose-500/25 text-base transition active:scale-90">🙈</button>
             </div>
           </div>
 
           <div class="pt-2 border-t border-white/10">
             <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
-              <span>Rantai Kata Ronde Ini:</span>
+              <span>Rantai Kata:</span>
               <span id="wordCountBadge">1 kata</span>
             </div>
             <div id="wordHistoryList" class="flex items-center gap-1.5 overflow-x-auto word-scroll pb-1 text-xs"></div>
@@ -619,67 +570,253 @@ npx cap add android && npx cap add ios</pre>
     import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // ==========================================
-    // 1. DATA STATIS (NAMA LUCU, KATA & HUKUMAN)
+    // 1. DATA STATIS & KAMUS MULTI-BAHASA (INDO, JAWA, SUNDA, GAUL)
     // ==========================================
     const CUTE_NICKNAMES = [
       "Bubu 💕", "Sayangku", "Ayang", "Cintaku", "Baby Bear",
       "Kesayangan", "My Home 🏠", "Pangeran LDR", "Putri Kangen", "Honey"
     ];
 
-    const STARTER_WORDS = [
-      "angsa", "cinta", "rindu", "peluk", "manja", "kasih", "janji",
-      "malam", "senja", "bintang", "mimpi", "rumah", "sayang", "hati"
-    ];
+    const RAW_MULTI_DIALECT_WORDS = `
+      angsa sapi pinggang gangguan antara rasa sayang angin indah harapan panas asmara ramai air irama
+      malam lampu pulang anggrek ekor orang angka kasih hilang anggun untuk ukir iring ingat atap apel
+      elang anggur urut utara rajin cinta tangan antar artinya nyaman manis istana nakal alam aman manja
+      janji jingga gadis istimewa warna nama mata tawa wajah ahli lihat hati tidur urat aturan rindu
+      dunia niat peluk lukisan santuy uyah mimpi pintu tulus usaha bahagia akrab abadi senja bintang
+      langit laut ombak hujan pelangi awan bumi gunung sungai danau hutan pohon bunga mawar melati
+      daun akar buah jeruk mangga pisang nanas semangka durian kelapa kopi teh susu roti nasi lauk
+      sayur garam gula madu pedas asam pahit gurih enak lezat lapar haus kenyang makan minum bangun
+      jalan lari lompat terbang renang duduk berdiri diam bicara kata suara lagu musik nada senyum
+      tangis sedih senang marah takut berani malu bangga sabar ikhlas setia percaya curiga kangen
+      cium genggam jari alis hidung pipi bibir gigi lidah telinga rambut kepala leher bahu dada perut
+      punggung kaki lutut tumit darah nafas jiwa raga nyawa otak pikiran ingatan kenangan impian
+      tujuan doa restu takdir jodoh mesra romantis cantik tampan ganteng lucu imut baik ramah lembut
+      hangat dingin sejuk terang gelap pagi siang sore subuh fajar waktu detik menit jam hari minggu
+      bulan tahun abad sejarah cerita kisah buku pena kertas surat pesan kabar berita suasana rumah
+      jendela lantai dinding kamar kasur bantal selimut meja kursi lemari cermin kunci pagar taman
+      kota desa kampung negeri pulau pantai pasir batu tanah api udara cahaya bayangan merah biru
+      hijau kuning putih hitam ungu coklat emas perak permata cincin kalung gelang baju celana sepatu
+      topi tas kacamata payung mobil motor kereta pesawat kapal sepeda roda mesin layar gambar foto
+      video telepon sinyal jaringan semesta hewan kucing anjing burung merpati ikan paus lumba kupu
+      lebah semut rusa kuda gajah harimau singa beruang kelinci tupai bebek ayam kambing domba kerbau
+      ular katak penyu kepiting udang cumi kerang pelita cahaya surya rembulan purnama gerhana kabut
+      embun salju badai petir kilat guntur gemuruh gelombang samudra teluk tanjung muara rawa lembah
+      bukit tebing jurang gua padang rumput ilalang bambu rotan pinus cemara beringin kelapa sawit
+      padi jagung gandum kedelai kacang ketela singkong ubi kentang wortel bayam kangkung tomat cabai
+      bawang kunyit jahe lengkuas serai kemiri ketumbar merica cengkeh pala kayu manis vanila cokelat
+      keju mentega minyak tepung telur daging udang kepiting kerupuk sambal kecap cuka kuah kaldu
+      soto bakso sate rendang gulai opor rawon pecel gado ketoprak pempek siomay batagor martabak
+      gorengan pisang bubur kolak cendol dawet es krim puding bolu kue donat biskuit permen coklat
+      aku kamu dia kita mereka kalian kami saya anda beliau sobat teman sahabat kawan lawan musuh
+      keluarga ayah ibu bapak mama papa kakak adik abang mbak mas dek nenek kakek paman bibi sepupu
+      keponakan cucu suami istri pasangan kekasih tunangan pengantin keluarga mertua ipar menantu
+      guru dosen murid siswa mahasiswa dokter perawat bidan polisi tentara hakim jaksa pengacara
+      pilot nahkoda masinis sopir kurir pedagang petani nelayan peternak tukang koki pelayan kasir
+      penulis pelukis penyanyi penari aktor aktris atlet juara pemain wasit pelatih penonton tamu
+      sekolah kampus kelas ruang perpustakaan kantin lapangan masjid gereja pura vihara pasar toko
+      warung restoran kafe hotel rumah sakit apotek bank kantor pabrik stasiun terminal bandara
+      pelabuhan jembatan terowongan jalanan trotoar lampu merah rambu parkir taman alun alun
+      baca tulis hitung gambar lukis nyanyi tari main lompat kejar tangkap lempar tendang pukul
+      dorong tarik angkat bawa simpan taruh buka tutup kunci ketuk masuk keluar naik turun singgah
+      mampir pulang pergi berangkat tiba datang tunggu jemput antar temani jaga lindungi bantu
+      tolong beri terima pinjam ganti bayar beli jual tawar pilih cari temukan hilang lupa ingat
+      pikir paham mengerti belajar ajar latih coba uji gagal berhasil menang kalah seri imbang
+      mulai henti selesai lanjut ulang ubah tambah kurang bagi kali hitung ukur timbang nilai
+      suka gemar cinta kasih sayang rindu kangen kagum hormat hargai puji syukur nikmat bahagia
+      gembira ceria riang tawa senyum canda gurau lucu jenaka kocak seru asyik menarik unik
+      indah elok molek permai cantik jelita tampan gagah menawan anggun sopan santun ramah
+      lemah lembut halus kasar keras kuat tangguh hebat pintar cerdas pandai bijak arif jujur
+      adil benar lurus tulus murni suci bersih rapi wangi harum segar sehat bugar lincah gesit
+      cepat kilat tangkas sigap rajin tekun giat gigih sabar tabah tegar tenang damai tentram
+      aman nyaman hangat akrab dekat erat mesra setia abadi kekal selamanya
+      kowe sampeyan panjenengan tresno tresna atiku piye kepiye opo ora mboten iyo nggih matur
+      nuwun suwun sepurane ngapura apik elek ayu bagus eman nduk kang dik yank bojo garwa omah
+      griya dalan mlaku mlayu turu sare tangi mangan nedha ngombe ngunjuk lunga tindak mulih
+      kondur teka rawuh weruh pirsa krungu mireng ngomong ngendika guyu ngguyu mbrebes mili udan
+      srengenge lintang segara kali sawah pari sega wedang jadah tempe tahu sambel gudeg wingko
+      getuk klepon onde legi pait asin pedes kecut mantep jos tenan banget pol sithik akeh gedhe
+      cilik dawa cendhek duwur endhek jero cethek cepet alon suwe sedhela saiki mengko sesuk
+      wingi mau bengi esuk awan wengi adem anget atis kesel pegel mumet ngelu mari waras loro
+      lara bungah susah sedhih nesu muring isin wedhi wani kendel narimo nrimo becik ala pinter
+      bodo sugih mlarat rekasa penak kepenak ayem slametan wilujeng sugeng enjang sonten dalu
+      nyuwun tulung monggo mangga nderek langkung ampun sampun dereng badhe ajeng kula dalem
+      sampean awakmu dhewe bareng sesarengan kanca konco dulur sedulur simbah eyang pakdhe
+      budhe paklik bulik ponakan putu bocah cah arek wong tiyang lanang wadon estri kakung joko
+      prawan manten rabi nikah lamaran katresnan asmoro wuyung gandrung kesengsem kepincut kepranan
+      trenyuh nelangsa kelangan ngenteni nggoleki ketemu pethuk pisah adoh cedhak cerak ngarep
+      mburi kiwa tengen ndhuwur ngisor njero njaba tengah pinggir pojok bunder kothak lurus menggok
+      munggah mudhun mlebu metu njupuk menehi nggawa nyekel ngumbah masak adus dandan macak
+      nembang joged nari dolan dolanan sinau maca nulis ngitung kerja nyambut gawe tuku adol
+      larang murah dhuwit arta slaka wesi kayu watu lemah banyu geni asep bledug endhut lumpur
+      suket kembang godhong oyot pang woh gedhang pelem kates melon salak duren rambutan manggis
+      sawo nangka klapa tebu tela pohung kedhele lombok brambang kunir laos sereh uyah mrica
+      trasi krupuk rempeyek jenang wajik lemper nagasari apem serabi putu cenil lupis tiwul
+      gathot sego iwak pitik menthok wedhus kebo jaran asu tikus ula kodhok yuyu urang lele
+      gurame nila bandeng tongkol teri manuk dara perkutut glathik emprit gagak alap tawon
+      jangkrik walang capung kumbang cacing uler keong bekicot
+      abdi urang maneh anjeun hidep kuring aing sia bogoh nyaah deudeuh sono hate manah kumaha
+      naon naha iraha dimana kamana timana saha sabaraha muhun sumuhun enya heueuh henteu teu
+      moal embung hayang hoyong palay hatur punten hampura hapunten peuting isuk beurang kamari
+      ayeuna engke pageto bareto baheula kasep geulis bager bageur sae alus goreng butut ageung
+      leutik panjang pondok luhur handap deet gancang laun lila sakedap sakeudeung tiis haneut
+      tiris baseuh garing bersih beresih kotor seungit bau amis haseum pelem raos ngeunah halabhab
+      wareg tuang dahar nginum leueut kulem hudang gugah ngimpi leumpang lumpat diuk calik nangtung
+      cicing nyarios ngobrol seuri gumujeng ceurik atoh ambek bendu sieun era leres salah lepat
+      beunghar miskin waluya damang cageur gering uduh cape cangkeul rieut lieur imah panto jandela
+      hateup tehel simbut korsi lomari eunteung konci buruan kebon leuweung lembah walungan wahangan
+      situ talaga basisir panonpoe bentang mega taneuh cai seuneu haseup kebul leutak jukut cau
+      gedang ganas kadu sampeu hui suuk bonteng terong cengek tarasi kurupuk sangu timbel liwet
+      tutug oncom lotek karedok peuyeum colenak surabi awug misro comro gehu bala cireng cilok
+      cimol seblak cuanki bandrek bajigur doger goyobod ucing japati titiran heulang mujahir
+      bawal hurang keuyeup sato embe munding kelenci bajing beurit oray bangkong tutut kukupu
+      nyiruan sireum simeut papayung calana sapatu sendal kantong duit artos ali kongkorong geulang
+      kareta sapedah parahu babaturan baraya bapa ema indung aki nini akang teteh euceu adi rayi
+      lanceuk raka alo incu budak murangkalih jajaka mojang pameget caroge kawin kadeudeuh kanyaah
+      panineungan ngantosan milarian pendak patepang tebih caket payun pengker kenca katuhu luar
+      sisi juru buleud pasagi lempeng mengkol naek turu lebet kaluar nyandak masihan mawa nyepeng
+      ngumbah ibak mandi dangdan ngawih ngigel ulin ameng diajar damel meser meuli ngajual awis
+      mahal mirah
+      bucin mager gabut santuy santai kepo baper galau gamon halu julid gibah pansos receh garing
+      ambyar kelar gas gaskeun gaspol skuy kuy yuk hayuk otw btw fyi cmiiw asap lol wkwk wkwkwk
+      haha hehe hihi anjay anjir anjrit buset waduh aduh astaga gilak gila keren kece gokil mantul
+      mantap cuan sultan bestie bro sis gan bray cuy guys gaes doi gebatan gebetan mantan pacar
+      ayang ayank bubu beb bebeb salting gemes gemoy uwu kiyowo imout cans gans cakep bening
+      glowing esthetic estetik vibes healing staycation nongkrong ngopi ngeteh jajan kuliner mukbang
+      spill spil flexing ghosting php pdkt hts ldr clbk moveon sadboy sadgirl softboy fakboy playboy
+      overthinking insecure toxic redflag greenflag effort treat quality time date night sleepcall
+      pap vn vc chat call ping online offline typing read deliv centang blokir unblock mute pin
+      story status update upload post like komen share follow unfollow follback stalking kepoin
+      julidin nyinyir sindir kode peka cuek jutek galak ngambek ngomel rewel lebay alay norak
+      katro cupu noob pro suhu mastah sepuh bocil remaja dewasa jomblo single taken married tunangan
+      kondangan resepsi honeymoon anniv anniversary ultah kado hadiah kejutan surprise boneka puisi
+      pantun gombal gombalan rayuan rayu sumpah serius bercanda canda becanda lawak ngakak bengek
+      recehan jayus krik gaje absurd random unik aneh seru asik asyik sepi sunyi hening syahdu
+      betah krasan balik singgah cabut cus cuss meluncur gasin sikat hajar santap embat comot
+      colong pinjam pinjem balikin traktir gratisan diskon promo bokek kanker tajir melintir goceng
+      ceban noceng goban cepek gopek seceng sejuta miliar triliun dong deh sih nih tuh kok kan
+      yah oke sip siap siapkeun beres terkendali mantapjiwa luarbiasa hebat kerenabis top juara
+      poin ronde babak hukuman tantangan dare truth game main
+    `;
 
-    const BOT_DICTIONARY = [
-      "sapi", "pinggang", "gangguan", "antara", "rasa", "sayang", "angin",
-      "indah", "harapan", "panas", "asmara", "ramai", "air", "irama",
-      "malam", "lampu", "pulang", "anggrek", "ekor", "orang", "angka",
-      "kasih", "hilang", "anggun", "untuk", "ukir", "iring", "ingat",
-      "atap", "apel", "elang", "anggur", "urut", "utara", "rajin",
-      "cinta", "tangan", "antar", "artinya", "nyaman", "manis", "istana",
-      "nakal", "alam", "aman", "manja", "janji", "jingga", "gadis",
-      "istimewa", "warna", "nama", "mata", "tawa", "wajah", "ahli",
-      "lihat", "hati", "tidur", "urat", "aturan", "rindu", "dunia",
-      "niat", "atap", "peluk", "lukisan", "santuy", "uyah", "mimpi",
-      "pintu", "tulus", "usaha", "bahagia", "iak", "akrab", "abadi"
-    ];
+    // Bangun kamus cepat Set O(1)
+    const VALID_WORDS_SET = new Set(
+      RAW_MULTI_DIALECT_WORDS
+        .toLowerCase()
+        .split(/\s+/)
+        .map((w) => w.replace(/[^a-z]/g, ""))
+        .filter((w) => w.length >= 2)
+    );
 
-    const DEFAULT_PUNISHMENTS = [
-      { category: "🎤 Voice Note", text: "Kirim Voice Note nyanyi 1 bait lagu romantis favorit pasanganmu sekarang!" },
-      { category: "🤳 PAP Selfie", text: "Kirim foto selfie ekspresi muka paling jelek/lucu ke chat pasangan tanpa filter!" },
-      { category: "💌 Gombalan Maut", text: "Ketik 3 kalimat gombalan paling bucin buat pasanganmu dalam waktu 30 detik!" },
-      { category: "🖼️ Ganti PP", text: "Pasang foto pilihan pasanganmu sebagai foto profil WhatsApp selama 1 jam ke depan!" },
-      { category: "📞 Video Call", text: "Telepon / Video Call pasangan selama 1 menit cuma buat bilang 'Aku kangen banget sama kamu'!" },
-      { category: "🫶 Surat Cinta", text: "Tulis 1 paragraf alasan kenapa kamu bersyukur punya dia di hidupmu sekarang!" },
-      { category: "🥺 Pengakuan", text: "Ceritakan 1 momen paling bikin kamu salting pas awal-awal dekat dulu!" },
-      { category: "☕ Traktir LDR", text: "Kirim saldo jajan kopi/boba online buat pasanganmu hari ini juga!" },
-      { category: "🎵 Playlist", text: "Kirimkan 1 link lagu yang paling menggambarkan perasaanmu ke dia saat ini!" },
-      { category: "😴 Ucapan Tidur", text: "Rekam Voice Note ucapan selamat tidur paling lembut untuk diputar malam ini!" }
-    ];
+    // Validasi kata terhadap kamus Indonesia, Jawa, Sunda, Gaul & morfologi imbuhan
+    function isValidDictionaryWord(rawWord) {
+      const w = (rawWord || "").toLowerCase().replace(/[^a-z]/g, "");
+      if (w.length < 2) return false;
 
-    // ==========================================
-    // 2. STATE APLIKASI & DUAL-ENGINE TRANSPORT
-    // ==========================================
-    function generateSessionUid() {
-      if (typeof crypto !== "undefined" && crypto.randomUUID) {
-        return "ldr-" + crypto.randomUUID();
+      // 1. Cek langsung di kamus utama
+      if (VALID_WORDS_SET.has(w)) return true;
+
+      // 2. Cek kata ulang penuh tanpa tanda hubung (misal: jalanjalan, pelukpeluk, kupukupu)
+      if (w.length >= 6 && w.length % 2 === 0) {
+        const half = w.slice(0, w.length / 2);
+        if (half === w.slice(w.length / 2) && VALID_WORDS_SET.has(half)) {
+          return true;
+        }
       }
-      return "ldr-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+
+      // 3. Kumpulkan kandidat bentuk dasar setelah lepas akhiran & awalan Indonesia/Jawa/Sunda/Gaul
+      const suffixes = ["nya", "lah", "kah", "tah", "pun", "kan", "keun", "ku", "mu", "an", "in", "en", "ne", "i", "e"];
+      const prefixes = [
+        "meny", "meng", "mem", "men", "me",
+        "peny", "peng", "pem", "pen", "pe",
+        "ber", "be", "ter", "te", "per",
+        "nge", "ng", "ny", "di", "ke", "se", "ka", "ti", "pa", "pi"
+      ];
+
+      const suffixCandidates = [w];
+      for (const suf of suffixes) {
+        if (w.length > suf.length + 2 && w.endsWith(suf)) {
+          const base = w.slice(0, -suf.length);
+          suffixCandidates.push(base);
+          // Cek akhiran ganda (misal: merindukanmu -> merindukan -> rindu)
+          for (const suf2 of suffixes) {
+            if (base.length > suf2.length + 2 && base.endsWith(suf2)) {
+              suffixCandidates.push(base.slice(0, -suf2.length));
+            }
+          }
+        }
+      }
+
+      for (const cand of suffixCandidates) {
+        if (VALID_WORDS_SET.has(cand)) return true;
+
+        for (const pre of prefixes) {
+          if (cand.length > pre.length + 2 && cand.startsWith(pre)) {
+            const stem = cand.slice(pre.length);
+            if (VALID_WORDS_SET.has(stem)) return true;
+
+            // Peluluhan huruf konsonan awal K, P, S, T (contoh: menyapu->sapu, menulis->tulis, ngopi->kopi, memeluk->peluk)
+            if (pre === "meny" || pre === "peny" || pre === "ny") {
+              if (VALID_WORDS_SET.has("s" + stem) || VALID_WORDS_SET.has("c" + stem)) return true;
+            }
+            if (pre === "meng" || pre === "peng" || pre === "ng") {
+              if (VALID_WORDS_SET.has("k" + stem)) return true;
+            }
+            if (pre === "mem" || pre === "pem") {
+              if (VALID_WORDS_SET.has("p" + stem)) return true;
+            }
+            if (pre === "men" || pre === "pen") {
+              if (VALID_WORDS_SET.has("t" + stem)) return true;
+            }
+          }
+        }
+      }
+
+      return false;
     }
 
+    // Filter kata yang punya awalan & akhiran valid untuk Starter & Bot Bucin
+    const PREFIX_COUNT_MAP = new Map();
+    VALID_WORDS_SET.forEach((word) => {
+      if (word.length >= 3) {
+        const p = word.slice(0, 2);
+        PREFIX_COUNT_MAP.set(p, (PREFIX_COUNT_MAP.get(p) || 0) + 1);
+      }
+    });
+
+    const BOT_DICTIONARY = Array.from(VALID_WORDS_SET).filter((word) => {
+      if (word.length < 3 || word.length > 10) return false;
+      const tail = word.slice(-2);
+      return (PREFIX_COUNT_MAP.get(tail) || 0) >= 2;
+    });
+
+    const STARTER_WORDS = [
+      "angsa", "cinta", "rindu", "peluk", "manja", "kasih", "janji",
+      "malam", "senja", "bintang", "mimpi", "rumah", "sayang", "hati",
+      "tresno", "bogoh", "bucin", "santuy"
+    ].filter((w) => VALID_WORDS_SET.has(w));
+
+    const DEFAULT_PUNISHMENTS = [
+      { category: "🎤 Voice Note", text: "Kirim Voice Note nyanyi reff lagu romantis favorit pasangan sekarang!" },
+      { category: "📸 PAP Selfie", text: "Kirim foto selfie ekspresi paling gemes sambil bentuk love pakai jari!" },
+      { category: "💌 Gombalan Maut", text: "Ketik 1 pantun atau gombalan garing tapi manis di chat WhatsApp sekarang." },
+      { category: "📱 Tantangan Profil", text: "Pasang foto pasangan atau inisial pasangan di bio/status WhatsApp selama 2 jam!" },
+      { category: "🥺 Pengakuan LDR", text: "Sebutkan 3 hal yang paling kamu kangenin dari pasangan hari ini lewat VN." },
+      { category: "🎬 Video Singkat", text: "Kirim video 5 detik bilang 'Aku sayang banget sama kamu, semangat ya!'." },
+      { category: "📞 Call Kilat", text: "Telepon pasangan sekarang minimal 1 menit cuma buat bilang kangen!" },
+      { category: "🍜 Traktir Virtual", text: "Janji traktir makanan/minuman favorit pasangan pas ketemu nanti (catat di chat!)." }
+    ];
+
+    // ==========================================
+    // 2. STATE GLOBAL APLIKASI & REFERENSI DOM
+    // ==========================================
     let app = null;
     let auth = null;
     let db = null;
+    const appId = typeof __app_id !== "undefined" ? __app_id : "sambung-cinta-ldr";
+
     let currentUser = null;
-    const sessionFallbackUid = generateSessionUid();
-
-    // Mode transport: "firebase" | "relay" | "offline"
-    let transportMode = "offline";
     let isOnlineReady = false;
-    let soundEnabled = true;
-
-    // State WSS Relay (MQTT over WebSocket untuk GitHub Pages / Lintas HP tanpa config)
+    let transportMode = "connecting"; // "firebase" | "relay" | "offline"
     const WSS_BROKERS = [
       "wss://broker.emqx.io:8084/mqtt",
       "wss://broker.hivemq.com:8884/mqtt"
@@ -689,130 +826,122 @@ npx cap add android && npx cap add ios</pre>
     let subscribedTopic = null;
     let syncRetryTimer = null;
     let joinPollTimer = null;
+    let pendingInviteRoomCode = null;
 
-    // State Permainan & Sinkronisasi Anti-Lag
-    let selectedTimerSec = 20;
     let currentRoomCode = null;
-    let roomUnsubscribe = null;
     let roomState = null;
     let isBotMode = false;
+    let selectedTimerSec = 20;
+    let soundEnabled = true;
+
+    let roomUnsubscribe = null;
     let botTimerHandle = null;
     let rafTimerHandle = null;
     let heartbeatIntervalHandle = null;
 
-    let lastShownReactionId = null;
+    let isSubmittingWord = false;
+    let anchoredTurnSeq = -1;
+    let localTurnAnchorPerf = 0;
+    let localTurnBudgetMs = 20000;
+    let timeoutClaimedForSeq = -1;
     let lastTickSecond = null;
-    let lastRenderedTimerStr = "";
+    let lastShownReactionId = null;
+
     let lastRenderedHistorySig = "";
     let lastRenderedStatusSig = "";
-
-    // Pengunci anti-celah & anchor timer lokal bebas selisih jam HP
-    let localTurnAnchorPerf = performance.now();
-    let localTurnBudgetMs = 20000;
-    let anchoredTurnSeq = -1;
-    let isSubmittingWord = false;
-    let timeoutClaimedForSeq = -1;
-
+    let lastRenderedTimerStr = "";
     let customPunishmentsMemory = [];
     let deferredInstallPrompt = null;
-    let pendingInviteRoomCode = null;
-    let reusableSynth = null;
 
-    const appId = typeof __app_id !== "undefined" ? __app_id : "sambung-cinta-ldr";
-
-    // Referensi DOM Utama
     let lobbyView, gameView, connectionBadge, playerNameInput, joinCodeInput;
-    let waitingPartnerBox, activePlayBox, roundOverBox;
-    let wordInput, submitWordBtn, timerText, timerProgressBar;
-
-    function getActiveUid() {
-      return currentUser?.uid || sessionFallbackUid;
-    }
+    let waitingPartnerBox, activePlayBox, roundOverBox, wordInput, submitWordBtn;
+    let timerText, timerProgressBar;
 
     // ==========================================
-    // 3. UTILITAS KEAMANAN, SUARA (REUSABLE) & HAPTIC
+    // 3. UTILITAS KEAMANAN, SUARA (SINGLE SYNTH), HAPTIC & TOAST
     // ==========================================
-    function sanitizeText(str, maxLen = 60) {
+    function sanitizeText(str, maxLen = 40) {
       if (typeof str !== "string") return "";
       return str.replace(/[<>&"'`]/g, "").trim().slice(0, maxLen);
     }
 
-    function triggerHaptic(pattern = [25]) {
+    let fallbackClientUid = null;
+    function getActiveUid() {
+      if (currentUser && currentUser.uid) return currentUser.uid;
+      if (!fallbackClientUid) {
+        try {
+          fallbackClientUid = sessionStorage.getItem("sc_client_uid");
+        } catch (e) {}
+        if (!fallbackClientUid) {
+          fallbackClientUid = `ldr-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+          try {
+            sessionStorage.setItem("sc_client_uid", fallbackClientUid);
+          } catch (e) {}
+        }
+      }
+      return fallbackClientUid;
+    }
+
+    function triggerHaptic(pattern = [20]) {
       try {
-        if (navigator.vibrate) {
+        if (navigator && typeof navigator.vibrate === "function") {
           navigator.vibrate(pattern);
         }
-      } catch (e) {
-        // Abaikan jika perangkat tidak mendukung vibrate
-      }
+      } catch (e) {}
     }
 
-    function getAudioSynth() {
-      if (typeof Tone === "undefined") return null;
-      if (!reusableSynth) {
-        reusableSynth = new Tone.Synth({
-          oscillator: { type: "triangle" },
-          envelope: { attack: 0.008, decay: 0.1, sustain: 0.04, release: 0.16 }
-        }).toDestination();
-        reusableSynth.volume.value = -12;
-      }
-      return reusableSynth;
-    }
-
+    let sharedSynth = null;
     function playSoundEffect(type) {
       if (!soundEnabled || typeof Tone === "undefined") return;
       try {
-        if (Tone.context.state !== "running") {
-          Tone.start().catch(() => {});
+        if (Tone.context && Tone.context.state !== "running") {
+          Tone.start();
         }
-        const synth = getAudioSynth();
-        if (!synth) return;
+        if (!sharedSynth) {
+          sharedSynth = new Tone.Synth({
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.01, decay: 0.12, sustain: 0.05, release: 0.2 }
+          }).toDestination();
+          sharedSynth.volume.value = -10;
+        }
         const now = Tone.now();
-
         if (type === "send") {
-          synth.triggerAttackRelease("C5", "32n", now);
-          synth.triggerAttackRelease("E5", "32n", now + 0.06);
-        } else if (type === "error") {
-          synth.triggerAttackRelease("A2", "16n", now);
-        } else if (type === "tick") {
-          synth.triggerAttackRelease("G5", "64n", now);
-        } else if (type === "lose") {
-          synth.triggerAttackRelease("E4", "16n", now);
-          synth.triggerAttackRelease("C4", "8n", now + 0.13);
+          sharedSynth.triggerAttackRelease("E5", "16n", now);
+          sharedSynth.triggerAttackRelease("G5", "16n", now + 0.07);
         } else if (type === "join") {
-          synth.triggerAttackRelease("E5", "32n", now);
-          synth.triggerAttackRelease("G5", "32n", now + 0.07);
-          synth.triggerAttackRelease("C6", "16n", now + 0.14);
+          sharedSynth.triggerAttackRelease("C5", "16n", now);
+          sharedSynth.triggerAttackRelease("E5", "16n", now + 0.08);
+          sharedSynth.triggerAttackRelease("G5", "16n", now + 0.16);
+        } else if (type === "error") {
+          sharedSynth.triggerAttackRelease("A3", "16n", now);
+        } else if (type === "tick") {
+          sharedSynth.triggerAttackRelease("C6", "32n", now);
+        } else if (type === "lose") {
+          sharedSynth.triggerAttackRelease("G4", "8n", now);
+          sharedSynth.triggerAttackRelease("Eb4", "4n", now + 0.16);
         }
-      } catch (e) {
-        // Abaikan jika audio dibatasi sebelum interaksi pertama
-      }
+      } catch (e) {}
     }
 
     function showToast(message, type = "info") {
       const container = document.getElementById("toastContainer");
       if (!container) return;
 
-      const colorMap = {
-        info: "bg-slate-900/95 border-rose-500/40 text-rose-100",
-        success: "bg-emerald-950/95 border-emerald-400/50 text-emerald-100",
-        error: "bg-rose-950/95 border-rose-400/60 text-rose-100"
+      const palette = {
+        success: "bg-emerald-950/90 border-emerald-500/50 text-emerald-100",
+        error: "bg-rose-950/90 border-rose-500/50 text-rose-100",
+        info: "bg-slate-900/90 border-purple-400/40 text-slate-100"
       };
-
-      while (container.children.length >= 2) {
-        container.firstChild.remove();
-      }
-
       const toast = document.createElement("div");
-      toast.className = `px-4 py-2.5 rounded-2xl border shadow-xl text-xs font-semibold backdrop-blur-md animate-pop-in ${colorMap[type] || colorMap.info}`;
+      toast.className = `px-4 py-2.5 rounded-2xl border backdrop-blur-md shadow-xl text-xs font-semibold text-center animate-pop-in ${palette[type] || palette.info}`;
       toast.textContent = message;
       container.appendChild(toast);
 
       setTimeout(() => {
         toast.style.opacity = "0";
-        toast.style.transition = "opacity 0.22s ease";
-        setTimeout(() => toast.remove(), 230);
-      }, 2600);
+        toast.style.transition = "opacity 0.25s ease";
+        setTimeout(() => toast.remove(), 260);
+      }, 2800);
     }
 
     function copyTextSafely(text, successMsg) {
@@ -823,26 +952,25 @@ npx cap add android && npx cap add ios</pre>
         tempInput.style.opacity = "0";
         document.body.appendChild(tempInput);
         tempInput.select();
-        tempInput.setSelectionRange(0, 99999);
         document.execCommand("copy");
         document.body.removeChild(tempInput);
         triggerHaptic([20]);
         showToast(successMsg, "success");
       } catch (e) {
-        showToast("Gagal menyalin otomatis. Salin kode secara manual ya!", "error");
+        showToast("Gagal menyalin otomatis. Salin manual kodenya ya!", "error");
       }
     }
 
     function setConnectionStatus(status, label) {
       if (!connectionBadge) return;
       if (status === "online") {
-        connectionBadge.className = "px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30";
+        connectionBadge.className = "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30";
         connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>${sanitizeText(label, 24)}</span>`;
       } else if (status === "offline") {
-        connectionBadge.className = "px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-rose-500/15 text-rose-300 border border-rose-500/30";
-        connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-400"></span><span>${sanitizeText(label, 24)}</span>`;
+        connectionBadge.className = "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-purple-500/15 text-purple-200 border border-purple-500/30";
+        connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-purple-400"></span><span>${sanitizeText(label, 24)}</span>`;
       } else {
-        connectionBadge.className = "px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30";
+        connectionBadge.className = "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30";
         connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>${sanitizeText(label, 24)}</span>`;
       }
     }
@@ -1494,8 +1622,16 @@ npx cap add android && npx cap add ios</pre>
         if (candidates.length > 0) {
           chosenWord = candidates[Math.floor(Math.random() * candidates.length)];
         } else {
-          const suffixes = ["na", "ta", "ra", "ka", "sa", "ma", "la", "pa", "ya", "da"];
-          chosenWord = prefix + suffixes[Math.floor(Math.random() * suffixes.length)];
+          // Fallback cari dari seluruh kamus valid jika semua kata bot sudah terpakai
+          const fallbackPool = Array.from(VALID_WORDS_SET).filter(
+            (w) => w.startsWith(prefix) && !usedSet.has(w) && w.length >= 3
+          );
+          if (fallbackPool.length > 0) {
+            chosenWord = fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
+          } else {
+            triggerTimeoutLoss(2);
+            return;
+          }
         }
 
         const nextState = {
@@ -1531,19 +1667,19 @@ npx cap add android && npx cap add ios</pre>
     }
 
     async function handleWordSubmit(event) {
-      event.preventDefault();
+      if (event) event.preventDefault();
       if (!roomState || roomState.status !== "playing" || isSubmittingWord) return;
 
       const myIdx = getMyPlayerIndex();
       if (roomState.turnPlayerIndex !== myIdx) {
-        showToast("Sabar sayang, sekarang masih giliran pasanganmu! 💕", "info");
+        showToast("Sabar sayang, masih giliran pasanganmu ya! ⏳", "info");
         return;
       }
 
-      // Tanpa sensor kata! Hanya membersihkan karakter berbahaya & spasi
+      // Validasi karakter huruf & panjang kata
       const rawWord = sanitizeText(wordInput.value, 40).toLowerCase().replace(/\s+/g, "");
-      if (rawWord.length < 2) {
-        showToast("Minimal ketik 2 huruf ya!", "error");
+      if (rawWord.length < 2 || !/^[a-z]+$/.test(rawWord)) {
+        showToast("Ketik kata huruf alfabet saja (minimal 2 huruf) ya!", "error");
         triggerHaptic([35, 25, 35]);
         playSoundEffect("error");
         return;
@@ -1562,6 +1698,15 @@ npx cap add android && npx cap add ios</pre>
       const alreadyUsed = roomState.usedWords.some((w) => w.toLowerCase() === rawWord);
       if (alreadyUsed) {
         showToast(`Kata "${rawWord}" sudah dipakai di ronde ini! Cari kata lain ya 😉`, "error");
+        wordInput.classList.add("animate-shake");
+        setTimeout(() => wordInput.classList.remove("animate-shake"), 420);
+        triggerHaptic([45, 30, 45]);
+        playSoundEffect("error");
+        return;
+      }
+
+      if (!isValidDictionaryWord(rawWord)) {
+        showToast(`"${rawWord}" bukan kata baku Indo / Jawa / Sunda / Gaul! Coba kata lain ya 😊`, "error");
         wordInput.classList.add("animate-shake");
         setTimeout(() => wordInput.classList.remove("animate-shake"), 420);
         triggerHaptic([45, 30, 45]);
@@ -2200,28 +2345,28 @@ npx cap add android && npx cap add ios</pre>
       });
 
       // Tombol utama Lobby & Arena
-      document.getElementById("createRoomBtn").addEventListener("click", createOnlineRoom);
-      document.getElementById("joinRoomBtn").addEventListener("click", joinOnlineRoom);
-      document.getElementById("playBotBtn").addEventListener("click", startBotGame);
-      document.getElementById("leaveRoomBtn").addEventListener("click", leaveCurrentRoom);
+      document.getElementById("createRoomBtn")?.addEventListener("click", createOnlineRoom);
+      document.getElementById("joinRoomBtn")?.addEventListener("click", joinOnlineRoom);
+      document.getElementById("playBotBtn")?.addEventListener("click", startBotGame);
+      document.getElementById("leaveRoomBtn")?.addEventListener("click", leaveCurrentRoom);
 
-      document.getElementById("copyRoomCodeBtn").addEventListener("click", () => {
+      document.getElementById("copyRoomCodeBtn")?.addEventListener("click", () => {
         if (currentRoomCode) copyTextSafely(currentRoomCode, `Kode room "${currentRoomCode}" disalin! 📋`);
       });
-      document.getElementById("copyBigCodeBtn").addEventListener("click", () => {
+      document.getElementById("copyBigCodeBtn")?.addEventListener("click", () => {
         if (currentRoomCode) copyTextSafely(currentRoomCode, `Kode "${currentRoomCode}" disalin! Kirim ke pasanganmu 💌`);
       });
-      document.getElementById("shareWhatsAppBtn").addEventListener("click", shareRoomToWhatsApp);
-      document.getElementById("copyInviteLinkBtn").addEventListener("click", () => {
+      document.getElementById("shareWhatsAppBtn")?.addEventListener("click", shareRoomToWhatsApp);
+      document.getElementById("copyInviteLinkBtn")?.addEventListener("click", () => {
         if (currentRoomCode) {
           copyTextSafely(buildRoomInviteUrl(currentRoomCode), "Link undangan disalin! Tinggal paste di WhatsApp pasangan 💬");
         }
       });
 
       // Submit sambung kata & tombol ronde berikutnya
-      document.getElementById("wordSubmitForm").addEventListener("submit", handleWordSubmit);
-      document.getElementById("rerollPunishmentBtn").addEventListener("click", rerollCurrentPunishment);
-      document.getElementById("nextRoundBtn").addEventListener("click", startNextRound);
+      document.getElementById("wordSubmitForm")?.addEventListener("submit", handleWordSubmit);
+      document.getElementById("rerollPunishmentBtn")?.addEventListener("click", rerollCurrentPunishment);
+      document.getElementById("nextRoundBtn")?.addEventListener("click", startNextRound);
 
       // Tombol reaksi emoji
       document.querySelectorAll(".reaction-btn").forEach((btn) => {
@@ -2233,7 +2378,7 @@ npx cap add android && npx cap add ios</pre>
 
       // Toggle suara
       const soundBtn = document.getElementById("soundToggleBtn");
-      soundBtn.addEventListener("click", () => {
+      soundBtn?.addEventListener("click", () => {
         soundEnabled = !soundEnabled;
         soundBtn.textContent = soundEnabled ? "🔊" : "🔇";
         showToast(soundEnabled ? "Efek suara aktif 🔊" : "Efek suara dimatikan 🔇", "info");
@@ -2251,9 +2396,9 @@ npx cap add android && npx cap add ios</pre>
         updateBottomNavActive(currentRoomCode ? "arena" : "home");
       };
 
-      document.getElementById("openPunishmentListBtn").addEventListener("click", openPunishModal);
-      document.getElementById("closePunishmentModalBtn").addEventListener("click", closePunishModal);
-      document.getElementById("customPunishmentForm").addEventListener("submit", (e) => {
+      document.getElementById("openPunishmentListBtn")?.addEventListener("click", openPunishModal);
+      document.getElementById("closePunishmentModalBtn")?.addEventListener("click", closePunishModal);
+      document.getElementById("customPunishmentForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
         const input = document.getElementById("customPunishmentInput");
         const val = sanitizeText(input.value, 140);
@@ -2276,9 +2421,9 @@ npx cap add android && npx cap add ios</pre>
         updateBottomNavActive(currentRoomCode ? "arena" : "home");
       };
 
-      document.getElementById("installHeaderBtn").addEventListener("click", openInstallModal);
-      document.getElementById("openGithubGuideBtn").addEventListener("click", openInstallModal);
-      document.getElementById("closeGithubModalBtn").addEventListener("click", closeInstallModal);
+      document.getElementById("installHeaderBtn")?.addEventListener("click", openInstallModal);
+      document.getElementById("openGithubGuideBtn")?.addEventListener("click", openInstallModal);
+      document.getElementById("closeGithubModalBtn")?.addEventListener("click", closeInstallModal);
 
       document.getElementById("triggerNativeInstallBtn").addEventListener("click", async () => {
         if (!deferredInstallPrompt) return;
@@ -2313,7 +2458,7 @@ npx cap add android && npx cap add ios</pre>
           if (!parsed.apiKey || !parsed.projectId) {
             throw new Error("Invalid config");
           }
-          initFirebaseConnection(parsed);
+          initMultiplayerEngine(parsed);
           closeInstallModal();
           showToast("Konfigurasi Firebase berhasil diterapkan! 🎉", "success");
         } catch (err) {
