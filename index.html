@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Sambung Cinta 💕 - Game Sambung Kata Online Pasangan LDR</title>
 
-  <!-- Konfigurasi Native App Mode untuk iOS (Safari) & Android (Chrome) -->
+  <!-- Konfigurasi Native App Mode untuk iOS (Safari / WhatsApp In-App) & Android (Chrome) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Sambung Cinta" />
@@ -13,17 +13,19 @@
   <meta name="theme-color" content="#130b24" />
   <link id="appleTouchIconLink" rel="apple-touch-icon" href="" />
   <link id="pwaManifestLink" rel="manifest" href="" />
-  
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- Google Fonts: Quicksand & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
-  
+
   <!-- Tone.js untuk Efek Suara Interaktif Tanpa URL Eksternal -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <!-- MQTT over WSS untuk Multiplayer Lintas Device (iOS/Android/GitHub Pages) Tanpa Konfigurasi -->
+  <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -58,7 +60,7 @@
           }
         }
       }
-    }
+    };
   </script>
 
   <style>
@@ -78,18 +80,17 @@
       padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
     }
     /* Penyesuaian otomatis saat keyboard virtual iOS/Android muncul */
-    body.keyboard-open #mobileBottomNav,
-    body.keyboard-open footer {
+    body.keyboard-open #mobileBottomNav {
       display: none !important;
     }
     body.keyboard-open main {
-      padding-bottom: 0.5rem !important;
+      padding-bottom: 0.75rem !important;
     }
     .glass-card {
-      background: rgba(30, 20, 52, 0.72);
+      background: rgba(30, 20, 52, 0.76);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(244, 63, 94, 0.22);
+      border: 1px solid rgba(244, 63, 94, 0.24);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
     }
     .glass-subtle {
@@ -129,7 +130,7 @@
         <h1 class="font-display font-bold text-lg sm:text-xl tracking-tight text-white leading-none">
           Sambung Cinta
         </h1>
-        <p class="text-[11px] text-rose-300/80 mt-0.5">iOS & Android • Multiplayer LDR</p>
+        <p class="text-[11px] text-rose-300/80 mt-0.5">iOS • Android • WhatsApp LDR</p>
       </div>
     </div>
 
@@ -146,7 +147,7 @@
       </button>
       <div id="connectionBadge" class="px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30">
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-        <span class="hidden xs:inline sm:inline">Menghubungkan...</span>
+        <span>Menghubungkan...</span>
       </div>
     </div>
   </header>
@@ -202,7 +203,7 @@
               <h3 class="font-display font-bold text-lg text-white">Buat Room Pasangan</h3>
             </div>
             <p class="text-xs text-slate-300 mb-4">
-              Buat room privat lalu kirim kode 6 hurufnya ke pasanganmu untuk main bareng secara real-time.
+              Buat room privat lalu kirim link/kode ke WhatsApp pasanganmu untuk main bareng secara real-time.
             </p>
 
             <!-- Pilihan Durasi Timer -->
@@ -216,7 +217,7 @@
           </div>
 
           <button id="createRoomBtn" type="button"
-            class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition active:scale-98 flex items-center justify-center gap-2">
+            class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition active:scale-95 flex items-center justify-center gap-2">
             <span>Buat Room Cinta</span>
             <span>➔</span>
           </button>
@@ -239,7 +240,7 @@
           </div>
 
           <button id="joinRoomBtn" type="button"
-            class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition active:scale-98 flex items-center justify-center gap-2">
+            class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition active:scale-95 flex items-center justify-center gap-2">
             <span>Gabung Sekarang</span>
             <span>💕</span>
           </button>
@@ -337,7 +338,7 @@
         <div>
           <h3 class="font-display font-bold text-xl text-white">Menunggu Pasanganmu Masuk...</h3>
           <p class="text-xs text-slate-300 mt-1">
-            Kirimkan kode room di bawah ini ke WhatsApp / Telegram si dia agar langsung terhubung!
+            Kirimkan link undangan di bawah ini ke WhatsApp si dia agar langsung terbuka di WhatsApp iOS/Android!
           </p>
         </div>
 
@@ -350,116 +351,124 @@
             Salin Kode
           </button>
         </div>
+
+        <div class="max-w-xs mx-auto flex flex-col sm:flex-row gap-2 pt-1">
+          <button id="shareWhatsAppBtn" type="button"
+            class="flex-1 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/25 transition active:scale-95 flex items-center justify-center gap-1.5">
+            <span>💬</span>
+            <span>Kirim ke WhatsApp</span>
+          </button>
+          <button id="copyInviteLinkBtn" type="button"
+            class="py-3 px-3.5 rounded-2xl glass-subtle hover:bg-white/10 text-rose-200 font-semibold text-xs transition active:scale-95">
+            🔗 Salin Link
+          </button>
+        </div>
       </div>
 
-      <!-- SUB-VIEW B: ARENA BERMAIN AKTIF -->
-      <div id="activeArenaBox" class="hidden space-y-3.5">
-        <!-- Kartu Kata Saat Ini & Timer -->
-        <div class="glass-card rounded-3xl p-5 relative overflow-hidden">
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <span id="turnIndicatorBadge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-              🔥 Giliran Kamu!
+      <!-- SUB-VIEW B: PAPAN PERMAINAN AKTIF -->
+      <div id="activePlayBox" class="hidden space-y-3.5">
+        <!-- Timer & Ronde -->
+        <div class="glass-card rounded-3xl p-5 space-y-4">
+          <div class="flex items-center justify-between text-xs">
+            <span id="roundNumberBadge" class="px-2.5 py-1 rounded-full bg-white/10 text-slate-200 font-semibold">
+              Ronde #1
             </span>
-            <span id="timerTextBadge" class="font-display font-bold text-base text-white bg-white/10 px-3 py-1 rounded-full">
+            <span id="timerText" class="font-display font-bold text-base text-amber-300">
               20.0d
             </span>
           </div>
 
           <!-- Progress Bar Timer -->
-          <div class="w-full h-2 rounded-full bg-slate-900/90 overflow-hidden mb-5">
-            <div id="timerProgressBar" class="h-full bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 transition-all duration-200" style="width: 100%;"></div>
+          <div class="w-full h-2.5 rounded-full bg-slate-900/90 overflow-hidden border border-white/10">
+            <div id="timerProgressBar" class="w-full h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 rounded-full origin-left will-change-transform" style="transform: scaleX(1)"></div>
           </div>
 
-          <!-- Display Kata Sebelumnya & Awalan Wajib -->
-          <div class="text-center py-2">
-            <p class="text-[11px] uppercase tracking-wider text-slate-400 mb-1">Kata Terakhir</p>
-            <div id="currentWordDisplay" class="font-display font-bold text-3xl sm:text-4xl text-white tracking-wide break-words">
-              ang<span class="text-rose-400 underline">sa</span>
+          <!-- Kata Terakhir & Highlight 2 Huruf -->
+          <div id="currentWordCard" class="py-5 px-4 rounded-2xl bg-slate-950/60 border border-rose-500/25 text-center space-y-2">
+            <p id="lastPlayerLabel" class="text-[11px] text-slate-400">Kata pembuka:</p>
+            <div id="currentWordDisplay" class="font-display font-bold text-3xl sm:text-4xl tracking-wide text-white break-words">
+              ang<span class="text-rose-400 underline decoration-rose-500/70 underline-offset-4">sa</span>
             </div>
-            <div class="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/15 border border-rose-500/30">
-              <span class="text-xs text-rose-200">Lanjutkan dengan awalan:</span>
-              <span id="requiredPrefixBadge" class="font-display font-bold text-sm text-amber-300 tracking-widest">SA</span>
+            <div class="pt-1">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-xs font-semibold text-rose-200">
+                <span>Wajib awalan:</span>
+                <strong id="requiredPrefixBadge" class="text-sm uppercase tracking-wider text-amber-300">SA</strong>
+              </span>
             </div>
           </div>
 
-          <!-- Rantai Riwayat Kata -->
-          <div class="mt-5 pt-3.5 border-t border-white/10">
-            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-2">
-              <span>Rantai Kata Ronde Ini</span>
-              <span>Total: <strong id="wordCountBadge" class="text-rose-300">1</strong> kata</span>
-            </div>
-            <div id="wordHistoryList" class="flex items-center gap-2 overflow-x-auto word-scroll pb-1.5"></div>
+          <!-- Form Input Sambung Kata -->
+          <div class="space-y-2">
+            <p id="turnInstructionText" class="text-center text-xs font-semibold text-rose-300">
+              Giliran kamu! Ketik kata apa saja berawalan "SA"
+            </p>
+            <form id="wordSubmitForm" class="flex gap-2">
+              <input id="wordInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+                placeholder="Ketik sambungan kata bebas..."
+                class="flex-1 px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-rose-500/40 text-white placeholder-slate-400 focus:outline-none focus:border-rose-400 text-base font-semibold disabled:opacity-50" />
+              <button id="submitWordBtn" type="submit"
+                class="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 disabled:opacity-40 text-white font-bold text-sm shadow-lg shadow-rose-600/25 transition active:scale-95">
+                Kirim 💌
+              </button>
+            </form>
           </div>
         </div>
 
-        <!-- Form Ketik Jawaban Kata -->
-        <form id="wordForm" class="glass-card rounded-3xl p-4 space-y-2.5">
-          <div class="flex gap-2">
-            <input id="wordInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-              placeholder="Ketik kata sambungan..."
-              class="flex-1 px-4 py-3.5 rounded-2xl bg-slate-950/80 border border-rose-500/40 text-white placeholder-slate-400 focus:outline-none focus:border-rose-400 text-base font-medium disabled:opacity-50" />
-            <button id="submitWordBtn" type="submit"
-              class="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 disabled:opacity-50 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition active:scale-95">
-              Kirim 🚀
-            </button>
+        <!-- Bar Reaksi Emoji LDR & Riwayat Kata -->
+        <div class="glass-card rounded-2xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between gap-1">
+            <span class="text-[11px] font-medium text-slate-300">Kirim Reaksi ke Pasangan:</span>
+            <div class="flex items-center gap-1.5">
+              <button type="button" data-emoji="❤️" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">❤️</button>
+              <button type="button" data-emoji="😘" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">😘</button>
+              <button type="button" data-emoji="🥺" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">🥺</button>
+              <button type="button" data-emoji="😂" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">😂</button>
+              <button type="button" data-emoji="🔥" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">🔥</button>
+              <button type="button" data-emoji="🙈" class="reaction-btn w-9 h-9 rounded-xl glass-subtle hover:bg-rose-500/25 text-lg transition active:scale-90">🙈</button>
+            </div>
           </div>
-          <div class="flex items-center justify-between gap-2 px-1">
-            <p id="inputHelperText" class="text-xs text-rose-300 font-medium">
-              Bebas kata apa saja tanpa sensor!
-            </p>
-            <button id="surrenderBtn" type="button"
-              class="shrink-0 text-[11px] text-slate-400 hover:text-rose-300 underline transition">
-              Menyerah 🏳️
-            </button>
-          </div>
-        </form>
 
-        <!-- Bar Reaksi Emoji Melayang untuk Pasangan -->
-        <div class="glass-subtle rounded-2xl p-2.5 flex items-center justify-between gap-1">
-          <span class="text-[11px] text-slate-400 pl-2 hidden sm:inline">Kirim Reaksi:</span>
-          <div class="flex-1 grid grid-cols-6 gap-1.5">
-            <button type="button" data-emoji="❤️" class="reaction-btn py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 text-lg transition active:scale-90">❤️</button>
-            <button type="button" data-emoji="😘" class="reaction-btn py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 text-lg transition active:scale-90">😘</button>
-            <button type="button" data-emoji="🥺" class="reaction-btn py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 text-lg transition active:scale-90">🥺</button>
-            <button type="button" data-emoji="😂" class="reaction-btn py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 text-lg transition active:scale-90">😂</button>
-            <button type="button" data-emoji="🔥" class="reaction-btn py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 text-lg transition active:scale-90">🔥</button>
-            <button type="button" data-emoji="🙈" class="reaction-btn py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 text-lg transition active:scale-90">🙈</button>
+          <div class="pt-2 border-t border-white/10">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
+              <span>Rantai Kata Ronde Ini:</span>
+              <span id="wordCountBadge">1 kata</span>
+            </div>
+            <div id="wordHistoryList" class="flex items-center gap-1.5 overflow-x-auto word-scroll pb-1 text-xs"></div>
           </div>
         </div>
       </div>
 
-      <!-- SUB-VIEW C: RONDE SELESAI & HUKUMAN RANDOM LDR -->
+      <!-- SUB-VIEW C: RONDE SELESAI & KARTU HUKUMAN RANDOM LDR -->
       <div id="roundOverBox" class="hidden glass-card rounded-3xl p-6 text-center space-y-4 animate-pop-in">
-        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center text-3xl shadow-lg shadow-rose-500/30">
-          🎲
-        </div>
+        <div id="roundResultEmoji" class="text-5xl">😱</div>
         <div>
-          <h3 id="loserAnnouncementTitle" class="font-display font-bold text-2xl text-white">
-            Yahh, Kamu Kalah! 😱
-          </h3>
-          <p id="loseReasonText" class="text-xs text-slate-300 mt-1">
-            Waktu habis saat menyambung kata!
+          <h3 id="roundResultTitle" class="font-display font-bold text-2xl text-white">Waktu Habis!</h3>
+          <p id="roundResultReason" class="text-xs text-slate-300 mt-1">Pasanganmu kehabisan waktu berpikir.</p>
+        </div>
+
+        <!-- Kartu Hukuman LDR -->
+        <div id="loserPunishmentBox" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-rose-500/20 via-purple-600/20 to-slate-900/90 border border-rose-500/40 text-left space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold text-rose-300">
+              🎯 Hukuman untuk: <span id="punishmentLoserName" class="text-white underline">Pemain</span>
+            </span>
+            <span id="punishmentCategoryBadge" class="px-2.5 py-0.5 rounded-full bg-rose-500/30 text-[10px] font-bold text-rose-100">
+              🎤 Voice Note
+            </span>
+          </div>
+          <p id="punishmentTextDisplay" class="font-display font-bold text-sm sm:text-base text-white leading-relaxed">
+            Kirim Voice Note nyanyi reff lagu romantis sekarang!
           </p>
         </div>
 
-        <!-- Kartu Hukuman -->
-        <div class="p-5 rounded-2xl bg-gradient-to-br from-rose-500/20 via-purple-500/20 to-slate-900/90 border border-rose-400/40 space-y-2">
-          <span id="punishmentCategoryBadge" class="inline-block px-3 py-1 rounded-full bg-rose-500/30 text-rose-200 text-[11px] font-bold">
-            🎤 Voice Note
-          </span>
-          <p id="punishmentTextDisplay" class="font-display font-bold text-base sm:text-lg text-white leading-relaxed">
-            "Kirim Voice Note nyanyi reff lagu favorit pasangan sekarang!"
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
           <button id="rerollPunishmentBtn" type="button"
             class="py-3 px-4 rounded-2xl glass-subtle hover:bg-white/10 text-rose-200 font-bold text-xs transition active:scale-95">
-            🔄 Acak Ulang Hukuman
+            🎲 Acak Hukuman Lain
           </button>
           <button id="nextRoundBtn" type="button"
-            class="py-3 px-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition active:scale-95">
-            Main Ronde Berikutnya 💕
+            class="flex-1 py-3 px-5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition active:scale-95">
+            Lanjut Ronde Berikutnya 💕
           </button>
         </div>
       </div>
@@ -540,17 +549,23 @@
 
       <!-- Konten Tab iOS -->
       <div id="tabContent-ios" class="platform-tab-content hidden space-y-2.5 text-xs text-slate-300 leading-relaxed">
+        <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1.5">
+          <p class="font-bold text-emerald-200">💬 Main Langsung di Dalam WhatsApp iOS:</p>
+          <p>Kirim link GitHub Pages game ini ke chat WhatsApp pasangan. Saat diketuk di iPhone, game langsung terbuka di dalam WhatsApp tanpa pindah aplikasi, dan kode room otomatis terisi!</p>
+        </div>
         <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-          <p class="font-bold text-white">Cara Pasang di iPhone & iPad (iOS Native Mode):</p>
-          <p>1. Buka link game ini menggunakan browser <strong class="text-white">Safari</strong> di iPhone.</p>
-          <p>2. Ketuk tombol <strong class="text-rose-300">Bagikan / Share (kotak dengan panah ke atas ⬆️)</strong> di bagian bawah layar.</p>
-          <p>3. Geser ke bawah lalu pilih <strong class="text-white">"Tambah ke Layar Utama" (Add to Home Screen)</strong>.</p>
-          <p>4. Ketuk <strong class="text-rose-300">Tambah</strong>. Game akan berjalan full-screen menyatu dengan Dynamic Island / Notch iPhone!</p>
+          <p class="font-bold text-white">Opsional — Pasang Jadi Ikon Layar Utama iPhone:</p>
+          <p>1. Buka link game menggunakan browser <strong class="text-white">Safari</strong> di iPhone.</p>
+          <p>2. Ketuk tombol <strong class="text-rose-300">Bagikan / Share (kotak panah ke atas ⬆️)</strong> di bawah layar.</p>
+          <p>3. Pilih <strong class="text-white">"Tambah ke Layar Utama" (Add to Home Screen)</strong> lalu ketuk <strong class="text-rose-300">Tambah</strong>.</p>
         </div>
       </div>
 
       <!-- Konten Tab Build APK/IPA & GitHub -->
       <div id="tabContent-nativebuild" class="platform-tab-content hidden space-y-2.5 text-xs text-slate-300 leading-relaxed">
+        <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-200">
+          <strong>✅ Multiplayer Lintas Device Otomatis Aktif:</strong> Saat di-upload ke GitHub Pages, game langsung bisa dimainkan berdua antar iPhone &amp; Android secara real-time tanpa perlu isi konfigurasi apa pun!
+        </div>
         <p><strong class="text-white">1. Hosting Gratis via GitHub Pages:</strong> Upload file ini sebagai <code class="px-1.5 py-0.5 rounded bg-white/10 text-rose-300">index.html</code> ke repository GitHub, lalu aktifkan <em>Settings &gt; Pages</em>.</p>
         <p><strong class="text-white">2. Compile Jadi File .APK / .IPA (Capacitor):</strong></p>
         <pre class="p-2.5 rounded-xl bg-slate-950 border border-white/10 text-[11px] text-emerald-300 overflow-x-auto">npm init -y && npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios
@@ -558,13 +573,13 @@ npx cap init "Sambung Cinta" "com.ldr.sambungcinta" --web-dir=.
 npx cap add android && npx cap add ios</pre>
         <div>
           <label for="manualFirebaseConfigInput" class="block text-[11px] font-medium text-rose-200 mb-1">
-            Firebase Config JSON (Opsional untuk GitHub Pages / APK):
+            Opsional — Custom Firebase Config JSON (Jika ingin memakai server pribadi):
           </label>
           <textarea id="manualFirebaseConfigInput" rows="3" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}'
             class="w-full p-2.5 rounded-xl bg-slate-900/90 border border-white/15 text-xs text-slate-200 font-mono focus:outline-none focus:border-rose-400"></textarea>
           <button id="saveManualConfigBtn" type="button"
             class="mt-2 w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition">
-            Hubungkan Konfigurasi Firebase
+            Gunakan Server Firebase Custom
           </button>
         </div>
       </div>
@@ -601,248 +616,486 @@ npx cap add android && npx cap add ios</pre>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // ==========================================
-    // 1. DATA BAWAAN (HUKUMAN LDR & KATA STARTER)
+    // 1. DATA STATIS (NAMA LUCU, KATA & HUKUMAN)
     // ==========================================
-    const DEFAULT_PUNISHMENTS = [
-      { category: "🎤 Voice Note", text: "Kirim Voice Note nyanyi reff lagu romantis favorit pasangan sekarang juga!" },
-      { category: "📸 PAP Selfie", text: "Kirim PAP selfie muka paling jelek/aib tanpa filter ke chat sekarang!" },
-      { category: "🥺 Suara Imut", text: "Bilang 'Aku kangen banget sama kamu, jangan tinggalin aku ya' lewat VN dengan suara manja!" },
-      { category: "🖼️ Ganti PP", text: "Ganti foto profil WA/Telegram pakai foto pilihan pasangan selama 1 jam!" },
-      { category: "⏱️ Tantangan 30 Detik", text: "Ketik 5 hal yang paling kamu suka dari pasanganmu dalam waktu 30 detik!" },
-      { category: "🧙‍♀️ Ketawa Jahat", text: "Kirim Voice Note ketawa jahat ala nenek sihir selama 5 detik tanpa berhenti!" },
-      { category: "🫶 Video Call", text: "Video call 1 menit sekarang dan wajib kasih pose love sign pakai tangan!" },
-      { category: "📜 Pantun Gombal", text: "Buat pantun gombal dadakan dan kirim lewat Voice Note sekarang!" },
-      { category: "😂 Mirip Pasangan", text: "Foto barang terdekat di sebelahmu dan jelasin kenapa barang itu mirip pasanganmu!" },
-      { category: "😉 Kedip Manis", text: "Rekam video 5 detik bilang 'I love you so much' sambil kedip sebelah mata!" },
-      { category: "✨ Notes Bucin", text: "Tulis status/notes singkat yang manis buat pasangan selama 2 jam ke depan!" },
-      { category: "👅 Tongue Twister", text: "Kirim VN baca kalimat ini 3x cepat: 'Kuku kaki kakak-kakakku kaku-kaku'!" },
-      { category: "🥰 Spam Stiker", text: "Kirim 10 stiker paling bucin yang kamu punya di chat pasangan sekarang!" },
-      { category: "💭 Kenangan Manis", text: "Ceritain momen paling lucu yang kamu inget pas pertama kali kita kenalan!" },
-      { category: "🐱 Suara Kucing", text: "Kirim VN suara kucing mengeong manja minta perhatian pasangan!" },
-      { category: "🧋 Traktir LDR", text: "Janji traktir makanan/minuman favorit pasangan pas ketemu nanti!" },
-      { category: "🫡 Pose Hormat", text: "Kirim foto pose hormat sambil bilang 'Siap bos, aku kalah sambung kata!'" },
-      { category: "🎶 Tebak Lagu", text: "Senandungkan (humming) 1 lagu lewat VN dan biarkan pasanganmu menebaknya!" }
+    const CUTE_NICKNAMES = [
+      "Bubu 💕", "Sayangku", "Ayang", "Cintaku", "Baby Bear",
+      "Kesayangan", "My Home 🏠", "Pangeran LDR", "Putri Kangen", "Honey"
     ];
 
     const STARTER_WORDS = [
-      "angsa", "cinta", "rindu", "bulan", "kopi", "peluk", "mimpi", 
-      "senja", "bintang", "manis", "sayang", "hati", "janji", "kangen"
+      "angsa", "cinta", "rindu", "peluk", "manja", "kasih", "janji",
+      "malam", "senja", "bintang", "mimpi", "rumah", "sayang", "hati"
     ];
 
-    // Kamus ringan khusus untuk Mode Latihan vs Bot (agar Bot bisa membalas seru)
     const BOT_DICTIONARY = [
-      "angsa", "sapi", "pinggang", "gangguan", "anak", "akar", "area", "awan", "anggur",
-      "cinta", "tangan", "antar", "arti", "tikus", "usaha", "hati", "tiket", "etika",
-      "rindu", "dunia", "akar", "arus", "usap", "apel", "elang", "ngantuk", "ukuran",
-      "bulan", "antar", "arah", "ahli", "lipat", "atap", "api", "pisang", "ngobrol",
-      "kopi", "pintar", "artikel", "elok", "oktopus", "usia", "ayam", "ampas", "asik",
-      "peluk", "ukuran", "anjing", "ingat", "atap", "apik", "ikan", "kancil", "ilmu",
-      "mimpi", "pintu", "tulang", "angguk", "ukir", "irama", "makan", "kangen", "enak",
-      "senja", "jarak", "akal", "alami", "minum", "umpan", "pantai", "air", "iring",
-      "bintang", "ngakak", "akrab", "abadi", "diam", "ambisi", "sinyal", "alasan",
-      "manis", "istana", "nakal", "alergi", "gitar", "armada", "damai", "ikat",
-      "sayang", "ngidam", "aman", "antena", "nasi", "sinar", "aroma", "madu", "duka",
-      "janji", "jiwa", "wajah", "ahad", "adik", "iklan", "anjing", "ngeri", "riang",
-      "gajah", "ahli", "liar", "arsip", "ipk", "kaki", "kirim", "iman", "manja",
-      "rumah", "ahli", "lidah", "dahaga", "gadis", "istirahat", "atap", "api", "pintu",
-      "sepatu", "tulis", "istimewa", "warna", "nama", "mata", "tawa", "waktu", "tujuan",
-      "bunga", "nganga", "gatal", "alam", "ampu", "pulang", "ngamuk", "kucing", "ingat",
-      "gelas", "asli", "lihat", "aturan", "angin", "indah", "dahsyat", "atap", "apotek",
-      "ekor", "orang", "ngilu", "lupa", "pantai", "ikan", "kandang", "ngorok", "oknum",
-      "umum", "umpama", "malam", "amplop", "operasi", "sirkus", "usulan", "antri", "ribu"
+      "sapi", "pinggang", "gangguan", "antara", "rasa", "sayang", "angin",
+      "indah", "harapan", "panas", "asmara", "ramai", "air", "irama",
+      "malam", "lampu", "pulang", "anggrek", "ekor", "orang", "angka",
+      "kasih", "hilang", "anggun", "untuk", "ukir", "iring", "ingat",
+      "atap", "apel", "elang", "anggur", "urut", "utara", "rajin",
+      "cinta", "tangan", "antar", "artinya", "nyaman", "manis", "istana",
+      "nakal", "alam", "aman", "manja", "janji", "jingga", "gadis",
+      "istimewa", "warna", "nama", "mata", "tawa", "wajah", "ahli",
+      "lihat", "hati", "tidur", "urat", "aturan", "rindu", "dunia",
+      "niat", "atap", "peluk", "lukisan", "santuy", "uyah", "mimpi",
+      "pintu", "tulus", "usaha", "bahagia", "iak", "akrab", "abadi"
     ];
 
-    const CUTE_NICKNAMES = [
-      "Bubu 💕", "Dudu 🐻", "Sayangku 😘", "Ayang Beb 🥰", 
-      "Kesayangan ✨", "Si Manis 🍓", "Pangeran LDR 👑", "Putri Kangen 🌸"
+    const DEFAULT_PUNISHMENTS = [
+      { category: "🎤 Voice Note", text: "Kirim Voice Note nyanyi 1 bait lagu romantis favorit pasanganmu sekarang!" },
+      { category: "🤳 PAP Selfie", text: "Kirim foto selfie ekspresi muka paling jelek/lucu ke chat pasangan tanpa filter!" },
+      { category: "💌 Gombalan Maut", text: "Ketik 3 kalimat gombalan paling bucin buat pasanganmu dalam waktu 30 detik!" },
+      { category: "🖼️ Ganti PP", text: "Pasang foto pilihan pasanganmu sebagai foto profil WhatsApp selama 1 jam ke depan!" },
+      { category: "📞 Video Call", text: "Telepon / Video Call pasangan selama 1 menit cuma buat bilang 'Aku kangen banget sama kamu'!" },
+      { category: "🫶 Surat Cinta", text: "Tulis 1 paragraf alasan kenapa kamu bersyukur punya dia di hidupmu sekarang!" },
+      { category: "🥺 Pengakuan", text: "Ceritakan 1 momen paling bikin kamu salting pas awal-awal dekat dulu!" },
+      { category: "☕ Traktir LDR", text: "Kirim saldo jajan kopi/boba online buat pasanganmu hari ini juga!" },
+      { category: "🎵 Playlist", text: "Kirimkan 1 link lagu yang paling menggambarkan perasaanmu ke dia saat ini!" },
+      { category: "😴 Ucapan Tidur", text: "Rekam Voice Note ucapan selamat tidur paling lembut untuk diputar malam ini!" }
     ];
 
     // ==========================================
-    // 2. STATE APLIKASI (IN-MEMORY TANPA LOCALSTORAGE)
+    // 2. STATE APLIKASI & DUAL-ENGINE TRANSPORT
     // ==========================================
+    function generateSessionUid() {
+      if (typeof crypto !== "undefined" && crypto.randomUUID) {
+        return "ldr-" + crypto.randomUUID();
+      }
+      return "ldr-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+    }
+
     let app = null;
     let auth = null;
     let db = null;
     let currentUser = null;
+    const sessionFallbackUid = generateSessionUid();
+
+    // Mode transport: "firebase" | "relay" | "offline"
+    let transportMode = "offline";
     let isOnlineReady = false;
     let soundEnabled = true;
 
-    // State Room & Permainan
+    // State WSS Relay (MQTT over WebSocket untuk GitHub Pages / Lintas HP tanpa config)
+    const WSS_BROKERS = [
+      "wss://broker.emqx.io:8084/mqtt",
+      "wss://broker.hivemq.com:8884/mqtt"
+    ];
+    let brokerIndex = 0;
+    let relayClient = null;
+    let subscribedTopic = null;
+    let syncRetryTimer = null;
+    let joinPollTimer = null;
+
+    // State Permainan & Sinkronisasi Anti-Lag
     let selectedTimerSec = 20;
     let currentRoomCode = null;
     let roomUnsubscribe = null;
     let roomState = null;
     let isBotMode = false;
     let botTimerHandle = null;
-    let loopIntervalHandle = null;
+    let rafTimerHandle = null;
     let heartbeatIntervalHandle = null;
+
     let lastShownReactionId = null;
     let lastTickSecond = null;
+    let lastRenderedTimerStr = "";
+    let lastRenderedHistorySig = "";
+    let lastRenderedStatusSig = "";
+
+    // Pengunci anti-celah & anchor timer lokal bebas selisih jam HP
+    let localTurnAnchorPerf = performance.now();
+    let localTurnBudgetMs = 20000;
+    let anchoredTurnSeq = -1;
+    let isSubmittingWord = false;
+    let timeoutClaimedForSeq = -1;
+
     let customPunishmentsMemory = [];
     let deferredInstallPrompt = null;
+    let pendingInviteRoomCode = null;
+    let reusableSynth = null;
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'sambung-cinta-ldr';
+    const appId = typeof __app_id !== "undefined" ? __app_id : "sambung-cinta-ldr";
 
-    // Referensi Elemen DOM Utama
-    const lobbyView = document.getElementById('lobbyView');
-    const gameView = document.getElementById('gameView');
-    const playerNameInput = document.getElementById('playerNameInput');
-    const joinCodeInput = document.getElementById('joinCodeInput');
-    const wordInput = document.getElementById('wordInput');
-    const connectionBadge = document.getElementById('connectionBadge');
-    const punishmentModal = document.getElementById('punishmentModal');
+    // Referensi DOM Utama
+    let lobbyView, gameView, connectionBadge, playerNameInput, joinCodeInput;
+    let waitingPartnerBox, activePlayBox, roundOverBox;
+    let wordInput, submitWordBtn, timerText, timerProgressBar;
+
+    function getActiveUid() {
+      return currentUser?.uid || sessionFallbackUid;
+    }
 
     // ==========================================
-    // 4. SISTEM AUDIO (TONE.JS), HAPTIC & TOAST
+    // 3. UTILITAS KEAMANAN, SUARA (REUSABLE) & HAPTIC
     // ==========================================
-    function triggerHaptic(style = 'light') {
-      if (typeof navigator === 'undefined' || !navigator.vibrate) return;
+    function sanitizeText(str, maxLen = 60) {
+      if (typeof str !== "string") return "";
+      return str.replace(/[<>&"'`]/g, "").trim().slice(0, maxLen);
+    }
+
+    function triggerHaptic(pattern = [25]) {
       try {
-        if (style === 'light') navigator.vibrate(18);
-        else if (style === 'success') navigator.vibrate([25, 40, 35]);
-        else if (style === 'error') navigator.vibrate([50, 40, 50]);
-        else if (style === 'heavy') navigator.vibrate([120, 60, 180]);
+        if (navigator.vibrate) {
+          navigator.vibrate(pattern);
+        }
       } catch (e) {
-        // Abaikan pada perangkat yang tidak mendukung getaran
+        // Abaikan jika perangkat tidak mendukung vibrate
       }
     }
 
-    function setupMobileAppManifestAndViewport() {
-      // 1. Buat ikon SVG native & manifest dinamis agar bisa di-install di iOS & Android
-      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#9333ea"/></linearGradient></defs><rect width="512" height="512" rx="115" fill="url(#g)"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="260">💕</text></svg>`;
-      const iconDataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgIcon);
-
-      const appleIconEl = document.getElementById('appleTouchIconLink');
-      if (appleIconEl) appleIconEl.href = iconDataUri;
-
-      try {
-        const manifestObj = {
-          name: 'Sambung Cinta - Game LDR',
-          short_name: 'Sambung Cinta',
-          description: 'Game sambung kata multiplayer online untuk pasangan LDR',
-          start_url: '.',
-          display: 'standalone',
-          orientation: 'portrait',
-          background_color: '#130b24',
-          theme_color: '#130b24',
-          icons: [
-            { src: iconDataUri, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
-            { src: iconDataUri, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
-          ]
-        };
-        const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
-        const manifestUrl = URL.createObjectURL(blob);
-        const manifestLinkEl = document.getElementById('pwaManifestLink');
-        if (manifestLinkEl) manifestLinkEl.href = manifestUrl;
-      } catch (err) {
-        // Abaikan jika sandbox membatasi blob manifest
-      }
-
-      // 2. Tangkap event install Android Chrome (WebAPK)
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredInstallPrompt = e;
-        const banner = document.getElementById('nativeInstallBanner');
-        if (banner) banner.classList.remove('hidden');
-      });
-
-      // 3. Deteksi keyboard virtual iOS/Android via visualViewport
-      if (window.visualViewport) {
-        const initialHeight = window.visualViewport.height;
-        window.visualViewport.addEventListener('resize', () => {
-          const currentHeight = window.visualViewport.height;
-          if (initialHeight - currentHeight > 140) {
-            document.body.classList.add('keyboard-open');
-          } else {
-            document.body.classList.remove('keyboard-open');
-          }
-        });
-      }
-    }
-
-    function playSound(type) {
-      if (!soundEnabled || typeof Tone === 'undefined') return;
-      try {
-        if (Tone.context.state !== 'running') {
-          Tone.start();
-        }
-        const synth = new Tone.Synth({
-          oscillator: { type: 'sine' },
-          envelope: { attack: 0.01, decay: 0.15, sustain: 0.05, release: 0.2 }
+    function getAudioSynth() {
+      if (typeof Tone === "undefined") return null;
+      if (!reusableSynth) {
+        reusableSynth = new Tone.Synth({
+          oscillator: { type: "triangle" },
+          envelope: { attack: 0.008, decay: 0.1, sustain: 0.04, release: 0.16 }
         }).toDestination();
+        reusableSynth.volume.value = -12;
+      }
+      return reusableSynth;
+    }
 
-        if (type === 'submit') {
-          synth.triggerAttackRelease('C5', '16n');
-          setTimeout(() => synth.triggerAttackRelease('E5', '16n'), 70);
-        } else if (type === 'error') {
-          synth.triggerAttackRelease('G3', '16n');
-        } else if (type === 'tick') {
-          synth.volume.value = -10;
-          synth.triggerAttackRelease('A5', '32n');
-        } else if (type === 'lose') {
-          synth.triggerAttackRelease('E4', '8n');
-          setTimeout(() => synth.triggerAttackRelease('D4', '8n'), 140);
-          setTimeout(() => synth.triggerAttackRelease('C4', '4n'), 280);
-        } else if (type === 'reaction') {
-          synth.volume.value = -8;
-          synth.triggerAttackRelease('G5', '32n');
-          setTimeout(() => synth.triggerAttackRelease('B5', '32n'), 65);
+    function playSoundEffect(type) {
+      if (!soundEnabled || typeof Tone === "undefined") return;
+      try {
+        if (Tone.context.state !== "running") {
+          Tone.start().catch(() => {});
         }
-      } catch (err) {
-        // Abaikan jika browser memblokir autoplay audio sebelum interaksi
+        const synth = getAudioSynth();
+        if (!synth) return;
+        const now = Tone.now();
+
+        if (type === "send") {
+          synth.triggerAttackRelease("C5", "32n", now);
+          synth.triggerAttackRelease("E5", "32n", now + 0.06);
+        } else if (type === "error") {
+          synth.triggerAttackRelease("A2", "16n", now);
+        } else if (type === "tick") {
+          synth.triggerAttackRelease("G5", "64n", now);
+        } else if (type === "lose") {
+          synth.triggerAttackRelease("E4", "16n", now);
+          synth.triggerAttackRelease("C4", "8n", now + 0.13);
+        } else if (type === "join") {
+          synth.triggerAttackRelease("E5", "32n", now);
+          synth.triggerAttackRelease("G5", "32n", now + 0.07);
+          synth.triggerAttackRelease("C6", "16n", now + 0.14);
+        }
+      } catch (e) {
+        // Abaikan jika audio dibatasi sebelum interaksi pertama
       }
     }
 
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      const colors = {
-        info: 'bg-slate-900/95 border-rose-500/40 text-white',
-        success: 'bg-emerald-950/95 border-emerald-500/50 text-emerald-200',
-        error: 'bg-rose-950/95 border-rose-500/60 text-rose-200'
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+
+      const colorMap = {
+        info: "bg-slate-900/95 border-rose-500/40 text-rose-100",
+        success: "bg-emerald-950/95 border-emerald-400/50 text-emerald-100",
+        error: "bg-rose-950/95 border-rose-400/60 text-rose-100"
       };
-      toast.className = `px-4 py-2.5 rounded-2xl border shadow-xl text-xs font-semibold backdrop-blur-md animate-pop-in ${colors[type] || colors.info}`;
+
+      while (container.children.length >= 2) {
+        container.firstChild.remove();
+      }
+
+      const toast = document.createElement("div");
+      toast.className = `px-4 py-2.5 rounded-2xl border shadow-xl text-xs font-semibold backdrop-blur-md animate-pop-in ${colorMap[type] || colorMap.info}`;
       toast.textContent = message;
       container.appendChild(toast);
+
       setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-      }, 2800);
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.22s ease";
+        setTimeout(() => toast.remove(), 230);
+      }, 2600);
     }
 
-    // Fungsi Salin Teks Aman untuk iFrame (menggunakan execCommand)
     function copyTextSafely(text, successMsg) {
-      const tempInput = document.createElement('textarea');
-      tempInput.value = text;
-      tempInput.style.position = 'fixed';
-      tempInput.style.opacity = '0';
-      document.body.appendChild(tempInput);
-      tempInput.select();
       try {
-        document.execCommand('copy');
-        showToast(successMsg, 'success');
-      } catch (err) {
-        showToast('Gagal menyalin otomatis. Salin manual: ' + text, 'error');
+        const tempInput = document.createElement("textarea");
+        tempInput.value = text;
+        tempInput.style.position = "fixed";
+        tempInput.style.opacity = "0";
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        triggerHaptic([20]);
+        showToast(successMsg, "success");
+      } catch (e) {
+        showToast("Gagal menyalin otomatis. Salin kode secara manual ya!", "error");
       }
-      document.body.removeChild(tempInput);
+    }
+
+    function setConnectionStatus(status, label) {
+      if (!connectionBadge) return;
+      if (status === "online") {
+        connectionBadge.className = "px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30";
+        connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>${sanitizeText(label, 24)}</span>`;
+      } else if (status === "offline") {
+        connectionBadge.className = "px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-rose-500/15 text-rose-300 border border-rose-500/30";
+        connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-400"></span><span>${sanitizeText(label, 24)}</span>`;
+      } else {
+        connectionBadge.className = "px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30";
+        connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>${sanitizeText(label, 24)}</span>`;
+      }
     }
 
     // ==========================================
-    // 5. INISIALISASI FIREBASE AUTH & FIRESTORE
+    // 4. INISIALISASI MULTIPLAYER (FIREBASE + WSS RELAY)
     // ==========================================
-    async function initFirebaseConnection(customConfigObj = null) {
+    function getRelayTopic(code) {
+      return `sambung-cinta-ldr/v2/rooms/${code}`;
+    }
+
+    function initWssRelayConnection() {
+      if (typeof mqtt === "undefined") {
+        isOnlineReady = false;
+        transportMode = "offline";
+        setConnectionStatus("offline", "Mode Bot Siap");
+        return;
+      }
+
+      if (relayClient) {
+        try { relayClient.end(true); } catch (e) {}
+        relayClient = null;
+      }
+
+      const brokerUrl = WSS_BROKERS[brokerIndex % WSS_BROKERS.length];
+      setConnectionStatus("connecting", "Menghubungkan...");
+
+      let connectedWithinTimeout = false;
+      const connectGuard = setTimeout(() => {
+        if (!connectedWithinTimeout && transportMode !== "firebase") {
+          brokerIndex += 1;
+          initWssRelayConnection();
+        }
+      }, 4500);
+
+      try {
+        relayClient = mqtt.connect(brokerUrl, {
+          clientId: getActiveUid(),
+          clean: true,
+          keepalive: 20,
+          reconnectPeriod: 1500,
+          connectTimeout: 4000
+        });
+
+        relayClient.on("connect", () => {
+          connectedWithinTimeout = true;
+          clearTimeout(connectGuard);
+          if (transportMode === "firebase") return;
+
+          transportMode = "relay";
+          isOnlineReady = true;
+          setConnectionStatus("online", "Online Lintas HP");
+
+          if (currentRoomCode && !isBotMode) {
+            subscribeRelayTopic(currentRoomCode);
+            publishRelayPacket(currentRoomCode, {
+              type: "STATE_REQ",
+              fromUid: getActiveUid(),
+              currentSeq: roomState?.turnSeq || 0
+            });
+          } else if (pendingInviteRoomCode && !currentRoomCode) {
+            joinCodeInput.value = pendingInviteRoomCode;
+            pendingInviteRoomCode = null;
+            joinOnlineRoom();
+          }
+        });
+
+        relayClient.on("message", (topic, payloadBuf) => {
+          if (transportMode !== "relay" || !currentRoomCode || isBotMode) return;
+          if (topic !== getRelayTopic(currentRoomCode)) return;
+
+          try {
+            const msg = JSON.parse(payloadBuf.toString());
+            handleIncomingRelayPacket(msg);
+          } catch (e) {
+            // Abaikan paket rusak
+          }
+        });
+
+        relayClient.on("reconnect", () => {
+          if (transportMode === "relay") {
+            setConnectionStatus("connecting", "Menyambung Ulang...");
+          }
+        });
+
+        relayClient.on("offline", () => {
+          if (transportMode === "relay") {
+            setConnectionStatus("connecting", "Sinyal Lemah...");
+          }
+        });
+
+        relayClient.on("error", () => {
+          // Ditangani otomatis oleh reconnect / broker failover
+        });
+      } catch (e) {
+        clearTimeout(connectGuard);
+        isOnlineReady = false;
+        transportMode = "offline";
+        setConnectionStatus("offline", "Mode Bot Siap");
+      }
+    }
+
+    function subscribeRelayTopic(code) {
+      if (!relayClient || !code) return;
+      const topic = getRelayTopic(code);
+      if (subscribedTopic && subscribedTopic !== topic) {
+        relayClient.unsubscribe(subscribedTopic);
+      }
+      subscribedTopic = topic;
+      relayClient.subscribe(topic, { qos: 1 });
+    }
+
+    function publishRelayPacket(code, packetObj) {
+      if (!relayClient || !code) return;
+      try {
+        relayClient.publish(getRelayTopic(code), JSON.stringify(packetObj), { qos: 1, retain: false });
+      } catch (e) {
+        // Akan diulang oleh mekanisme ACK retry
+      }
+    }
+
+    function broadcastRelayStateWithAck(stateObj) {
+      if (!currentRoomCode || transportMode !== "relay" || isBotMode) return;
+      if (syncRetryTimer) clearInterval(syncRetryTimer);
+
+      const snapshotToSend = {
+        ...stateObj,
+        turnRemainingMs: getCurrentRemainingMs()
+      };
+
+      const sendPacket = () => {
+        publishRelayPacket(currentRoomCode, {
+          type: "STATE_SYNC",
+          fromUid: getActiveUid(),
+          state: snapshotToSend
+        });
+      };
+
+      sendPacket();
+      let attempts = 0;
+      syncRetryTimer = setInterval(() => {
+        attempts += 1;
+        if (!currentRoomCode || !roomState || roomState.turnSeq !== snapshotToSend.turnSeq || attempts >= 4) {
+          clearInterval(syncRetryTimer);
+          syncRetryTimer = null;
+          return;
+        }
+        sendPacket();
+      }, 900);
+    }
+
+    function handleIncomingRelayPacket(msg) {
+      if (!msg || msg.fromUid === getActiveUid()) return;
+      const myUid = getActiveUid();
+
+      if (msg.type === "STATE_ACK") {
+        if (roomState && msg.ackSeq >= roomState.turnSeq && syncRetryTimer) {
+          clearInterval(syncRetryTimer);
+          syncRetryTimer = null;
+        }
+        return;
+      }
+
+      if (msg.type === "REACTION" && msg.reaction) {
+        if (msg.reaction.id !== lastShownReactionId) {
+          lastShownReactionId = msg.reaction.id;
+          spawnFloatingEmoji(msg.reaction.emoji);
+        }
+        return;
+      }
+
+      if (msg.type === "STATE_REQ") {
+        if (roomState && (roomState.player1?.uid === myUid || roomState.player2?.uid === myUid)) {
+          publishRelayPacket(currentRoomCode, {
+            type: "STATE_SYNC",
+            fromUid: myUid,
+            state: {
+              ...roomState,
+              turnRemainingMs: getCurrentRemainingMs()
+            }
+          });
+        }
+        return;
+      }
+
+      if (msg.type === "JOIN_REQ") {
+        if (!roomState || roomState.player1?.uid !== myUid) return;
+
+        if (roomState.status === "waiting" && !roomState.player2) {
+          const nextState = {
+            ...roomState,
+            turnSeq: (roomState.turnSeq || 1) + 1,
+            status: "playing",
+            turnRemainingMs: (roomState.timerDuration || 20) * 1000,
+            player2: {
+              uid: msg.guestUid,
+              name: sanitizeText(msg.guestName, 20) || "Pasangan",
+              score: 0
+            }
+          };
+          applyIncomingRoomState(nextState);
+          broadcastRelayStateWithAck(nextState);
+          playSoundEffect("join");
+          triggerHaptic([40, 40, 40]);
+          showToast(`${nextState.player2.name} telah bergabung! Mulai! 🔥`, "success");
+        } else if (roomState.player2?.uid === msg.guestUid) {
+          broadcastRelayStateWithAck(roomState);
+        }
+        return;
+      }
+
+      if (msg.type === "STATE_SYNC" && msg.state) {
+        const incoming = msg.state;
+        // Kirim ACK bahwa state telah diterima
+        publishRelayPacket(currentRoomCode, {
+          type: "STATE_ACK",
+          fromUid: myUid,
+          ackSeq: incoming.turnSeq || 0
+        });
+
+        // Hentikan polling join jika sudah masuk sebagai player2
+        if (joinPollTimer && incoming.player2?.uid === myUid) {
+          clearInterval(joinPollTimer);
+          joinPollTimer = null;
+          playSoundEffect("join");
+          triggerHaptic([30, 40, 30]);
+          showToast("Berhasil terhubung dengan pasangan! 💕", "success");
+        }
+
+        // Terima state hanya jika lebih baru atau menyinkronkan waktu aktif
+        if (!roomState || (incoming.turnSeq || 0) > (roomState.turnSeq || 0)) {
+          const prevStatus = roomState?.status;
+          if (incoming.status === "playing" && (incoming.turnSeq || 0) > (roomState?.turnSeq || 0) && prevStatus === "playing") {
+            playSoundEffect("send");
+          } else if (incoming.status === "round_over" && prevStatus === "playing") {
+            playSoundEffect("lose");
+            triggerHaptic([80, 50, 120]);
+          }
+          applyIncomingRoomState(incoming);
+        }
+      }
+    }
+
+    async function initMultiplayerEngine(customConfigObj = null) {
       try {
         let config = customConfigObj;
-        if (!config && typeof __firebase_config !== 'undefined' && __firebase_config) {
-          config = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+        if (!config && typeof __firebase_config !== "undefined" && __firebase_config) {
+          config = typeof __firebase_config === "string" ? JSON.parse(__firebase_config) : __firebase_config;
         }
 
         if (!config || !config.apiKey) {
-          setConnectionStatus('offline', 'Mode GitHub / Lokal');
+          // Langsung gunakan Cloud WSS Relay agar GitHub Pages / HP langsung bisa multiplayer online!
+          initWssRelayConnection();
           return;
         }
 
@@ -850,8 +1103,7 @@ npx cap add android && npx cap add ios</pre>
         auth = getAuth(app);
         db = getFirestore(app);
 
-        // WAJIB: Autentikasi dulu sebelum operasi Firestore apa pun
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+        if (typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
         } else {
           await signInAnonymously(auth);
@@ -860,64 +1112,52 @@ npx cap add android && npx cap add ios</pre>
         onAuthStateChanged(auth, (user) => {
           if (user) {
             currentUser = user;
+            transportMode = "firebase";
             isOnlineReady = true;
-            setConnectionStatus('online', 'Online Siap Main');
+            setConnectionStatus("online", "Online Siap Main");
+            if (pendingInviteRoomCode && !currentRoomCode) {
+              joinCodeInput.value = pendingInviteRoomCode;
+              pendingInviteRoomCode = null;
+              joinOnlineRoom();
+            }
           }
         });
       } catch (error) {
-        console.error('Firebase init error:', error);
-        setConnectionStatus('offline', 'Mode Lokal / Bot');
-      }
-    }
-
-    function setConnectionStatus(status, label) {
-      if (status === 'online') {
-        connectionBadge.className = 'px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
-        connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>${label}</span>`;
-      } else {
-        connectionBadge.className = 'px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30';
-        connectionBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>${label}</span>`;
+        initWssRelayConnection();
       }
     }
 
     // ==========================================
-    // 6. LOGIKA INTI SAMBUNG KATA (2 HURUF AKHIR)
+    // 5. LOGIKA INTI SAMBUNG KATA (2 HURUF TERAKHIR)
     // ==========================================
-    function sanitizeWord(rawText) {
-      // Hapus tag HTML & karakter aneh, pertahankan huruf alfabet & spasi/strip
-      return rawText
-        .replace(/<[^>]*>/g, '')
-        .replace(/[^a-zA-Z\s-]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .toLowerCase();
+    function getTwoLetterPrefix(word) {
+      const clean = sanitizeText(word, 40).toLowerCase().replace(/[^a-z]/g, "");
+      if (clean.length < 2) return clean;
+      return clean.slice(-2);
     }
 
-    function getLettersOnly(word) {
-      return word.toLowerCase().replace(/[^a-z]/g, '');
+    function formatWordWithHighlight(word) {
+      const safeWord = sanitizeText(word, 40);
+      if (safeWord.length <= 2) {
+        return `<span class="text-rose-400 underline decoration-rose-500/70 underline-offset-4">${safeWord}</span>`;
+      }
+      const head = safeWord.slice(0, -2);
+      const tail = safeWord.slice(-2);
+      return `${head}<span class="text-rose-400 underline decoration-rose-500/70 underline-offset-4">${tail}</span>`;
     }
 
-    function extractLastTwoLetters(word) {
-      const letters = getLettersOnly(word);
-      if (letters.length < 2) return letters;
-      return letters.slice(-2);
+    function pickRandomPunishment() {
+      const allPool = [...customPunishmentsMemory, ...DEFAULT_PUNISHMENTS];
+      return allPool[Math.floor(Math.random() * allPool.length)];
     }
 
-    function getRandomStarterWord() {
+    function pickStarterWord() {
       return STARTER_WORDS[Math.floor(Math.random() * STARTER_WORDS.length)];
     }
 
-    function pickRandomPunishment(extraList = []) {
-      const combined = [
-        ...DEFAULT_PUNISHMENTS,
-        ...extraList.map(txt => ({ category: "💖 Custom Pasangan", text: txt }))
-      ];
-      return combined[Math.floor(Math.random() * combined.length)];
-    }
-
     function generateRoomCode() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let code = '';
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
       for (let i = 0; i < 6; i++) {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
       }
@@ -925,720 +1165,695 @@ npx cap add android && npx cap add ios</pre>
     }
 
     function getMyName() {
-      const val = playerNameInput.value.trim().replace(/<[^>]*>/g, '');
-      return val || 'Sayang';
+      const val = sanitizeText(playerNameInput.value, 20);
+      return val || "Sayang";
+    }
+
+    function buildRoomInviteUrl(code) {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set("room", code);
+        return url.toString();
+      } catch (e) {
+        return window.location.href.split("?")[0] + "?room=" + encodeURIComponent(code);
+      }
+    }
+
+    function shareRoomToWhatsApp() {
+      if (!currentRoomCode) return;
+      const inviteUrl = buildRoomInviteUrl(currentRoomCode);
+      const message = `Sayang, ayo main Sambung Cinta LDR! 💕\nKode Room: *${currentRoomCode}*\nLangsung klik link ini dari WhatsApp ya:\n${inviteUrl}`;
+      const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, "_blank", "noopener,noreferrer");
     }
 
     // ==========================================
-    // 7. MANAJEMEN ROOM MULTIPLAYER ONLINE
+    // 6. MULTIPLAYER ONLINE (DUAL-ENGINE HANDLERS)
     // ==========================================
+    function getRoomDocRef(code) {
+      return doc(db, "artifacts", appId, "public", "data", "rooms", code);
+    }
+
+    function applyIncomingRoomState(newState) {
+      if (!newState) return;
+      const incomingSeq = newState.turnSeq || 1;
+      const prevSeq = roomState?.turnSeq || 0;
+
+      if (incomingSeq !== anchoredTurnSeq || newState.status !== roomState?.status) {
+        anchoredTurnSeq = incomingSeq;
+        localTurnAnchorPerf = performance.now();
+        localTurnBudgetMs = typeof newState.turnRemainingMs === "number"
+          ? newState.turnRemainingMs
+          : (newState.timerDuration || 20) * 1000;
+        isSubmittingWord = false;
+        lastTickSecond = null;
+      }
+
+      if (incomingSeq >= prevSeq) {
+        roomState = newState;
+        renderGameState();
+      }
+    }
+
     async function createOnlineRoom() {
-      if (!isOnlineReady || !currentUser || !db) {
-        showToast('Koneksi online belum aktif. Coba Mode Bot atau cek menu GitHub!', 'error');
+      if (!isOnlineReady || transportMode === "offline") {
+        showToast("Sedang menyambungkan ke server online... Coba klik lagi dalam 2 detik ya!", "info");
+        initMultiplayerEngine();
         return;
       }
 
       const code = generateRoomCode();
-      const myUid = currentUser.uid;
+      const starter = pickStarterWord();
       const myName = getMyName();
-      const starterWord = getRandomStarterWord();
-      const prefix = extractLastTwoLetters(starterWord);
+      const myUid = getActiveUid();
 
-      const newRoomData = {
-        roomCode: code,
-        createdAt: Date.now(),
-        status: 'waiting', // waiting | playing | round_over
+      const initialRoomData = {
+        code,
+        turnSeq: 1,
+        status: "waiting",
         timerDuration: selectedTimerSec,
-        hostUid: myUid,
-        guestUid: null,
-        players: {
-          [myUid]: {
-            name: myName,
-            score: 0,
-            lastSeen: Date.now()
-          }
+        turnRemainingMs: selectedTimerSec * 1000,
+        round: 1,
+        currentWord: starter,
+        requiredPrefix: getTwoLetterPrefix(starter),
+        usedWords: [starter],
+        lastWordBy: "Sistem Pembuka",
+        turnPlayerIndex: 1,
+        turnStartedAt: Date.now(),
+        player1: {
+          uid: myUid,
+          name: myName,
+          score: 0
         },
-        currentTurnUid: myUid,
-        turnDeadline: Date.now() + selectedTimerSec * 1000,
-        currentWord: starterWord,
-        requiredPrefix: prefix,
-        wordHistory: [
-          { word: starterWord, byUid: 'system', byName: 'Mulai', timestamp: Date.now() }
-        ],
-        loserUid: null,
-        loserName: null,
-        loseReason: null,
+        player2: null,
+        loserIndex: null,
+        loseReason: "",
         punishment: null,
-        lastReaction: null,
-        customPunishments: [...customPunishmentsMemory]
+        reaction: null
       };
 
-      try {
-        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', code);
-        await setDoc(roomRef, newRoomData);
-        isBotMode = false;
-        enterRoomSubscription(code);
-        showToast(`Room ${code} berhasil dibuat! Kirim ke pasanganmu 💌`, 'success');
-      } catch (err) {
-        console.error('Gagal membuat room:', err);
-        showToast('Gagal membuat room online. Periksa koneksi internetmu.', 'error');
+      if (transportMode === "firebase" && db) {
+        try {
+          await setDoc(getRoomDocRef(code), initialRoomData);
+          currentRoomCode = code;
+          isBotMode = false;
+          applyIncomingRoomState(initialRoomData);
+          enterArenaUI();
+          subscribeToFirebaseRoom(code);
+          triggerHaptic([30]);
+          showToast(`Room ${code} siap! Kirim ke WhatsApp pasanganmu 💌`, "success");
+        } catch (err) {
+          showToast("Gagal membuat room online. Periksa koneksi internetmu.", "error");
+        }
+        return;
       }
+
+      // Mode WSS Relay (GitHub Pages / Lintas HP iOS & Android)
+      currentRoomCode = code;
+      isBotMode = false;
+      subscribeRelayTopic(code);
+      applyIncomingRoomState(initialRoomData);
+      enterArenaUI();
+      triggerHaptic([30]);
+      showToast(`Room ${code} aktif! Kirim ke WhatsApp pasanganmu 💌`, "success");
     }
 
     async function joinOnlineRoom() {
-      if (!isOnlineReady || !currentUser || !db) {
-        showToast('Koneksi online belum aktif. Gunakan Mode Bot atau cek menu GitHub!', 'error');
-        return;
-      }
-
-      const code = joinCodeInput.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const code = sanitizeText(joinCodeInput.value, 6).toUpperCase().replace(/[^A-Z0-9]/g, "");
       if (code.length !== 6) {
-        showToast('Masukkan 6 karakter Kode Room pasanganmu ya!', 'error');
+        showToast("Masukkan 6 karakter kode room dengan benar!", "error");
+        triggerHaptic([40, 30, 40]);
         return;
       }
 
-      try {
-        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', code);
-        const snap = await getDoc(roomRef);
+      if (!isOnlineReady || transportMode === "offline") {
+        showToast("Sedang menghubungkan ke server... Tunggu sebentar ya!", "info");
+        return;
+      }
 
-        if (!snap.exists()) {
-          showToast(`Room "${code}" tidak ditemukan. Cek lagi kodenya ya!`, 'error');
-          return;
-        }
+      const myName = getMyName();
+      const myUid = getActiveUid();
 
-        const data = snap.data();
-        const myUid = currentUser.uid;
-        const myName = getMyName();
-
-        // Cek apakah user ini sudah menjadi bagian dari room (rejoin aman)
-        const isExistingMember = (data.hostUid === myUid || data.guestUid === myUid);
-
-        if (!isExistingMember && data.guestUid && data.guestUid !== myUid) {
-          showToast('Room ini sudah penuh oleh sepasang kekasih 💕 Buat room baru yuk!', 'error');
-          return;
-        }
-
-        const updates = {
-          [`players.${myUid}`]: {
-            name: myName,
-            score: data.players?.[myUid]?.score || 0,
-            lastSeen: Date.now()
+      if (transportMode === "firebase" && db) {
+        try {
+          const ref = getRoomDocRef(code);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) {
+            showToast(`Room "${code}" tidak ditemukan. Cek ulang kodenya ya!`, "error");
+            triggerHaptic([40, 30, 40]);
+            return;
           }
-        };
 
-        // Jika masuk sebagai pasangan kedua (guest)
-        if (!isExistingMember && !data.guestUid) {
-          updates.guestUid = myUid;
-          updates.status = 'playing';
-          updates.currentTurnUid = data.hostUid; // Host mulai duluan
-          updates.turnDeadline = Date.now() + (data.timerDuration || 20) * 1000;
+          const data = snap.data();
+          if (data.player1 && data.player1.uid === myUid) {
+            currentRoomCode = code;
+            isBotMode = false;
+            applyIncomingRoomState(data);
+            enterArenaUI();
+            subscribeToFirebaseRoom(code);
+            return;
+          }
+
+          if (data.player2 && data.player2.uid !== myUid) {
+            showToast("Room ini sudah penuh (2 pemain LDR)!", "error");
+            return;
+          }
+
+          const nextSeq = (data.turnSeq || 1) + 1;
+          await updateDoc(ref, {
+            turnSeq: nextSeq,
+            status: "playing",
+            turnStartedAt: Date.now(),
+            turnRemainingMs: (data.timerDuration || 20) * 1000,
+            player2: {
+              uid: myUid,
+              name: myName,
+              score: 0
+            }
+          });
+
+          currentRoomCode = code;
+          isBotMode = false;
+          playSoundEffect("join");
+          triggerHaptic([30, 40, 30]);
+          enterArenaUI();
+          subscribeToFirebaseRoom(code);
+          showToast("Berhasil terhubung dengan pasangan! 💕", "success");
+        } catch (err) {
+          showToast("Gagal bergabung ke room. Coba lagi sebentar ya.", "error");
         }
-
-        await updateDoc(roomRef, updates);
-        isBotMode = false;
-        enterRoomSubscription(code);
-        showToast(`Berhasil terhubung ke Room ${code}! 💕`, 'success');
-      } catch (err) {
-        console.error('Gagal gabung room:', err);
-        showToast('Gagal bergabung ke room. Coba lagi ya!', 'error');
+        return;
       }
-    }
 
-    function enterRoomSubscription(code) {
+      // Mode WSS Relay (GitHub Pages / Lintas HP iOS & Android)
       currentRoomCode = code;
-      if (roomUnsubscribe) {
-        roomUnsubscribe();
-      }
+      isBotMode = false;
+      roomState = {
+        code,
+        turnSeq: 0,
+        status: "waiting",
+        timerDuration: 20,
+        round: 1,
+        currentWord: "angsa",
+        requiredPrefix: "sa",
+        usedWords: ["angsa"],
+        lastWordBy: "Menghubungkan...",
+        turnPlayerIndex: 1,
+        player1: { uid: "host-pending", name: "Pasangan", score: 0 },
+        player2: { uid: myUid, name: myName, score: 0 }
+      };
 
-      lobbyView.classList.add('hidden');
-      gameView.classList.remove('hidden');
-      document.getElementById('modeBadge').classList.add('hidden');
-      document.getElementById('displayRoomCode').textContent = code;
-      document.getElementById('waitingBigCode').textContent = code;
+      subscribeRelayTopic(code);
+      enterArenaUI();
+      renderGameState();
+      showToast(`Menghubungkan ke room ${code}... 💕`, "info");
 
-      const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', code);
+      if (joinPollTimer) clearInterval(joinPollTimer);
+      const sendJoinReq = () => {
+        publishRelayPacket(code, {
+          type: "JOIN_REQ",
+          fromUid: myUid,
+          guestUid: myUid,
+          guestName: myName
+        });
+      };
 
-      // Pasang listener real-time dengan error callback wajib
-      roomUnsubscribe = onSnapshot(roomRef, (snapshot) => {
-        if (!snapshot.exists()) {
-          showToast('Room telah ditutup.', 'info');
+      sendJoinReq();
+      let tries = 0;
+      joinPollTimer = setInterval(() => {
+        tries += 1;
+        if (!currentRoomCode || (roomState && roomState.status !== "waiting")) {
+          clearInterval(joinPollTimer);
+          joinPollTimer = null;
+          return;
+        }
+        if (tries >= 10) {
+          clearInterval(joinPollTimer);
+          joinPollTimer = null;
+          showToast(`Room "${code}" belum merespons. Pastikan pasanganmu sudah membuka room-nya ya!`, "error");
           leaveCurrentRoom();
           return;
         }
-        roomState = snapshot.data();
-        renderGameState();
-      }, (error) => {
-        console.error('Snapshot listener error:', error);
-        showToast('Koneksi sempat terganggu, mencoba menyambung ulang...', 'error');
-      });
+        sendJoinReq();
+      }, 1000);
+    }
 
-      startGameLoopAndHeartbeat();
+    function subscribeToFirebaseRoom(code) {
+      if (roomUnsubscribe) {
+        roomUnsubscribe();
+        roomUnsubscribe = null;
+      }
+
+      const ref = getRoomDocRef(code);
+      roomUnsubscribe = onSnapshot(ref, (snap) => {
+        if (!snap.exists()) {
+          showToast("Room telah ditutup oleh pasangan.", "info");
+          leaveCurrentRoom();
+          return;
+        }
+        const prevStatus = roomState ? roomState.status : null;
+        const incoming = snap.data();
+
+        if (prevStatus === "waiting" && incoming.status === "playing") {
+          playSoundEffect("join");
+          triggerHaptic([40, 40, 40]);
+          showToast(`${incoming.player2?.name || "Pasangan"} telah bergabung! Mulai! 🔥`, "success");
+        } else if (prevStatus === "playing" && incoming.status === "round_over") {
+          playSoundEffect("lose");
+          triggerHaptic([80, 50, 120]);
+        }
+
+        if (incoming.reaction && incoming.reaction.id !== lastShownReactionId) {
+          lastShownReactionId = incoming.reaction.id;
+          spawnFloatingEmoji(incoming.reaction.emoji);
+        }
+
+        applyIncomingRoomState(incoming);
+      }, () => {
+        showToast("Koneksi terganggu, mencoba menyambung ulang...", "info");
+      });
     }
 
     // ==========================================
-    // 8. MODE LATIHAN VS BOT BUCIN (OFFLINE / SOLO)
+    // 7. MODE LATIHAN VS BOT BUCIN
     // ==========================================
-    function startBotPracticeMode() {
-      isBotMode = true;
-      currentRoomCode = 'BOTLDR';
-      const myUid = currentUser ? currentUser.uid : 'local-player';
+    function startBotGame() {
+      const starter = pickStarterWord();
       const myName = getMyName();
-      const starterWord = getRandomStarterWord();
 
-      roomState = {
-        roomCode: 'BOTLDR',
-        status: 'playing',
+      isBotMode = true;
+      currentRoomCode = "BOTLDR";
+      const initialBotState = {
+        code: "BOTLDR",
+        turnSeq: 1,
+        status: "playing",
         timerDuration: selectedTimerSec,
-        hostUid: myUid,
-        guestUid: 'bot-partner',
-        players: {
-          [myUid]: { name: myName, score: 0, lastSeen: Date.now() },
-          'bot-partner': { name: 'Bot Ayang 🤖', score: 0, lastSeen: Date.now() }
-        },
-        currentTurnUid: myUid,
-        turnDeadline: Date.now() + selectedTimerSec * 1000,
-        currentWord: starterWord,
-        requiredPrefix: extractLastTwoLetters(starterWord),
-        wordHistory: [
-          { word: starterWord, byUid: 'system', byName: 'Mulai', timestamp: Date.now() }
-        ],
-        loserUid: null,
-        loserName: null,
-        loseReason: null,
+        turnRemainingMs: selectedTimerSec * 1000,
+        round: 1,
+        currentWord: starter,
+        requiredPrefix: getTwoLetterPrefix(starter),
+        usedWords: [starter],
+        lastWordBy: "Sistem Pembuka",
+        turnPlayerIndex: 1,
+        turnStartedAt: Date.now(),
+        player1: { uid: "local-p1", name: myName, score: 0 },
+        player2: { uid: "bot-bucin", name: "Bot Bucin 🤖", score: 0 },
+        loserIndex: null,
+        loseReason: "",
         punishment: null,
-        lastReaction: null,
-        customPunishments: [...customPunishmentsMemory]
+        reaction: null
       };
 
-      lobbyView.classList.add('hidden');
-      gameView.classList.remove('hidden');
-      document.getElementById('modeBadge').classList.remove('hidden');
-      document.getElementById('displayRoomCode').textContent = 'LATIHAN';
-
-      renderGameState();
-      startGameLoopAndHeartbeat();
-      showToast('Mode Latihan dimulai! Coba kalahkan Bot Ayang 🤖💕', 'info');
+      playSoundEffect("join");
+      triggerHaptic([30]);
+      applyIncomingRoomState(initialBotState);
+      enterArenaUI();
+      showToast("Mode Latihan vs Bot dimulai! Sambung 2 huruf terakhir!", "info");
     }
 
-    function scheduleBotReplyIfNeeded() {
-      if (!isBotMode || !roomState || roomState.status !== 'playing') return;
-      if (roomState.currentTurnUid !== 'bot-partner') return;
+    function scheduleBotMoveIfNeeded() {
+      if (!isBotMode || !roomState || roomState.status !== "playing" || roomState.turnPlayerIndex !== 2) {
+        return;
+      }
 
-      clearTimeout(botTimerHandle);
-      const thinkDelay = 1600 + Math.random() * 2200; // Bot berpikir natural 1.6 - 3.8 detik
+      if (botTimerHandle) clearTimeout(botTimerHandle);
+      const thinkDelayMs = 1400 + Math.floor(Math.random() * 1600);
 
       botTimerHandle = setTimeout(() => {
-        if (!isBotMode || !roomState || roomState.status !== 'playing' || roomState.currentTurnUid !== 'bot-partner') return;
-
-        const prefix = roomState.requiredPrefix.toLowerCase();
-        const usedSet = new Set(roomState.wordHistory.map(w => getLettersOnly(w.word)));
-        const candidates = BOT_DICTIONARY.filter(w => {
-          const clean = getLettersOnly(w);
-          return clean.length >= 3 && clean.startsWith(prefix) && !usedSet.has(clean);
-        });
-
-        if (candidates.length === 0) {
-          // Bot menyerah kalau kehabisan kosakata
-          triggerRoundOver('bot-partner', 'surrender');
+        if (!isBotMode || !roomState || roomState.status !== "playing" || roomState.turnPlayerIndex !== 2) {
           return;
         }
 
-        const chosen = candidates[Math.floor(Math.random() * candidates.length)];
-        applyValidWordMove('bot-partner', chosen);
-      }, thinkDelay);
-    }
+        const prefix = roomState.requiredPrefix;
+        const usedSet = new Set(roomState.usedWords.map((w) => w.toLowerCase()));
+        const candidates = BOT_DICTIONARY.filter(
+          (w) => w.startsWith(prefix) && !usedSet.has(w.toLowerCase()) && w.length >= 3
+        );
 
-    // ==========================================
-    // 9. VALIDASI & PENGIRIMAN KATA
-    // ==========================================
-    async function handleWordSubmit(e) {
-      e.preventDefault();
-      if (!roomState || roomState.status !== 'playing') return;
-
-      const myUid = isBotMode ? (currentUser ? currentUser.uid : 'local-player') : currentUser?.uid;
-      if (!myUid) return;
-
-      if (roomState.currentTurnUid !== myUid) {
-        showToast('Sabar sayang, sekarang giliran pasanganmu! 💕', 'info');
-        return;
-      }
-
-      const cleanWord = sanitizeWord(wordInput.value);
-      const lettersOnly = getLettersOnly(cleanWord);
-      const requiredPrefix = roomState.requiredPrefix.toLowerCase();
-
-      // Validasi 1: Minimal 3 huruf agar bisa menghasilkan 2 huruf sambungan berikutnya
-      if (lettersOnly.length < 3) {
-        shakeInputError('Minimal 3 huruf ya sayang! Biar bisa disambung lagi 💕');
-        return;
-      }
-
-      // Validasi 2: Wajib diawali 2 huruf terakhir kata sebelumnya
-      if (!lettersOnly.startsWith(requiredPrefix)) {
-        shakeInputError(`Harus diawali huruf "${requiredPrefix.toUpperCase()}" ya! 😅`);
-        return;
-      }
-
-      // Validasi 3: Tidak boleh mengulang kata yang sudah dipakai di ronde ini
-      const alreadyUsed = roomState.wordHistory.some(item => getLettersOnly(item.word) === lettersOnly);
-      if (alreadyUsed) {
-        shakeInputError(`Kata "${cleanWord}" sudah dipakai di ronde ini! Cari kata lain 🔄`);
-        return;
-      }
-
-      // Bersihkan input segera untuk responsivitas kilat
-      wordInput.value = '';
-      playSound('submit');
-      triggerHaptic('success');
-      await applyValidWordMove(myUid, cleanWord);
-    }
-
-    function shakeInputError(msg) {
-      playSound('error');
-      triggerHaptic('error');
-      const helper = document.getElementById('inputHelperText');
-      helper.textContent = msg;
-      helper.className = 'text-xs text-rose-400 font-bold';
-      wordInput.classList.remove('animate-shake');
-      void wordInput.offsetWidth; // trigger reflow
-      wordInput.classList.add('animate-shake');
-      wordInput.focus();
-    }
-
-    async function applyValidWordMove(playerUid, cleanWord) {
-      if (!roomState) return;
-      const nextPrefix = extractLastTwoLetters(cleanWord);
-      const playerObj = roomState.players?.[playerUid] || { name: 'Pemain', score: 0 };
-
-      // Tentukan giliran berikutnya
-      let nextTurnUid = playerUid;
-      if (roomState.guestUid) {
-        nextTurnUid = (playerUid === roomState.hostUid) ? roomState.guestUid : roomState.hostUid;
-      }
-
-      const updatedHistory = [
-        ...roomState.wordHistory.slice(-79), // simpan hingga 80 kata terakhir agar ringan
-        {
-          word: cleanWord,
-          byUid: playerUid,
-          byName: playerObj.name,
-          timestamp: Date.now()
+        let chosenWord = "";
+        if (candidates.length > 0) {
+          chosenWord = candidates[Math.floor(Math.random() * candidates.length)];
+        } else {
+          const suffixes = ["na", "ta", "ra", "ka", "sa", "ma", "la", "pa", "ya", "da"];
+          chosenWord = prefix + suffixes[Math.floor(Math.random() * suffixes.length)];
         }
-      ];
 
-      const newDeadline = Date.now() + (roomState.timerDuration || 20) * 1000;
-      const newScore = (playerObj.score || 0) + 1;
+        const nextState = {
+          ...roomState,
+          turnSeq: (roomState.turnSeq || 1) + 1,
+          currentWord: chosenWord,
+          requiredPrefix: getTwoLetterPrefix(chosenWord),
+          usedWords: [...roomState.usedWords, chosenWord],
+          lastWordBy: roomState.player2.name,
+          turnPlayerIndex: 1,
+          turnRemainingMs: (roomState.timerDuration || 20) * 1000
+        };
+
+        playSoundEffect("send");
+        if (Math.random() < 0.45) {
+          const botEmojis = ["❤️", "😘", "🔥", "😂"];
+          spawnFloatingEmoji(botEmojis[Math.floor(Math.random() * botEmojis.length)]);
+        }
+        applyIncomingRoomState(nextState);
+      }, thinkDelayMs);
+    }
+
+    // ==========================================
+    // 8. PENGIRIMAN KATA (0ms OPTIMISTIC), TIMER & RONDE SELESAI
+    // ==========================================
+    function getMyPlayerIndex() {
+      if (isBotMode) return 1;
+      if (!roomState) return 0;
+      const myUid = getActiveUid();
+      if (roomState.player1 && roomState.player1.uid === myUid) return 1;
+      if (roomState.player2 && roomState.player2.uid === myUid) return 2;
+      return 0;
+    }
+
+    async function handleWordSubmit(event) {
+      event.preventDefault();
+      if (!roomState || roomState.status !== "playing" || isSubmittingWord) return;
+
+      const myIdx = getMyPlayerIndex();
+      if (roomState.turnPlayerIndex !== myIdx) {
+        showToast("Sabar sayang, sekarang masih giliran pasanganmu! 💕", "info");
+        return;
+      }
+
+      // Tanpa sensor kata! Hanya membersihkan karakter berbahaya & spasi
+      const rawWord = sanitizeText(wordInput.value, 40).toLowerCase().replace(/\s+/g, "");
+      if (rawWord.length < 2) {
+        showToast("Minimal ketik 2 huruf ya!", "error");
+        triggerHaptic([35, 25, 35]);
+        playSoundEffect("error");
+        return;
+      }
+
+      const required = roomState.requiredPrefix.toLowerCase();
+      if (!rawWord.startsWith(required)) {
+        showToast(`Kata harus diawali huruf "${required.toUpperCase()}"!`, "error");
+        wordInput.classList.add("animate-shake");
+        setTimeout(() => wordInput.classList.remove("animate-shake"), 420);
+        triggerHaptic([45, 30, 45]);
+        playSoundEffect("error");
+        return;
+      }
+
+      const alreadyUsed = roomState.usedWords.some((w) => w.toLowerCase() === rawWord);
+      if (alreadyUsed) {
+        showToast(`Kata "${rawWord}" sudah dipakai di ronde ini! Cari kata lain ya 😉`, "error");
+        wordInput.classList.add("animate-shake");
+        setTimeout(() => wordInput.classList.remove("animate-shake"), 420);
+        triggerHaptic([45, 30, 45]);
+        playSoundEffect("error");
+        return;
+      }
+
+      isSubmittingWord = true;
+      const nextPrefix = getTwoLetterPrefix(rawWord);
+      const nextTurn = myIdx === 1 ? 2 : 1;
+      const myName = myIdx === 1 ? roomState.player1.name : roomState.player2.name;
+      const nextSeq = (roomState.turnSeq || 1) + 1;
+
+      const optimisticNextState = {
+        ...roomState,
+        turnSeq: nextSeq,
+        currentWord: rawWord,
+        requiredPrefix: nextPrefix,
+        usedWords: [...roomState.usedWords, rawWord],
+        lastWordBy: myName,
+        turnPlayerIndex: nextTurn,
+        turnRemainingMs: (roomState.timerDuration || 20) * 1000,
+        turnStartedAt: Date.now()
+      };
+
+      wordInput.value = "";
+      playSoundEffect("send");
+      triggerHaptic([20]);
+
+      // Langsung update UI 0ms tanpa menunggu round-trip jaringan!
+      applyIncomingRoomState(optimisticNextState);
 
       if (isBotMode) {
-        roomState.currentWord = cleanWord;
-        roomState.requiredPrefix = nextPrefix;
-        roomState.wordHistory = updatedHistory;
-        roomState.currentTurnUid = nextTurnUid;
-        roomState.turnDeadline = newDeadline;
-        roomState.players[playerUid].score = newScore;
-        renderGameState();
-        scheduleBotReplyIfNeeded();
+        scheduleBotMoveIfNeeded();
         return;
       }
 
-      try {
-        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-        await updateDoc(roomRef, {
-          currentWord: cleanWord,
-          requiredPrefix: nextPrefix,
-          wordHistory: updatedHistory,
-          currentTurnUid: nextTurnUid,
-          turnDeadline: newDeadline,
-          [`players.${playerUid}.score`]: newScore,
-          [`players.${playerUid}.lastSeen`]: Date.now()
-        });
-      } catch (err) {
-        console.error('Gagal mengirim kata:', err);
-        showToast('Sinyal agak lambat, coba kirim ulang kata tadi ya!', 'error');
-      }
-    }
-
-    // ==========================================
-    // 10. TIMER, KEKALAHAN & HUKUMAN RANDOM
-    // ==========================================
-    function startGameLoopAndHeartbeat() {
-      clearInterval(loopIntervalHandle);
-      clearInterval(heartbeatIntervalHandle);
-
-      // Loop 200ms untuk countdown timer presisi
-      loopIntervalHandle = setInterval(() => {
-        if (!roomState || roomState.status !== 'playing') return;
-
-        const now = Date.now();
-        const remainingMs = Math.max(0, roomState.turnDeadline - now);
-        const remainingSec = remainingMs / 1000;
-        const totalSec = roomState.timerDuration || 20;
-        const pct = Math.min(100, Math.max(0, (remainingSec / totalSec) * 100));
-
-        const timerTextBadge = document.getElementById('timerTextBadge');
-        const timerProgressBar = document.getElementById('timerProgressBar');
-
-        timerTextBadge.textContent = remainingSec.toFixed(1) + 'd';
-        timerProgressBar.style.width = pct + '%';
-
-        // Efek ketegangan saat < 5 detik
-        if (remainingSec <= 5 && remainingSec > 0) {
-          timerTextBadge.classList.add('text-rose-400', 'animate-pulse-fast');
-          const wholeSec = Math.ceil(remainingSec);
-          if (wholeSec !== lastTickSecond) {
-            lastTickSecond = wholeSec;
-            playSound('tick');
-          }
-        } else {
-          timerTextBadge.classList.remove('text-rose-400', 'animate-pulse-fast');
-          lastTickSecond = null;
-        }
-
-        // Cek apakah waktu habis
-        if (remainingMs <= 0) {
-          const myUid = isBotMode ? (currentUser ? currentUser.uid : 'local-player') : currentUser?.uid;
-          const activeTurnUid = roomState.currentTurnUid;
-          // Giliran aktif mengeksekusi langsung, atau backup setelah 1.2 detik jika tab lawan sedang background
-          if (activeTurnUid === myUid || isBotMode || (now - roomState.turnDeadline > 1200)) {
-            triggerRoundOver(activeTurnUid, 'timeout');
-          }
-        }
-      }, 200);
-
-      // Heartbeat kehadiran online setiap 15 detik
-      heartbeatIntervalHandle = setInterval(async () => {
-        if (isBotMode || !isOnlineReady || !currentUser || !currentRoomCode || !db) return;
+      if (transportMode === "firebase" && db) {
         try {
-          const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-          await updateDoc(roomRef, {
-            [`players.${currentUser.uid}.lastSeen`]: Date.now()
+          await updateDoc(getRoomDocRef(currentRoomCode), {
+            turnSeq: nextSeq,
+            currentWord: rawWord,
+            requiredPrefix: nextPrefix,
+            usedWords: optimisticNextState.usedWords,
+            lastWordBy: myName,
+            turnPlayerIndex: nextTurn,
+            turnRemainingMs: optimisticNextState.turnRemainingMs,
+            turnStartedAt: optimisticNextState.turnStartedAt
           });
         } catch (e) {
-          // Abaikan error heartbeat ringan
+          showToast("Gagal menyinkronkan kata. Periksa sinyal internetmu!", "error");
         }
-      }, 15000);
-    }
-
-    async function triggerRoundOver(loserUid, reason = 'timeout') {
-      if (!roomState || roomState.status !== 'playing') return;
-
-      const loserObj = roomState.players?.[loserUid] || { name: 'Pasangan' };
-      const punishment = pickRandomPunishment(roomState.customPunishments || []);
-
-      playSound('lose');
-      triggerHaptic('heavy');
-      clearTimeout(botTimerHandle);
-
-      if (isBotMode) {
-        roomState.status = 'round_over';
-        roomState.loserUid = loserUid;
-        roomState.loserName = loserObj.name;
-        roomState.loseReason = reason;
-        roomState.punishment = punishment;
-        renderGameState();
         return;
       }
 
-      try {
-        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-        await updateDoc(roomRef, {
-          status: 'round_over',
-          loserUid: loserUid,
-          loserName: loserObj.name,
-          loseReason: reason,
-          punishment: punishment
-        });
-      } catch (err) {
-        console.error('Gagal mengakhiri ronde:', err);
-      }
+      // Kirim via WSS Relay dengan ACK retry otomatis
+      broadcastRelayStateWithAck(optimisticNextState);
     }
 
-    async function rerollPunishment() {
-      if (!roomState || roomState.status !== 'round_over') return;
-      const newPunishment = pickRandomPunishment(roomState.customPunishments || []);
-      playSound('submit');
+    async function triggerTimeoutLoss(loserIdx) {
+      if (!roomState || roomState.status !== "playing") return;
+      if (timeoutClaimedForSeq === roomState.turnSeq) return;
+      timeoutClaimedForSeq = roomState.turnSeq;
+
+      const winnerIdx = loserIdx === 1 ? 2 : 1;
+      const loserName = loserIdx === 1 ? roomState.player1.name : (roomState.player2?.name || "Pasangan");
+      const punishment = pickRandomPunishment();
+      const reasonText = `${loserName} kehabisan waktu saat mencari awalan "${roomState.requiredPrefix.toUpperCase()}"!`;
+
+      const newP1Score = (roomState.player1?.score || 0) + (winnerIdx === 1 ? 1 : 0);
+      const newP2Score = (roomState.player2?.score || 0) + (winnerIdx === 2 ? 1 : 0);
+      const nextSeq = (roomState.turnSeq || 1) + 1;
+
+      const nextState = {
+        ...roomState,
+        turnSeq: nextSeq,
+        status: "round_over",
+        loserIndex: loserIdx,
+        loseReason: reasonText,
+        punishment,
+        player1: { ...roomState.player1, score: newP1Score },
+        player2: roomState.player2 ? { ...roomState.player2, score: newP2Score } : null
+      };
+
+      playSoundEffect("lose");
+      triggerHaptic([80, 50, 120]);
+      applyIncomingRoomState(nextState);
 
       if (isBotMode) {
-        roomState.punishment = newPunishment;
-        renderGameState();
+        if (botTimerHandle) clearTimeout(botTimerHandle);
         return;
       }
 
-      try {
-        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-        await updateDoc(roomRef, { punishment: newPunishment });
-      } catch (err) {
-        showToast('Gagal mengacak ulang hukuman.', 'error');
+      if (transportMode === "firebase" && db) {
+        try {
+          await updateDoc(getRoomDocRef(currentRoomCode), {
+            turnSeq: nextSeq,
+            status: "round_over",
+            loserIndex: loserIdx,
+            loseReason: reasonText,
+            punishment,
+            "player1.score": newP1Score,
+            "player2.score": newP2Score
+          });
+        } catch (e) {
+          // Abaikan jika pasangan sudah meng-update duluan
+        }
+        return;
       }
+
+      broadcastRelayStateWithAck(nextState);
+    }
+
+    async function rerollCurrentPunishment() {
+      if (!roomState || roomState.status !== "round_over") return;
+      const newPunishment = pickRandomPunishment();
+      const nextSeq = (roomState.turnSeq || 1) + 1;
+      triggerHaptic([25]);
+
+      const nextState = {
+        ...roomState,
+        turnSeq: nextSeq,
+        punishment: newPunishment
+      };
+      applyIncomingRoomState(nextState);
+
+      if (isBotMode) return;
+
+      if (transportMode === "firebase" && db) {
+        try {
+          await updateDoc(getRoomDocRef(currentRoomCode), {
+            turnSeq: nextSeq,
+            punishment: newPunishment
+          });
+        } catch (e) {
+          showToast("Gagal mengacak hukuman baru.", "error");
+        }
+        return;
+      }
+
+      broadcastRelayStateWithAck(nextState);
     }
 
     async function startNextRound() {
       if (!roomState) return;
-      const starterWord = getRandomStarterWord();
-      const prefix = extractLastTwoLetters(starterWord);
+      const starter = pickStarterWord();
+      const nextRoundNum = (roomState.round || 1) + 1;
+      const startingPlayer = roomState.loserIndex || 1;
+      const nextSeq = (roomState.turnSeq || 1) + 1;
 
-      // Pemenang ronde sebelumnya mendapat giliran pertama di ronde baru
-      let nextStarterUid = roomState.hostUid;
-      if (roomState.guestUid && roomState.loserUid === roomState.hostUid) {
-        nextStarterUid = roomState.guestUid;
-      }
+      triggerHaptic([30]);
+      playSoundEffect("join");
 
-      const newDeadline = Date.now() + (roomState.timerDuration || 20) * 1000;
-      const resetHistory = [
-        { word: starterWord, byUid: 'system', byName: 'Ronde Baru', timestamp: Date.now() }
-      ];
+      const nextState = {
+        ...roomState,
+        turnSeq: nextSeq,
+        status: "playing",
+        round: nextRoundNum,
+        currentWord: starter,
+        requiredPrefix: getTwoLetterPrefix(starter),
+        usedWords: [starter],
+        lastWordBy: "Sistem Pembuka",
+        turnPlayerIndex: startingPlayer,
+        turnRemainingMs: (roomState.timerDuration || 20) * 1000,
+        turnStartedAt: Date.now(),
+        loserIndex: null,
+        punishment: null
+      };
+
+      applyIncomingRoomState(nextState);
 
       if (isBotMode) {
-        roomState.status = 'playing';
-        roomState.currentWord = starterWord;
-        roomState.requiredPrefix = prefix;
-        roomState.wordHistory = resetHistory;
-        roomState.currentTurnUid = nextStarterUid;
-        roomState.turnDeadline = newDeadline;
-        roomState.loserUid = null;
-        roomState.punishment = null;
-        renderGameState();
-        scheduleBotReplyIfNeeded();
+        scheduleBotMoveIfNeeded();
         return;
       }
 
-      try {
-        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-        await updateDoc(roomRef, {
-          status: 'playing',
-          currentWord: starterWord,
-          requiredPrefix: prefix,
-          wordHistory: resetHistory,
-          currentTurnUid: nextStarterUid,
-          turnDeadline: newDeadline,
-          loserUid: null,
-          loserName: null,
-          loseReason: null,
-          punishment: null
-        });
-      } catch (err) {
-        showToast('Gagal memulai ronde baru.', 'error');
+      if (transportMode === "firebase" && db) {
+        try {
+          await updateDoc(getRoomDocRef(currentRoomCode), {
+            turnSeq: nextSeq,
+            status: "playing",
+            round: nextRoundNum,
+            currentWord: starter,
+            requiredPrefix: nextState.requiredPrefix,
+            usedWords: [starter],
+            lastWordBy: "Sistem Pembuka",
+            turnPlayerIndex: startingPlayer,
+            turnRemainingMs: nextState.turnRemainingMs,
+            turnStartedAt: nextState.turnStartedAt,
+            loserIndex: null,
+            punishment: null
+          });
+        } catch (e) {
+          showToast("Gagal memulai ronde berikutnya.", "error");
+        }
+        return;
       }
+
+      broadcastRelayStateWithAck(nextState);
     }
 
     // ==========================================
-    // 11. REAKSI EMOJI MELAYANG REAL-TIME
+    // 9. REAKSI EMOJI MELAYANG LDR
     // ==========================================
+    function spawnFloatingEmoji(emoji) {
+      const layer = document.getElementById("reactionLayer");
+      if (!layer) return;
+
+      for (let i = 0; i < 4; i++) {
+        const el = document.createElement("div");
+        el.textContent = emoji;
+        el.className = "fixed bottom-20 text-3xl sm:text-4xl animate-float-up select-none";
+        el.style.left = `${15 + Math.random() * 70}%`;
+        el.style.animationDelay = `${i * 120}ms`;
+        layer.appendChild(el);
+        setTimeout(() => el.remove(), 2700);
+      }
+    }
+
     async function sendEmojiReaction(emoji) {
-      playSound('reaction');
-      triggerHaptic('light');
-      spawnFloatingEmoji(emoji, getMyName());
+      triggerHaptic([15]);
+      spawnFloatingEmoji(emoji);
 
-      if (isBotMode || !isOnlineReady || !currentUser || !currentRoomCode || !db) return;
+      if (isBotMode || !currentRoomCode) return;
+      const reactionObj = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        emoji
+      };
 
-      try {
-        const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-        await updateDoc(roomRef, {
-          lastReaction: {
-            id: crypto.randomUUID(),
-            emoji: emoji,
-            byUid: currentUser.uid,
-            byName: getMyName(),
-            ts: Date.now()
-          }
+      if (transportMode === "firebase" && db) {
+        try {
+          await updateDoc(getRoomDocRef(currentRoomCode), { reaction: reactionObj });
+        } catch (e) {}
+        return;
+      }
+
+      if (transportMode === "relay") {
+        publishRelayPacket(currentRoomCode, {
+          type: "REACTION",
+          fromUid: getActiveUid(),
+          reaction: reactionObj
         });
-      } catch (e) {
-        // Abaikan jika gagal kirim reaksi
       }
-    }
-
-    function spawnFloatingEmoji(emoji, senderName) {
-      const layer = document.getElementById('reactionLayer');
-      const el = document.createElement('div');
-      const leftPos = 15 + Math.random() * 70; // 15% - 85% lebar layar
-      el.style.left = leftPos + '%';
-      el.style.bottom = '90px';
-      el.className = 'fixed flex flex-col items-center animate-float-up select-none';
-      el.innerHTML = `
-        <span class="text-4xl drop-shadow-lg">${emoji}</span>
-        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/60 text-rose-200 mt-0.5">${escapeHtml(senderName)}</span>
-      `;
-      layer.appendChild(el);
-      setTimeout(() => el.remove(), 2500);
-    }
-
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
     }
 
     // ==========================================
-    // 12. RENDER UI BERDASARKAN STATE ROOM
+    // 10. RENDER UI & 60FPS GPU TIMER LOOP
     // ==========================================
-    function renderGameState() {
-      if (!roomState) return;
+    function getCurrentRemainingMs() {
+      if (!roomState || roomState.status !== "playing") return 0;
+      const elapsed = performance.now() - localTurnAnchorPerf;
+      return Math.max(0, localTurnBudgetMs - elapsed);
+    }
 
-      const myUid = isBotMode ? (currentUser ? currentUser.uid : 'local-player') : currentUser?.uid;
-      const hostUid = roomState.hostUid;
-      const guestUid = roomState.guestUid;
-
-      const p1 = roomState.players?.[hostUid] || { name: 'Pemain 1', score: 0 };
-      const p2 = guestUid ? (roomState.players?.[guestUid] || { name: 'Pasangan', score: 0 }) : null;
-
-      // Update Kartu Pemain 1
-      document.getElementById('p1Name').textContent = p1.name + (hostUid === myUid ? ' (Kamu)' : '');
-      document.getElementById('p1Score').textContent = p1.score || 0;
-
-      // Update Kartu Pemain 2
-      const p2NameEl = document.getElementById('p2Name');
-      const p2StatusDot = document.getElementById('p2StatusDot');
-      if (p2) {
-        p2NameEl.textContent = p2.name + (guestUid === myUid ? ' (Kamu)' : '');
-        p2NameEl.classList.remove('text-slate-400');
-        p2NameEl.classList.add('text-white');
-        document.getElementById('p2Score').textContent = p2.score || 0;
-
-        const isRecentlyActive = isBotMode || (Date.now() - (p2.lastSeen || 0) < 40000);
-        p2StatusDot.className = isRecentlyActive
-          ? 'inline-flex items-center gap-1 text-[10px] font-medium text-emerald-400'
-          : 'inline-flex items-center gap-1 text-[10px] font-medium text-amber-400';
-        p2StatusDot.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${isRecentlyActive ? 'bg-emerald-400' : 'bg-amber-400'}"></span> ${isRecentlyActive ? 'Online' : 'Idle'}`;
-      } else {
-        p2NameEl.textContent = 'Menunggu Pasangan...';
-        p2NameEl.classList.add('text-slate-400');
-        document.getElementById('p2Score').textContent = '0';
-        p2StatusDot.className = 'inline-flex items-center gap-1 text-[10px] font-medium text-slate-400';
-        p2StatusDot.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Menunggu...';
-      }
-
-      // Highlight Giliran Aktif di Scoreboard
-      const p1Card = document.getElementById('player1Card');
-      const p2Card = document.getElementById('player2Card');
-      const p1TurnLabel = document.getElementById('p1TurnLabel');
-      const p2TurnLabel = document.getElementById('p2TurnLabel');
-
-      if (roomState.status === 'playing') {
-        if (roomState.currentTurnUid === hostUid) {
-          p1Card.classList.add('border-rose-500', 'bg-rose-500/10');
-          p2Card.classList.remove('border-purple-500', 'bg-purple-500/10');
-          p1TurnLabel.textContent = '✍️ Sedang mengetik...';
-          p2TurnLabel.textContent = '';
+    function updateBottomNavActive(tab) {
+      const buttons = [
+        { id: "navHomeBtn", key: "home" },
+        { id: "navArenaBtn", key: "arena" },
+        { id: "navPunishBtn", key: "punish" },
+        { id: "navInstallBtn", key: "install" }
+      ];
+      buttons.forEach((btn) => {
+        const el = document.getElementById(btn.id);
+        if (!el) return;
+        if (btn.key === tab) {
+          el.classList.remove("text-slate-400");
+          el.classList.add("text-rose-400");
         } else {
-          p2Card.classList.add('border-purple-500', 'bg-purple-500/10');
-          p1Card.classList.remove('border-rose-500', 'bg-rose-500/10');
-          p2TurnLabel.textContent = '✍️ Sedang mengetik...';
-          p1TurnLabel.textContent = '';
+          el.classList.remove("text-rose-400");
+          el.classList.add("text-slate-400");
         }
-      } else {
-        p1Card.classList.remove('border-rose-500', 'bg-rose-500/10');
-        p2Card.classList.remove('border-purple-500', 'bg-purple-500/10');
-        p1TurnLabel.textContent = '';
-        p2TurnLabel.textContent = '';
+      });
+    }
+
+    function runSmoothTimerFrame() {
+      updateTimerTick();
+      if (currentRoomCode) {
+        rafTimerHandle = requestAnimationFrame(runSmoothTimerFrame);
       }
+    }
 
-      // Cek Reaksi Emoji Masuk dari Pasangan
-      if (roomState.lastReaction && roomState.lastReaction.id !== lastShownReactionId) {
-        lastShownReactionId = roomState.lastReaction.id;
-        if (roomState.lastReaction.byUid !== myUid && (Date.now() - roomState.lastReaction.ts < 8000)) {
-          playSound('reaction');
-          spawnFloatingEmoji(roomState.lastReaction.emoji, roomState.lastReaction.byName || 'Pasangan');
-        }
-      }
+    function enterArenaUI() {
+      lobbyView.classList.add("hidden");
+      gameView.classList.remove("hidden");
+      updateBottomNavActive("arena");
 
-      // Tampilkan Sub-View Sesuai Status
-      const waitingBox = document.getElementById('waitingPartnerBox');
-      const activeBox = document.getElementById('activeArenaBox');
-      const roundOverBox = document.getElementById('roundOverBox');
+      lastRenderedHistorySig = "";
+      lastRenderedStatusSig = "";
+      lastRenderedTimerStr = "";
 
-      waitingBox.classList.add('hidden');
-      activeBox.classList.add('hidden');
-      roundOverBox.classList.add('hidden');
-
-      if (roomState.status === 'waiting') {
-        waitingBox.classList.remove('hidden');
-        return;
-      }
-
-      if (roomState.status === 'playing') {
-        activeBox.classList.remove('hidden');
-
-        // Format kata saat ini dengan highlight 2 huruf terakhir
-        const word = roomState.currentWord || 'angsa';
-        const prefix = (roomState.requiredPrefix || extractLastTwoLetters(word)).toUpperCase();
-        const wordDisplayEl = document.getElementById('currentWordDisplay');
-
-        if (word.length >= 2) {
-          const head = escapeHtml(word.slice(0, -2));
-          const tail = escapeHtml(word.slice(-2));
-          wordDisplayEl.innerHTML = `${head}<span class="text-rose-400 underline decoration-wavy decoration-rose-500/70">${tail}</span>`;
-        } else {
-          wordDisplayEl.textContent = word;
-        }
-
-        document.getElementById('requiredPrefixBadge').textContent = prefix;
-
-        // Render Riwayat Rantai Kata
-        const historyList = document.getElementById('wordHistoryList');
-        const historyArr = roomState.wordHistory || [];
-        document.getElementById('wordCountBadge').textContent = historyArr.length;
-        historyList.innerHTML = historyArr.map((item, idx) => {
-          const isLatest = idx === historyArr.length - 1;
-          return `
-            <div class="shrink-0 px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 ${
-              isLatest 
-                ? 'bg-rose-500/25 border border-rose-400/50 text-white font-bold' 
-                : 'bg-white/5 border border-white/10 text-slate-300'
-            }">
-              <span>${escapeHtml(item.word)}</span>
-              <span class="text-[10px] text-slate-400">(${escapeHtml(item.byName)})</span>
-            </div>
-          `;
-        }).join('<span class="text-slate-600 text-xs">➔</span>');
-        historyList.scrollLeft = historyList.scrollWidth;
-
-        // Atur Status Form Input (Giliran Saya vs Giliran Pasangan)
-        const isMyTurn = (roomState.currentTurnUid === myUid);
-        const turnBadge = document.getElementById('turnIndicatorBadge');
-        const submitBtn = document.getElementById('submitWordBtn');
-        const helperText = document.getElementById('inputHelperText');
-
-        if (isMyTurn) {
-          turnBadge.textContent = '🔥 Giliran Kamu!';
-          turnBadge.className = 'px-3 py-1 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
-          wordInput.disabled = false;
-          submitBtn.disabled = false;
-          wordInput.placeholder = `Ketik kata awalan "${prefix}"...`;
-          helperText.textContent = `Bebas kata apa saja berawalan "${prefix}" (min. 3 huruf)!`;
-          helperText.className = 'text-xs text-rose-300 font-medium';
-          if (document.activeElement !== wordInput) {
-            wordInput.focus();
-          }
-        } else {
-          const activePartnerName = roomState.players?.[roomState.currentTurnUid]?.name || 'Pasangan';
-          turnBadge.textContent = `⏳ Giliran ${activePartnerName}`;
-          turnBadge.className = 'px-3 py-1 rounded-full font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/40';
-          wordInput.disabled = true;
-          submitBtn.disabled = true;
-          wordInput.placeholder = `Menunggu ${activePartnerName} menjawab...`;
-          helperText.textContent = 'Kirim reaksi emoji di bawah biar dia makin deg-degan 😘';
-          helperText.className = 'text-xs text-slate-400';
-        }
-        return;
-      }
-
-      if (roomState.status === 'round_over') {
-        roundOverBox.classList.remove('hidden');
-        const loserName = roomState.loserName || 'Pemain';
-        const isMeLoser = (roomState.loserUid === myUid);
-
-        document.getElementById('loserAnnouncementTitle').textContent = isMeLoser
-          ? `Yahh, Kamu Kalah! 😱`
-          : `Yeay! ${loserName} Kalah! 🎉`;
-
-        document.getElementById('loseReasonText').textContent = roomState.loseReason === 'surrender'
-          ? `${loserName} memilih menyerah dan siap menerima hukuman LDR!`
-          : `${loserName} kehabisan waktu saat menyambung awalan "${(roomState.requiredPrefix || '').toUpperCase()}"!`;
-
-        const p = roomState.punishment || pickRandomPunishment();
-        document.getElementById('punishmentCategoryBadge').textContent = p.category || '🎲 Hukuman Random LDR';
-        document.getElementById('punishmentTextDisplay').textContent = `"${p.text}"`;
-      }
+      if (rafTimerHandle) cancelAnimationFrame(rafTimerHandle);
+      rafTimerHandle = requestAnimationFrame(runSmoothTimerFrame);
     }
 
     function leaveCurrentRoom() {
@@ -1646,257 +1861,522 @@ npx cap add android && npx cap add ios</pre>
         roomUnsubscribe();
         roomUnsubscribe = null;
       }
-      clearInterval(loopIntervalHandle);
-      clearInterval(heartbeatIntervalHandle);
-      clearTimeout(botTimerHandle);
+      if (botTimerHandle) {
+        clearTimeout(botTimerHandle);
+        botTimerHandle = null;
+      }
+      if (rafTimerHandle) {
+        cancelAnimationFrame(rafTimerHandle);
+        rafTimerHandle = null;
+      }
+      if (heartbeatIntervalHandle) {
+        clearInterval(heartbeatIntervalHandle);
+        heartbeatIntervalHandle = null;
+      }
+      if (syncRetryTimer) {
+        clearInterval(syncRetryTimer);
+        syncRetryTimer = null;
+      }
+      if (joinPollTimer) {
+        clearInterval(joinPollTimer);
+        joinPollTimer = null;
+      }
+      if (relayClient && subscribedTopic) {
+        try { relayClient.unsubscribe(subscribedTopic); } catch (e) {}
+        subscribedTopic = null;
+      }
+
       currentRoomCode = null;
       roomState = null;
       isBotMode = false;
+      isSubmittingWord = false;
+      anchoredTurnSeq = -1;
+      timeoutClaimedForSeq = -1;
 
-      gameView.classList.add('hidden');
-      lobbyView.classList.remove('hidden');
+      gameView.classList.add("hidden");
+      lobbyView.classList.remove("hidden");
+      updateBottomNavActive("home");
     }
 
-    // ==========================================
-    // 13. MODAL HUKUMAN CUSTOM & PANDUAN GITHUB
-    // ==========================================
-    function renderPunishmentModalList() {
-      const container = document.getElementById('punishmentListContainer');
-      const activeCustomList = (roomState && roomState.customPunishments) ? roomState.customPunishments : customPunishmentsMemory;
+    function renderGameState() {
+      if (!roomState) return;
 
-      let html = '';
-      if (activeCustomList.length > 0) {
-        html += `<p class="font-bold text-rose-300 mt-1 mb-1">💖 Hukuman Custom Kalian (${activeCustomList.length}):</p>`;
-        activeCustomList.forEach((item, idx) => {
-          html += `
-            <div class="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-between gap-2">
-              <span class="text-white">${escapeHtml(item)}</span>
-              <button type="button" data-del-idx="${idx}" class="del-custom-dare text-rose-300 hover:text-white px-2 py-1 rounded bg-white/5">Hapus</button>
-            </div>
-          `;
-        });
+      document.getElementById("displayRoomCode").textContent = roomState.code || "------";
+      document.getElementById("waitingBigCode").textContent = roomState.code || "------";
+
+      const modeBadge = document.getElementById("modeBadge");
+      if (isBotMode) {
+        modeBadge.classList.remove("hidden");
+      } else {
+        modeBadge.classList.add("hidden");
       }
 
-      html += `<p class="font-bold text-slate-300 mt-3 mb-1">🎲 Hukuman Bawaan Seru (${DEFAULT_PUNISHMENTS.length}):</p>`;
-      DEFAULT_PUNISHMENTS.forEach(item => {
-        html += `
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[10px] font-semibold text-amber-300 block mb-0.5">${escapeHtml(item.category)}</span>
-            <span class="text-slate-200">${escapeHtml(item.text)}</span>
-          </div>
-        `;
-      });
+      // Scoreboard Player 1 & Player 2
+      const p1 = roomState.player1;
+      const p2 = roomState.player2;
+      document.getElementById("p1Name").textContent = p1 ? p1.name : "Pemain 1";
+      document.getElementById("p1Score").textContent = p1 ? (p1.score || 0) : 0;
 
-      container.innerHTML = html;
+      const p2NameEl = document.getElementById("p2Name");
+      const p2StatusDot = document.getElementById("p2StatusDot");
+      if (p2) {
+        p2NameEl.textContent = p2.name;
+        p2NameEl.className = "font-display font-bold text-sm text-white truncate";
+        document.getElementById("p2Score").textContent = p2.score || 0;
+        p2StatusDot.className = "inline-flex items-center gap-1 text-[10px] font-medium text-emerald-400";
+        p2StatusDot.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online`;
+      } else {
+        p2NameEl.textContent = "Menunggu Pasangan...";
+        p2NameEl.className = "font-display font-bold text-sm text-slate-400 truncate";
+        document.getElementById("p2Score").textContent = "0";
+        p2StatusDot.className = "inline-flex items-center gap-1 text-[10px] font-medium text-slate-400";
+        p2StatusDot.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Menunggu...`;
+      }
 
-      container.querySelectorAll('.del-custom-dare').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const idx = parseInt(btn.getAttribute('data-del-idx'), 10);
-          customPunishmentsMemory.splice(idx, 1);
-          if (roomState && currentRoomCode && !isBotMode && db) {
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-            await updateDoc(roomRef, { customPunishments: [...customPunishmentsMemory] });
-          } else if (roomState) {
-            roomState.customPunishments = [...customPunishmentsMemory];
-          }
-          renderPunishmentModalList();
-        });
-      });
+      const p1Card = document.getElementById("player1Card");
+      const p2Card = document.getElementById("player2Card");
+      const p1TurnLabel = document.getElementById("p1TurnLabel");
+      const p2TurnLabel = document.getElementById("p2TurnLabel");
+
+      if (roomState.status === "playing") {
+        if (roomState.turnPlayerIndex === 1) {
+          p1Card.classList.add("border-rose-400", "bg-rose-500/10");
+          p2Card.classList.remove("border-purple-400", "bg-purple-500/10");
+          p1TurnLabel.textContent = "✍️ Sedang mengetik...";
+          p2TurnLabel.textContent = "";
+        } else {
+          p2Card.classList.add("border-purple-400", "bg-purple-500/10");
+          p1Card.classList.remove("border-rose-400", "bg-rose-500/10");
+          p2TurnLabel.textContent = "✍️ Sedang mengetik...";
+          p1TurnLabel.textContent = "";
+        }
+      } else {
+        p1Card.classList.remove("border-rose-400", "bg-rose-500/10");
+        p2Card.classList.remove("border-purple-400", "bg-purple-500/10");
+        p1TurnLabel.textContent = "";
+        p2TurnLabel.textContent = "";
+      }
+
+      // Switch Sub-Views
+      if (roomState.status === "waiting") {
+        waitingPartnerBox.classList.remove("hidden");
+        activePlayBox.classList.add("hidden");
+        roundOverBox.classList.add("hidden");
+        return;
+      }
+
+      if (roomState.status === "round_over") {
+        waitingPartnerBox.classList.add("hidden");
+        activePlayBox.classList.add("hidden");
+        roundOverBox.classList.remove("hidden");
+
+        const myIdx = getMyPlayerIndex();
+        const didILose = roomState.loserIndex === myIdx;
+        const loserName = roomState.loserIndex === 1 ? (p1?.name || "Pemain 1") : (p2?.name || "Pasangan");
+
+        document.getElementById("roundResultEmoji").textContent = didILose ? "🙈" : "🥳";
+        document.getElementById("roundResultTitle").textContent = didILose ? "Yah, Kamu Kena Hukuman!" : "Yeay, Kamu Menang Ronde Ini!";
+        document.getElementById("roundResultReason").textContent = roomState.loseReason || "Ronde selesai!";
+        document.getElementById("punishmentLoserName").textContent = loserName;
+
+        if (roomState.punishment) {
+          document.getElementById("punishmentCategoryBadge").textContent = roomState.punishment.category;
+          document.getElementById("punishmentTextDisplay").textContent = roomState.punishment.text;
+        }
+        return;
+      }
+
+      // Status: playing
+      waitingPartnerBox.classList.add("hidden");
+      roundOverBox.classList.add("hidden");
+      activePlayBox.classList.remove("hidden");
+
+      document.getElementById("roundNumberBadge").textContent = `Ronde #${roomState.round || 1}`;
+      document.getElementById("lastPlayerLabel").textContent = `Dari ${roomState.lastWordBy || "Sistem"}:`;
+      document.getElementById("currentWordDisplay").innerHTML = formatWordWithHighlight(roomState.currentWord);
+      document.getElementById("requiredPrefixBadge").textContent = (roomState.requiredPrefix || "").toUpperCase();
+
+      const myIdx = getMyPlayerIndex();
+      const isMyTurn = roomState.turnPlayerIndex === myIdx;
+      const instructionEl = document.getElementById("turnInstructionText");
+
+      if (isMyTurn) {
+        instructionEl.textContent = `🔥 Giliran KAMU! Ketik kata awalan "${roomState.requiredPrefix.toUpperCase()}"`;
+        instructionEl.className = "text-center text-xs font-bold text-emerald-300";
+        wordInput.disabled = false;
+        submitWordBtn.disabled = false;
+        wordInput.placeholder = `Awalan "${roomState.requiredPrefix.toUpperCase()}"...`;
+      } else {
+        const partnerName = myIdx === 1 ? (p2?.name || "Pasangan") : (p1?.name || "Pasangan");
+        instructionEl.textContent = `⏳ Menunggu ${partnerName} menyambung kata...`;
+        instructionEl.className = "text-center text-xs font-medium text-slate-300";
+        wordInput.disabled = true;
+        submitWordBtn.disabled = true;
+        wordInput.placeholder = `Menunggu giliran ${partnerName}...`;
+      }
+
+      // Differential Render Riwayat Kata (Hanya update DOM saat daftar kata berubah)
+      const words = roomState.usedWords || [];
+      const historySig = `${roomState.round}-${words.length}-${words[words.length - 1] || ""}`;
+      if (historySig !== lastRenderedHistorySig) {
+        lastRenderedHistorySig = historySig;
+        document.getElementById("wordCountBadge").textContent = `${words.length} kata`;
+        const historyEl = document.getElementById("wordHistoryList");
+        historyEl.innerHTML = words
+          .map((w, idx) => {
+            const isLatest = idx === words.length - 1;
+            return `<span class="shrink-0 px-2.5 py-1 rounded-lg ${isLatest ? "bg-rose-500/25 border border-rose-400/50 text-white font-bold" : "bg-white/5 text-slate-300"}">${sanitizeText(w, 40)}</span>`;
+          })
+          .join(`<span class="text-rose-400/60">➔</span>`);
+        historyEl.scrollLeft = historyEl.scrollWidth;
+      }
+    }
+
+    function updateTimerTick() {
+      if (!roomState || roomState.status !== "playing") return;
+
+      const totalBudgetMs = (roomState.timerDuration || 20) * 1000;
+      const elapsedMs = performance.now() - localTurnAnchorPerf;
+      const rawRemainingMs = localTurnBudgetMs - elapsedMs;
+      const clampedMs = Math.max(0, rawRemainingMs);
+      const remainingSec = clampedMs / 1000;
+      const scaleRatio = Math.max(0, Math.min(1, clampedMs / totalBudgetMs));
+
+      // GPU-accelerated bar tanpa layout reflow
+      if (timerProgressBar) {
+        timerProgressBar.style.transform = `scaleX(${scaleRatio})`;
+      }
+
+      // Update teks hanya jika angka 0.1 detik berubah
+      const formattedSec = `${remainingSec.toFixed(1)}d`;
+      if (timerText && formattedSec !== lastRenderedTimerStr) {
+        lastRenderedTimerStr = formattedSec;
+        timerText.textContent = formattedSec;
+        const isUrgent = remainingSec <= 5;
+        const urgentSig = isUrgent ? "urgent" : "normal";
+        if (urgentSig !== lastRenderedStatusSig) {
+          lastRenderedStatusSig = urgentSig;
+          timerText.className = isUrgent
+            ? "font-display font-bold text-base text-rose-400 animate-pulse-fast"
+            : "font-display font-bold text-base text-amber-300";
+        }
+      }
+
+      const wholeSec = Math.ceil(remainingSec);
+      if (wholeSec <= 4 && wholeSec > 0 && wholeSec !== lastTickSecond) {
+        lastTickSecond = wholeSec;
+        playSoundEffect("tick");
+      }
+
+      // Pemain yang gilirannya habis langsung memicu kalah; lawan memberi grace period 650ms untuk toleransi jaringan
+      const myIdx = getMyPlayerIndex();
+      const isMyTurn = roomState.turnPlayerIndex === myIdx;
+      const timeoutThreshold = (isBotMode || isMyTurn) ? 0 : -650;
+
+      if (rawRemainingMs <= timeoutThreshold) {
+        lastTickSecond = null;
+        triggerTimeoutLoss(roomState.turnPlayerIndex);
+      }
     }
 
     // ==========================================
-    // 14. EVENT LISTENERS UI
+    // 11. MODAL HUKUMAN & PWA MOBILE IOS/ANDROID
     // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
+    function renderPunishmentModalList() {
+      const container = document.getElementById("punishmentListContainer");
+      if (!container) return;
+
+      const allItems = [
+        ...customPunishmentsMemory.map((item) => ({ ...item, isCustom: true })),
+        ...DEFAULT_PUNISHMENTS.map((item) => ({ ...item, isCustom: false }))
+      ];
+
+      container.innerHTML = allItems
+        .map((item) => `
+          <div class="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-rose-300">${sanitizeText(item.category, 30)}</span>
+              ${item.isCustom ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/25 text-purple-200">Custom Kalian</span>' : ""}
+            </div>
+            <p class="text-slate-200 leading-snug">${sanitizeText(item.text, 160)}</p>
+          </div>
+        `)
+        .join("");
+    }
+
+    function setupMobileAppManifestAndViewport() {
+      // Buat ikon aplikasi SVG inline & manifest dinamis agar bisa di-install ke layar utama HP
+      try {
+        const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#9333ea"/></linearGradient></defs><rect width="192" height="192" rx="44" fill="url(#g)"/><text x="96" y="122" font-size="92" text-anchor="middle">💕</text></svg>`;
+        const iconDataUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSvg);
+        const appleIcon = document.getElementById("appleTouchIconLink");
+        if (appleIcon) appleIcon.href = iconDataUrl;
+
+        const manifestObj = {
+          name: "Sambung Cinta - Game Pasangan LDR",
+          short_name: "Sambung Cinta",
+          start_url: ".",
+          display: "standalone",
+          background_color: "#130b24",
+          theme_color: "#130b24",
+          icons: [{ src: iconDataUrl, sizes: "192x192", type: "image/svg+xml" }]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: "application/json" });
+        const manifestLink = document.getElementById("pwaManifestLink");
+        if (manifestLink) manifestLink.href = URL.createObjectURL(manifestBlob);
+      } catch (e) {
+        // Abaikan jika browser membatasi blob manifest
+      }
+
+      // Tangkap event install PWA Android Chrome
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const banner = document.getElementById("nativeInstallBanner");
+        if (banner) banner.classList.remove("hidden");
+      });
+
+      // Deteksi otomatis keyboard virtual iOS/Android agar bottom nav tidak menutupi input
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+          const isKeyboardOpen = window.visualViewport.height < window.innerHeight * 0.75;
+          document.body.classList.toggle("keyboard-open", isKeyboardOpen);
+        });
+      }
+    }
+
+    // ==========================================
+    // 12. EVENT LISTENERS SAAT DOM SIAP
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+      // Assign referensi DOM
+      lobbyView = document.getElementById("lobbyView");
+      gameView = document.getElementById("gameView");
+      connectionBadge = document.getElementById("connectionBadge");
+      playerNameInput = document.getElementById("playerNameInput");
+      joinCodeInput = document.getElementById("joinCodeInput");
+      waitingPartnerBox = document.getElementById("waitingPartnerBox");
+      activePlayBox = document.getElementById("activePlayBox");
+      roundOverBox = document.getElementById("roundOverBox");
+      wordInput = document.getElementById("wordInput");
+      submitWordBtn = document.getElementById("submitWordBtn");
+      timerText = document.getElementById("timerText");
+      timerProgressBar = document.getElementById("timerProgressBar");
+
       // Set nama acak awal
       playerNameInput.value = CUTE_NICKNAMES[Math.floor(Math.random() * CUTE_NICKNAMES.length)];
 
-      // Setup Manifest Mobile iOS/Android & Viewport Keyboard Handler
+      // Cek link undangan WhatsApp (?room=KODEROOM)
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const invitedCode = (params.get("room") || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (invitedCode.length === 6) {
+          pendingInviteRoomCode = invitedCode;
+          joinCodeInput.value = invitedCode;
+          showToast(`Link undangan Room ${invitedCode} terdeteksi! Menghubungkan... 💕`, "info");
+        }
+      } catch (e) {
+        // Abaikan jika parameter URL tidak tersedia
+      }
+
       setupMobileAppManifestAndViewport();
 
-      // Inisialisasi Firebase
-      initFirebaseConnection();
-
-      // Acak nama lucu
-      document.getElementById('randomNameBtn').addEventListener('click', () => {
-        const pick = CUTE_NICKNAMES[Math.floor(Math.random() * CUTE_NICKNAMES.length)];
-        playerNameInput.value = pick;
+      // Tombol acak nama panggilan
+      document.getElementById("randomNameBtn").addEventListener("click", () => {
+        triggerHaptic([15]);
+        playerNameInput.value = CUTE_NICKNAMES[Math.floor(Math.random() * CUTE_NICKNAMES.length)];
       });
 
       // Pilihan durasi timer
-      document.querySelectorAll('.timer-opt').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.timer-opt').forEach(b => {
-            b.className = 'timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition';
+      document.querySelectorAll(".timer-opt").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          triggerHaptic([15]);
+          selectedTimerSec = parseInt(btn.getAttribute("data-sec"), 10) || 20;
+          document.querySelectorAll(".timer-opt").forEach((b) => {
+            b.className = "timer-opt py-2 rounded-xl text-xs font-semibold glass-subtle text-slate-300 hover:bg-white/10 transition";
           });
-          btn.className = 'timer-opt py-2 rounded-xl text-xs font-semibold bg-rose-500 text-white shadow-md shadow-rose-500/30 transition';
-          selectedTimerSec = parseInt(btn.getAttribute('data-sec'), 10) || 20;
+          btn.className = "timer-opt py-2 rounded-xl text-xs font-semibold bg-rose-500 text-white shadow-md shadow-rose-500/30 transition";
         });
       });
 
-      // Toggle suara
-      document.getElementById('soundToggleBtn').addEventListener('click', (e) => {
-        soundEnabled = !soundEnabled;
-        e.currentTarget.textContent = soundEnabled ? '🔊' : '🔇';
-        showToast(soundEnabled ? 'Efek suara aktif 🔊' : 'Efek suara dimatikan 🔇', 'info');
-      });
+      // Tombol utama Lobby & Arena
+      document.getElementById("createRoomBtn").addEventListener("click", createOnlineRoom);
+      document.getElementById("joinRoomBtn").addEventListener("click", joinOnlineRoom);
+      document.getElementById("playBotBtn").addEventListener("click", startBotGame);
+      document.getElementById("leaveRoomBtn").addEventListener("click", leaveCurrentRoom);
 
-      // Tombol Lobby
-      document.getElementById('createRoomBtn').addEventListener('click', createOnlineRoom);
-      document.getElementById('joinRoomBtn').addEventListener('click', joinOnlineRoom);
-      joinCodeInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') joinOnlineRoom();
+      document.getElementById("copyRoomCodeBtn").addEventListener("click", () => {
+        if (currentRoomCode) copyTextSafely(currentRoomCode, `Kode room "${currentRoomCode}" disalin! 📋`);
       });
-      document.getElementById('playBotBtn').addEventListener('click', startBotPracticeMode);
-
-      // Tombol Salin Kode Room
-      document.getElementById('copyRoomCodeBtn').addEventListener('click', () => {
+      document.getElementById("copyBigCodeBtn").addEventListener("click", () => {
         if (currentRoomCode) copyTextSafely(currentRoomCode, `Kode "${currentRoomCode}" disalin! Kirim ke pasanganmu 💌`);
       });
-      document.getElementById('copyBigCodeBtn').addEventListener('click', () => {
-        if (currentRoomCode) copyTextSafely(currentRoomCode, `Kode "${currentRoomCode}" disalin! Kirim ke pasanganmu 💌`);
+      document.getElementById("shareWhatsAppBtn").addEventListener("click", shareRoomToWhatsApp);
+      document.getElementById("copyInviteLinkBtn").addEventListener("click", () => {
+        if (currentRoomCode) {
+          copyTextSafely(buildRoomInviteUrl(currentRoomCode), "Link undangan disalin! Tinggal paste di WhatsApp pasangan 💬");
+        }
       });
 
-      // Kontrol Arena Permainan & Ronde
-      document.getElementById('wordForm').addEventListener('submit', handleWordSubmit);
-      document.getElementById('surrenderBtn').addEventListener('click', () => {
-        const myUid = isBotMode ? (currentUser ? currentUser.uid : 'local-player') : currentUser?.uid;
-        if (myUid) triggerRoundOver(myUid, 'surrender');
-      });
-      document.getElementById('rerollPunishmentBtn').addEventListener('click', rerollPunishment);
-      document.getElementById('nextRoundBtn').addEventListener('click', startNextRound);
-      document.getElementById('leaveRoomBtn').addEventListener('click', leaveCurrentRoom);
+      // Submit sambung kata & tombol ronde berikutnya
+      document.getElementById("wordSubmitForm").addEventListener("submit", handleWordSubmit);
+      document.getElementById("rerollPunishmentBtn").addEventListener("click", rerollCurrentPunishment);
+      document.getElementById("nextRoundBtn").addEventListener("click", startNextRound);
 
-      // Reaksi Emoji Melayang
-      document.querySelectorAll('.reaction-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const emoji = btn.getAttribute('data-emoji');
+      // Tombol reaksi emoji
+      document.querySelectorAll(".reaction-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const emoji = btn.getAttribute("data-emoji");
           if (emoji) sendEmojiReaction(emoji);
         });
       });
 
-      // Modal Daftar & Custom Hukuman LDR
-      document.getElementById('openPunishmentListBtn').addEventListener('click', () => {
+      // Toggle suara
+      const soundBtn = document.getElementById("soundToggleBtn");
+      soundBtn.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        soundBtn.textContent = soundEnabled ? "🔊" : "🔇";
+        showToast(soundEnabled ? "Efek suara aktif 🔊" : "Efek suara dimatikan 🔇", "info");
+      });
+
+      // Modal List & Custom Hukuman
+      const punishmentModal = document.getElementById("punishmentModal");
+      const openPunishModal = () => {
         renderPunishmentModalList();
-        punishmentModal.classList.remove('hidden');
-      });
-      document.getElementById('closePunishmentModalBtn').addEventListener('click', () => {
-        punishmentModal.classList.add('hidden');
-      });
-      document.getElementById('customPunishmentForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const inputEl = document.getElementById('customPunishmentInput');
-        const cleanDare = inputEl.value.trim().replace(/<[^>]*>/g, '');
-        if (!cleanDare) return;
-
-        customPunishmentsMemory.push(cleanDare);
-        inputEl.value = '';
-
-        if (roomState && currentRoomCode && !isBotMode && db) {
-          try {
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'sambung_kata_rooms', currentRoomCode);
-            await updateDoc(roomRef, { customPunishments: [...customPunishmentsMemory] });
-          } catch (err) {
-            // Tersimpan di sesi lokal jika offline
-          }
-        } else if (roomState) {
-          roomState.customPunishments = [...customPunishmentsMemory];
-        }
-        renderPunishmentModalList();
-        showToast('Hukuman custom ditambahkan! 💖', 'success');
-      });
-
-      // Modal Panduan GitHub & Install iOS/Android
-      const githubModal = document.getElementById('githubModal');
-      const openMobileInstallModal = (defaultTab = 'android') => {
-        // Deteksi otomatis perangkat iOS vs Android untuk memilih tab yang relevan
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const targetTab = defaultTab === 'auto' ? (isIOS ? 'ios' : 'android') : defaultTab;
-        document.querySelectorAll('.platform-tab-btn').forEach(b => {
-          const isMatch = b.getAttribute('data-platform-tab') === targetTab;
-          b.className = isMatch
-            ? 'platform-tab-btn py-2 rounded-xl text-xs font-bold bg-rose-500 text-white transition'
-            : 'platform-tab-btn py-2 rounded-xl text-xs font-bold text-slate-300 hover:bg-white/5 transition';
-        });
-        document.querySelectorAll('.platform-tab-content').forEach(c => {
-          c.classList.toggle('hidden', c.id !== `tabContent-${targetTab}`);
-        });
-        githubModal.classList.remove('hidden');
+        punishmentModal.classList.remove("hidden");
+        updateBottomNavActive("punish");
+      };
+      const closePunishModal = () => {
+        punishmentModal.classList.add("hidden");
+        updateBottomNavActive(currentRoomCode ? "arena" : "home");
       };
 
-      document.getElementById('openGithubGuideBtn').addEventListener('click', () => openMobileInstallModal('auto'));
-      document.getElementById('installHeaderBtn').addEventListener('click', () => openMobileInstallModal('auto'));
-      document.getElementById('closeGithubModalBtn').addEventListener('click', () => {
-        githubModal.classList.add('hidden');
+      document.getElementById("openPunishmentListBtn").addEventListener("click", openPunishModal);
+      document.getElementById("closePunishmentModalBtn").addEventListener("click", closePunishModal);
+      document.getElementById("customPunishmentForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const input = document.getElementById("customPunishmentInput");
+        const val = sanitizeText(input.value, 140);
+        if (!val) return;
+        customPunishmentsMemory.unshift({ category: "💕 Custom LDR", text: val });
+        input.value = "";
+        renderPunishmentModalList();
+        triggerHaptic([20]);
+        showToast("Hukuman custom ditambahkan ke kocokan! 🎲", "success");
       });
 
-      // Switch Tab di dalam Modal Install iOS/Android
-      document.querySelectorAll('.platform-tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tab = btn.getAttribute('data-platform-tab');
-          openMobileInstallModal(tab);
+      // Modal Install iOS / Android & GitHub Config
+      const githubModal = document.getElementById("githubModal");
+      const openInstallModal = () => {
+        githubModal.classList.remove("hidden");
+        updateBottomNavActive("install");
+      };
+      const closeInstallModal = () => {
+        githubModal.classList.add("hidden");
+        updateBottomNavActive(currentRoomCode ? "arena" : "home");
+      };
+
+      document.getElementById("installHeaderBtn").addEventListener("click", openInstallModal);
+      document.getElementById("openGithubGuideBtn").addEventListener("click", openInstallModal);
+      document.getElementById("closeGithubModalBtn").addEventListener("click", closeInstallModal);
+
+      document.getElementById("triggerNativeInstallBtn").addEventListener("click", async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        document.getElementById("nativeInstallBanner").classList.add("hidden");
+      });
+
+      // Tab switcher di dalam Modal Install
+      document.querySelectorAll(".platform-tab-btn").forEach((tabBtn) => {
+        tabBtn.addEventListener("click", () => {
+          const target = tabBtn.getAttribute("data-platform-tab");
+          document.querySelectorAll(".platform-tab-btn").forEach((b) => {
+            b.className = "platform-tab-btn py-2 rounded-xl text-xs font-bold text-slate-300 hover:bg-white/5 transition";
+          });
+          tabBtn.className = "platform-tab-btn py-2 rounded-xl text-xs font-bold bg-rose-500 text-white transition";
+
+          document.querySelectorAll(".platform-tab-content").forEach((panel) => {
+            panel.classList.add("hidden");
+          });
+          const activePanel = document.getElementById(`tabContent-${target}`);
+          if (activePanel) activePanel.classList.remove("hidden");
         });
       });
 
-      // Tombol Install Langsung Android (beforeinstallprompt)
-      document.getElementById('triggerNativeInstallBtn').addEventListener('click', async () => {
-        if (!deferredInstallPrompt) {
-          showToast('Gunakan menu Chrome (⋮) ➔ Tambahkan ke layar utama 📲', 'info');
-          return;
+      // Simpan manual Firebase Config JSON (untuk GitHub Pages)
+      document.getElementById("saveManualConfigBtn").addEventListener("click", () => {
+        const raw = document.getElementById("manualFirebaseConfigInput").value.trim();
+        try {
+          const parsed = JSON.parse(raw);
+          if (!parsed.apiKey || !parsed.projectId) {
+            throw new Error("Invalid config");
+          }
+          initFirebaseConnection(parsed);
+          closeInstallModal();
+          showToast("Konfigurasi Firebase berhasil diterapkan! 🎉", "success");
+        } catch (err) {
+          showToast("Format JSON Firebase tidak valid. Pastikan berisi apiKey & projectId.", "error");
         }
-        deferredInstallPrompt.prompt();
-        const choice = await deferredInstallPrompt.userChoice;
-        if (choice.outcome === 'accepted') {
-          showToast('Yeay! Sambung Cinta berhasil dipasang di HP kamu 💕', 'success');
-          document.getElementById('nativeInstallBanner').classList.add('hidden');
-        }
-        deferredInstallPrompt = null;
       });
 
-      // Navigasi Bottom Tab Bar (Mobile Native UX)
-      document.getElementById('navHomeBtn').addEventListener('click', () => {
-        triggerHaptic('light');
+      // Bottom Navigation Bar Mobile
+      document.getElementById("navHomeBtn").addEventListener("click", () => {
+        closePunishModal();
+        closeInstallModal();
         if (currentRoomCode) {
           leaveCurrentRoom();
         } else {
-          gameView.classList.add('hidden');
-          lobbyView.classList.remove('hidden');
+          updateBottomNavActive("home");
         }
       });
-
-      document.getElementById('navArenaBtn').addEventListener('click', () => {
-        triggerHaptic('light');
-        if (currentRoomCode && roomState) {
-          lobbyView.classList.add('hidden');
-          gameView.classList.remove('hidden');
+      document.getElementById("navArenaBtn").addEventListener("click", () => {
+        closePunishModal();
+        closeInstallModal();
+        if (currentRoomCode) {
+          lobbyView.classList.add("hidden");
+          gameView.classList.remove("hidden");
+          updateBottomNavActive("arena");
         } else {
-          startBotPracticeMode();
+          showToast("Buat room, gabung room, atau klik 'Latihan vs Bot' dulu ya! 💕", "info");
+        }
+      });
+      document.getElementById("navPunishBtn").addEventListener("click", () => {
+        closeInstallModal();
+        openPunishModal();
+      });
+      document.getElementById("navInstallBtn").addEventListener("click", () => {
+        closePunishModal();
+        openInstallModal();
+      });
+
+      // Sinkronisasi otomatis saat kembali dari WhatsApp / minimize di iOS & Android
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible" && currentRoomCode && !isBotMode) {
+          if (transportMode === "relay") {
+            if (!relayClient || !relayClient.connected) {
+              initWssRelayConnection();
+            } else {
+              subscribeRelayTopic(currentRoomCode);
+              publishRelayPacket(currentRoomCode, {
+                type: "STATE_REQ",
+                fromUid: getActiveUid(),
+                currentSeq: roomState?.turnSeq || 0
+              });
+            }
+          }
         }
       });
 
-      document.getElementById('navPunishBtn').addEventListener('click', () => {
-        triggerHaptic('light');
-        renderPunishmentModalList();
-        punishmentModal.classList.remove('hidden');
-      });
-
-      document.getElementById('navInstallBtn').addEventListener('click', () => {
-        triggerHaptic('light');
-        openMobileInstallModal('auto');
-      });
-
-      document.getElementById('saveManualConfigBtn').addEventListener('click', () => {
-        const raw = document.getElementById('manualFirebaseConfigInput').value.trim();
-        try {
-          const parsed = JSON.parse(raw);
-          if (!parsed.apiKey) throw new Error('apiKey tidak ditemukan');
-          initFirebaseConnection(parsed);
-          githubModal.classList.add('hidden');
-          showToast('Konfigurasi Firebase berhasil diterapkan! 🚀', 'success');
-        } catch (err) {
-          showToast('Format JSON Firebase tidak valid. Pastikan tanda kutip benar.', 'error');
+      window.addEventListener("online", () => {
+        if (transportMode !== "firebase") {
+          initWssRelayConnection();
         }
       });
+
+      // Mulai koneksi Multiplayer (Firebase atau WSS Relay Lintas HP)
+      initMultiplayerEngine();
     });
   </script>
 </body>
